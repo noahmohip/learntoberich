@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accounting Master — Learning Portal</title>
+  <title>Accounting By Noah — Learning Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -56,16 +56,20 @@
     }
 
     .nav-logo {
-      width: 38px; height: 38px;
+      width: 42px; height: 42px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #2dba7e, #0f6343);
       display: grid;
       place-items: center;
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: 18px;
-      color: white;
-      box-shadow: 0 0 20px rgba(45,186,126,.3);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      box-shadow: 0 0 20px rgba(45,186,126,.12);
+    }
+    .nav-logo img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .nav-brand-text {
@@ -572,9 +576,9 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-brand">
-      <div class="nav-logo">A</div>
+      <div class="nav-logo"><img src="logo-accounting-by-noah.png" alt="Accounting By Noah logo"></div>
       <div class="nav-brand-text">
-        Accounting Master
+        Accounting By Noah
         <small>Learning Portal</small>
       </div>
     </a>
@@ -671,7 +675,7 @@
 
   <!-- FOOTER -->
   <footer>
-    Accounting Master &nbsp;·&nbsp; 14 Chapters &nbsp;·&nbsp; Built for learning
+    Accounting By Noah &nbsp;·&nbsp; 14 Chapters &nbsp;·&nbsp; Built for learning
   </footer>
 
   <script>
