@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Chapter 2 — Analyzing Transactions | Accounting By Noah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--surface3:#222d3e;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.13);--text:#e8edf3;--muted:#b8c4d4;--muted2:#8b96a8;--gold:#d4a843;--gold-dim:rgba(212,168,67,.12);--green:#2dba7e;--green-dim:rgba(45,186,126,.11);--green-bright:rgba(45,186,126,.25);--red:#f06060;--red-dim:rgba(240,96,96,.1);--blue:#4f9cf9;--radius:14px;--radius-sm:9px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:"DM Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;}
+    nav{position:sticky;top:0;z-index:100;height:64px;display:flex;align-items:center;gap:16px;padding:0 32px;background:rgba(13,17,23,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);}
+    .nav-logo{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid var(--border);box-shadow:0 0 14px rgba(45,186,126,.16);}
+    .nav-logo img{width:100%;height:100%;object-fit:contain;display:block;}
+    .nav-brand-text{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;line-height:1.2;}
+    .nav-brand-text small{display:block;font-family:"DM Sans",sans-serif;font-size:10px;font-weight:400;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+    .nav-spacer{flex:1;}
+    .nav-pill{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--muted);}
+    .nav-pill select{border:none;background:transparent;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;color:var(--text);outline:none;cursor:pointer;}
+    .nav-btn{padding:8px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s;white-space:nowrap;}
+    .nav-btn:hover{border-color:var(--border2);background:var(--surface3);}
+    .nav-btn.green{background:var(--green-dim);border-color:var(--green-bright);color:var(--green);}
+    .nav-btn.green:hover{opacity:.85;}
+    /* AUTH */
+    .nav-auth-wrap{position:relative;}
+    .user-btn{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;transition:border-color .15s;}
+    .user-btn:hover{border-color:var(--border2);}
+    .user-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;}
+    .user-avatar-ph{width:26px;height:26px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green-bright);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--green);}
+    .profile-dd{display:none;position:absolute;top:calc(100% + 10px);right:0;width:240px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,.5);overflow:hidden;z-index:200;}
+    .profile-dd.open{display:block;}
+    .pd-head{padding:16px;border-bottom:1px solid var(--border);}
+    .pd-name{font-weight:600;font-size:14px;}
+    .pd-email{font-size:12px;color:var(--muted2);margin-top:2px;}
+    .pd-prog{padding:12px 16px;border-bottom:1px solid var(--border);}
+    .pd-prog-label{font-size:11px;color:var(--muted2);margin-bottom:8px;font-family:"DM Mono",monospace;letter-spacing:.05em;text-transform:uppercase;}
+    .pb-wrap{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+    .pb-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s;}
+    .pd-pct{font-size:11px;color:var(--green);margin-top:6px;font-family:"DM Mono",monospace;}
+    .dd-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;background:none;border:none;cursor:pointer;color:var(--muted);font-family:"DM Sans",sans-serif;font-size:13px;transition:background .12s;text-align:left;}
+    .dd-item:hover{background:var(--surface2);color:var(--text);}
+    .dd-item.danger:hover{color:var(--red);}
+    /* AUTH MODAL */
+    .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+    .auth-overlay.open{opacity:1;pointer-events:all;}
+    .auth-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;width:calc(100% - 48px);max-width:380px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.6);transform:translateY(16px) scale(.97);transition:transform .25s;}
+    .auth-overlay.open .auth-modal{transform:translateY(0) scale(1);}
+    .auth-logo-ring{width:56px;height:56px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green-bright);display:grid;place-items:center;margin:0 auto 16px;}
+    .auth-modal h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;margin-bottom:8px;}
+    .auth-modal p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+    .google-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 20px;border-radius:10px;background:#fff;border:none;cursor:pointer;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;color:#1a1a1a;transition:opacity .15s;}
+    .google-btn:hover{opacity:.9;}
+    .auth-divider{font-size:12px;color:var(--muted2);margin:16px 0;}
+    .auth-skip{background:none;border:none;color:var(--muted2);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+    .auth-skip:hover{color:var(--text);}
+    /* TOAST */
+    #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    #cursorCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9990;}
+    /* LAYOUT */
+    .wrap{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 64px);}
+    @media(max-width:900px){.wrap{grid-template-columns:1fr;}}
+    /* SIDEBAR */
+    .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:28px 20px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+    .sidebar::-webkit-scrollbar{width:4px;} .sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+    .sb-head{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+    .sb-label{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+    .sb-title{font-family:"Playfair Display",serif;font-size:16px;font-weight:700;line-height:1.3;margin-bottom:4px;}
+    .sb-sub{font-size:12px;color:var(--muted2);line-height:1.5;}
+    .ch-list{display:flex;flex-direction:column;gap:4px;}
+    .ch-btn{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;border:1px solid transparent;background:none;cursor:pointer;text-align:left;width:100%;transition:background .15s,border-color .15s;}
+    .ch-btn:hover{background:var(--surface2);border-color:var(--border);}
+    .ch-btn.active{background:var(--green-dim);border-color:var(--green-bright);}
+    .ch-num{font-family:"DM Mono",monospace;font-size:12px;font-weight:500;color:var(--muted2);flex-shrink:0;width:22px;}
+    .ch-btn.active .ch-num{color:var(--green);}
+    .ch-text b{display:block;font-size:12px;font-weight:600;color:var(--muted);line-height:1.3;margin-bottom:2px;}
+    .ch-text span{font-size:10px;color:var(--muted2);font-family:"DM Mono",monospace;text-transform:uppercase;letter-spacing:.05em;}
+    .ch-btn.active .ch-text b{color:var(--text);}
+    /* HERO */
+    .ch-hero{position:relative;padding:80px 60px 72px;background:linear-gradient(160deg,#0d1117 0%,#131b28 60%,#0e1920 100%);border-bottom:1px solid var(--border);overflow:hidden;}
+    @media(max-width:768px){.ch-hero{padding:48px 28px 52px;}}
+    .ch-hero canvas{position:absolute;inset:0;pointer-events:none;}
+    .ch-hero-inner{position:relative;z-index:2;max-width:780px;}
+    .ch-tag{display:inline-block;font-family:"DM Mono",monospace;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--green);background:var(--green-dim);border:1px solid var(--green-bright);border-radius:6px;padding:4px 10px;margin-bottom:20px;}
+    .ch-hero h1{font-family:"Playfair Display",serif;font-size:clamp(28px,4.5vw,44px);font-weight:900;line-height:1.15;letter-spacing:-.02em;margin-bottom:18px;}
+    .ch-hero p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:36px;max-width:620px;}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+    .jump-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;text-decoration:none;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:background .15s,border-color .15s;cursor:pointer;}
+    .jump-btn.primary{background:var(--green);border-color:var(--green);color:#071a10;}
+    .jump-btn.primary:hover{opacity:.88;} .jump-btn:not(.primary):hover{border-color:var(--border2);background:var(--surface3);}
+    /* SECTIONS */
+    .section{padding:52px 60px;border-bottom:1px solid var(--border);}
+    @media(max-width:768px){.section{padding:36px 24px;}}
+    .section-title-row{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+    .obj-badge{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(212,168,67,.18);border-radius:6px;padding:3px 9px;flex-shrink:0;}
+    .section h2{font-family:"Playfair Display",serif;font-size:clamp(22px,3vw,30px);font-weight:900;letter-spacing:-.01em;}
+    .sec-intro{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:32px;max-width:720px;}
+    /* TERM LIST */
+    .terms{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+    .term{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;line-height:1.65;transition:border-color .15s;}
+    .term:hover{border-color:var(--border2);}
+    .term-tag{flex-shrink:0;min-width:90px;font-family:"DM Mono",monospace;font-size:11px;font-weight:500;color:var(--gold);letter-spacing:.04em;padding-top:1px;}
+    .term-body{color:var(--muted);}
+    .term-body b,.term-body strong{color:var(--text);font-weight:600;}
+    .toc-link{cursor:pointer;}
+    .toc-link:hover{border-color:rgba(212,168,67,.3);background:rgba(212,168,67,.04);}
+    .toc-arrow{margin-left:auto;padding-left:8px;color:var(--muted2);font-size:14px;flex-shrink:0;}
+    /* EQ BOX */
+    .eq-box{margin-top:24px;padding:20px 24px;border-radius:12px;background:var(--surface2);border:1px dashed rgba(45,186,126,.25);font-family:"DM Mono",monospace;font-size:15px;font-weight:500;color:var(--green);text-align:center;}
+    /* QUIZ ZONE */
+    .quiz-zone{margin-top:28px;padding:24px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);}
+    .act-label{font-family:"DM Mono",monospace;font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+    .quiz-label{font-size:14px;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:14px;}
+    .quiz-input{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .15s;}
+    .quiz-input:focus{border-color:var(--green);}
+    .quiz-actions{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;}
+    .chk-btn{padding:9px 20px;border-radius:8px;background:rgba(212,168,67,.15);color:var(--gold);border:1px solid rgba(212,168,67,.3);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
+    .chk-btn:hover{background:rgba(212,168,67,.25);}
+    .result-badge{display:none;padding:6px 12px;border-radius:6px;font-family:"DM Mono",monospace;font-size:12px;font-weight:500;}
+    .result-badge.show{display:inline-block;}
+    .result-badge.good{background:var(--green-dim);border:1px solid rgba(45,186,126,.25);color:var(--green);}
+    .result-badge.bad{background:var(--red-dim);border:1px solid rgba(240,96,96,.25);color:var(--red);}
+    /* MC OPTIONS */
+    .mc-opts{display:grid;gap:8px;margin-top:12px;}
+    .mc-opt{padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface3);cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;line-height:1.5;text-align:left;display:flex;align-items:flex-start;gap:8px;width:100%;}
+    .mc-opt:hover:not(.locked){border-color:var(--border2);color:var(--text);}
+    .mc-opt.locked{cursor:default;}
+    .mc-opt.correct{background:var(--green-dim);border-color:rgba(45,186,126,.3);color:var(--green);}
+    .mc-opt.wrong{background:var(--red-dim);border-color:rgba(240,96,96,.25);color:var(--red);}
+    .mc-opt.reveal{border-color:rgba(45,186,126,.2);color:var(--green);opacity:.7;}
+    .mc-letter{font-family:"DM Mono",monospace;font-size:11px;color:var(--muted2);flex-shrink:0;padding-top:1px;}
+    .mc-feedback{margin-top:10px;font-size:12px;color:var(--muted2);line-height:1.65;display:none;padding:8px 12px;background:var(--surface3);border-radius:6px;}
+    .mc-feedback.show{display:block;}
+    /* T-ACCOUNT VISUAL */
+    .t-vis{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap;}
+    .t-acct{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex:1;min-width:220px;}
+    .t-title{padding:10px 16px;text-align:center;font-family:"DM Mono",monospace;font-size:12px;font-weight:500;color:var(--gold);background:var(--surface3);border-bottom:1px solid var(--border);letter-spacing:.08em;text-transform:uppercase;}
+    .t-body{display:grid;grid-template-columns:1fr 1fr;}
+    .t-side{padding:16px 12px;text-align:center;}
+    .t-side:first-child{border-right:1px solid var(--border);}
+    .t-side-label{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;}
+    .t-side-name{font-size:18px;font-weight:700;font-family:"Playfair Display",serif;}
+    .t-entries{padding:8px 12px;border-top:1px solid var(--border);font-family:"DM Mono",monospace;font-size:12px;line-height:1.8;}
+    .t-dr{color:var(--green);display:block;}
+    .t-cr{color:var(--red);padding-left:32px;display:block;}
+    .t-bal{padding:8px 12px;background:var(--surface3);font-family:"DM Mono",monospace;font-size:12px;color:var(--gold);text-align:right;border-top:1px solid var(--border);}
+    /* D/C GRID */
+    .dc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;}
+    @media(max-width:700px){.dc-grid{grid-template-columns:1fr 1fr;}}
+    .dc-card{border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s;}
+    .dc-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+    .dc-card.sel{border-color:rgba(212,168,67,.4);}
+    .dc-head{padding:10px 14px;background:var(--surface3);font-family:"DM Mono",monospace;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+    .dc-t{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border);}
+    .dc-side{padding:12px 10px;text-align:center;font-size:12px;line-height:1.6;}
+    .dc-side:first-child{border-right:1px solid var(--border);}
+    .dc-sl{font-family:"DM Mono",monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:4px;}
+    .dc-plus{font-size:16px;font-weight:700;}
+    .gn{color:var(--green);} .rd{color:var(--red);} .gd{color:var(--gold);}
+    .dc-nb{padding:8px 14px;font-size:11px;color:var(--muted2);text-align:center;background:var(--surface2);border-top:1px solid var(--border);font-family:"DM Mono",monospace;letter-spacing:.04em;}
+    /* NORMAL BALANCE CARDS */
+    .nb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;}
+    @media(max-width:640px){.nb-grid{grid-template-columns:1fr 1fr;}}
+    .nb-card{padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+    .nb-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+    .nb-name{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;margin-bottom:10px;}
+    .nb-sides{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+    .nb-dr,.nb-cr{padding:8px 6px;font-size:11px;font-family:"DM Mono",monospace;text-align:center;transition:background .2s;}
+    .nb-dr{border-right:1px solid var(--border);}
+    .nb-card.rev-dr .nb-dr{background:var(--green-dim);color:var(--green);}
+    .nb-card.rev-cr .nb-cr{background:var(--green-dim);color:var(--green);}
+    .nb-hint{font-size:11px;color:var(--muted2);margin-top:8px;}
+    /* CLASSIFIER */
+    .cls-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+    @media(max-width:700px){.cls-grid{grid-template-columns:1fr 1fr;}}
+    .cls-item{padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
+    .cls-acct{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;}
+    .cls-btns{display:flex;flex-direction:column;gap:5px;}
+    .cls-btn{padding:5px 8px;border-radius:6px;background:var(--surface3);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;text-align:left;font-family:"DM Mono",monospace;letter-spacing:.03em;}
+    .cls-btn:hover{border-color:var(--border2);color:var(--text);}
+    .cls-btn.correct{background:var(--green-dim);border-color:rgba(45,186,126,.3);color:var(--green);}
+    .cls-btn.wrong{background:var(--red-dim);border-color:rgba(240,96,96,.25);color:var(--red);}
+    /* WORDING GAME */
+    .word-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;}
+    .word-phrase{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;padding:8px 12px;background:rgba(212,168,67,.05);border-radius:6px;border:1px solid rgba(212,168,67,.1);}
+    .word-row{display:grid;grid-template-columns:1fr 1fr 80px;gap:8px;align-items:end;}
+    @media(max-width:600px){.word-row{grid-template-columns:1fr;}}
+    .word-field label{display:block;font-size:10px;font-family:"DM Mono",monospace;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;}
+    .word-sel{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;}
+    .word-chk{padding:8px 14px;border-radius:7px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);color:var(--gold);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+    .word-res{margin-top:8px;font-size:12px;font-family:"DM Mono",monospace;display:none;}
+    .word-res.show{display:block;}
+    .word-res.pass{color:var(--green);} .word-res.fail{color:var(--red);}
+    /* JOURNAL BUILDER */
+    .je-builder{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px;}
+    .je-head{padding:14px 20px;background:var(--surface3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .je-head h4{font-family:"Playfair Display",serif;font-size:16px;font-weight:700;}
+    .je-sc-sel{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;cursor:pointer;max-width:300px;}
+    .je-body{padding:20px;}
+    .je-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:18px;padding:12px 14px;background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.12);border-radius:8px;}
+    .je-th{display:grid;grid-template-columns:1fr 1fr 110px 110px;gap:8px;margin-bottom:8px;}
+    .je-th span{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;padding:0 4px;}
+    .je-row{display:grid;grid-template-columns:1fr 1fr 110px 110px;gap:8px;margin-bottom:8px;}
+    @media(max-width:680px){.je-th,.je-row{grid-template-columns:1fr 1fr;}}
+    .je-sel,.je-inp{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s;}
+    .je-sel:focus,.je-inp:focus{border-color:var(--green);}
+    .je-acts{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+    .je-verify{padding:9px 22px;border-radius:8px;background:rgba(45,186,126,.12);border:1px solid rgba(45,186,126,.25);color:var(--green);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+    .je-reset{padding:9px 16px;border-radius:8px;background:var(--surface3);border:1px solid var(--border);color:var(--muted);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+    .je-res{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.65;display:none;}
+    .je-res.show{display:block;}
+    .je-res.pass{background:var(--green-dim);border:1px solid rgba(45,186,126,.2);color:var(--green);}
+    .je-res.fail{background:var(--red-dim);border:1px solid rgba(240,96,96,.2);color:var(--red);}
+    /* POSTING SIM */
+    .post-sim{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+    @media(max-width:700px){.post-sim{grid-template-columns:1fr;}}
+    .post-journal{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+    .post-journal h4{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+    .post-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .post-row:last-child{border-bottom:none;}
+    .post-acct{color:var(--text);font-weight:500;}
+    .post-acct.cr{padding-left:20px;color:var(--muted);}
+    .post-amt{font-family:"DM Mono",monospace;font-size:12px;font-weight:500;}
+    .post-amt.dr{color:var(--green);} .post-amt.cr{color:var(--muted);}
+    .post-ledgers{display:flex;flex-direction:column;gap:10px;}
+    .post-ledger{background:var(--surface2);border:2px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;cursor:pointer;}
+    .post-ledger:hover{border-color:rgba(212,168,67,.3);}
+    .post-ledger.posted{border-color:rgba(45,186,126,.3);}
+    .post-ledger-title{padding:8px 14px;background:var(--surface3);border-bottom:1px solid var(--border);font-family:"DM Mono",monospace;font-size:11px;font-weight:500;color:var(--gold);letter-spacing:.05em;display:flex;justify-content:space-between;}
+    .post-ledger-body{display:grid;grid-template-columns:1fr 1fr;}
+    .post-side{padding:12px 14px;text-align:center;font-family:"DM Mono",monospace;font-size:13px;min-height:48px;display:flex;flex-direction:column;gap:4px;cursor:pointer;}
+    .post-side:first-child{border-right:1px solid var(--border);}
+    .post-side .pa{color:var(--green);font-weight:500;}
+    .post-side-label{font-size:10px;color:var(--muted2);}
+    /* TRIAL BALANCE */
+    .tb-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:20px;}
+    .tb-header{padding:14px 20px;background:var(--surface3);border-bottom:1px solid var(--border);text-align:center;}
+    .tb-company{font-family:"Playfair Display",serif;font-size:16px;font-weight:700;}
+    .tb-title-text{font-size:13px;color:var(--muted);margin-top:2px;font-family:"DM Mono",monospace;letter-spacing:.06em;}
+    .tb-date-text{font-size:12px;color:var(--muted2);margin-top:2px;}
+    .tb-body{padding:16px 20px;}
+    .tb-row{display:grid;grid-template-columns:1fr 130px 130px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+    .tb-row:last-child{border-bottom:none;}
+    .tb-acct-name{font-size:13px;color:var(--text);font-weight:500;}
+    .tb-inp{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-family:"DM Mono",monospace;font-size:12px;color:var(--text);outline:none;text-align:right;}
+    .tb-inp:focus{border-color:var(--green);}
+    .tb-inp.correct{background:var(--green-dim);border-color:rgba(45,186,126,.3);color:var(--green);}
+    .tb-inp.wrong{background:var(--red-dim);border-color:rgba(240,96,96,.25);color:var(--red);}
+    .tb-totals{display:grid;grid-template-columns:1fr 130px 130px;gap:10px;padding:12px 0 0;}
+    .tb-tot-label{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase;}
+    .tb-tot-val{font-family:"DM Mono",monospace;font-size:14px;font-weight:500;color:var(--gold);text-align:right;border-top:2px solid var(--border2);padding-top:8px;}
+    .tb-col-h{font-family:"DM Mono",monospace;font-size:9px;font-weight:500;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;text-align:right;}
+    .tb-msg{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center;font-family:"DM Mono",monospace;display:none;}
+    .tb-msg.show{display:block;}
+    .tb-msg.balanced{background:var(--green-dim);border:1px solid rgba(45,186,126,.2);color:var(--green);}
+    .tb-msg.unbalanced{background:var(--red-dim);border:1px solid rgba(240,96,96,.2);color:var(--red);}
+    /* ERROR DETECTIVE */
+    .err-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:14px;}
+    .err-scenario{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:16px;padding:10px 14px;border-left:3px solid rgba(240,96,96,.4);background:rgba(240,96,96,.04);}
+    .err-fb{margin-top:10px;font-size:12px;color:var(--muted2);line-height:1.65;display:none;}
+    .err-fb.show{display:block;}
+    /* TWO-COL */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;}
+    @media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+    .info-card{padding:20px 22px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;}
+    .info-card-label{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+    .info-card p,.info-card div{font-size:14px;color:var(--text);line-height:1.75;}
+    /* NUM LIST */
+    .num-list{display:grid;gap:0;margin-top:20px;}
+    .num-row{display:grid;grid-template-columns:36px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);align-items:baseline;}
+    .num-row:last-child{border-bottom:none;}
+    .num-n{font-family:"Playfair Display",serif;font-size:18px;font-weight:900;color:var(--gold);opacity:.5;}
+    .num-text{font-size:14px;color:var(--text);line-height:1.75;}
+    .num-text b{font-weight:600;color:var(--text);}
+    /* HORIZONTAL ANALYSIS */
+    .ha-table{width:100%;margin-top:20px;border-collapse:collapse;font-size:13px;}
+    .ha-table th{padding:9px 14px;text-align:right;font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;background:var(--surface3);border-bottom:1px solid var(--border);}
+    .ha-table th:first-child{text-align:left;}
+    .ha-table td{padding:9px 14px;border-bottom:1px solid var(--border);text-align:right;font-family:"DM Mono",monospace;font-size:12px;color:var(--text);}
+    .ha-table td:first-child{text-align:left;color:var(--muted);}
+    .ha-table tbody tr:last-child td{border-bottom:none;}
+    .ha-fav{color:var(--green);} .ha-unfav{color:var(--red);}
+    .ha-inp{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-family:"DM Mono",monospace;font-size:11px;color:var(--text);outline:none;text-align:right;}
+    .ha-inp:focus{border-color:var(--gold);}
+    .ha-inp.correct{background:var(--green-dim);color:var(--green);}
+    .ha-inp.wrong{background:var(--red-dim);color:var(--red);}
+    /* RECAP QUIZ */
+    .recap-quiz{border-top:1px solid var(--border);padding:48px 60px;background:rgba(212,168,67,.025);}
+    @media(max-width:768px){.recap-quiz{padding:32px 20px;}}
+    .recap-header{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;}
+    .recap-header h2{font-family:"Playfair Display",serif;font-size:26px;font-weight:900;}
+    .recap-intro{color:var(--muted);font-size:15px;line-height:1.75;margin-bottom:36px;max-width:680px;}
+    .rq-item{margin-bottom:32px;}
+    .rq-item:last-child{margin-bottom:0;}
+    .rq-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.55;margin-bottom:12px;display:flex;gap:10px;}
+    .rq-num{font-family:"DM Mono",monospace;font-size:11px;color:var(--gold);padding-top:3px;flex-shrink:0;}
+    .rq-options{display:grid;gap:8px;margin-left:28px;}
+    .rq-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s;font-size:14px;color:var(--muted);line-height:1.5;user-select:none;}
+    .rq-option:hover{border-color:rgba(212,168,67,.3);color:var(--text);}
+    .rq-option.selected{border-color:rgba(212,168,67,.4);background:rgba(212,168,67,.06);color:var(--text);}
+    .rq-option.correct{border-color:rgba(45,186,126,.4);background:rgba(45,186,126,.08);color:var(--green);}
+    .rq-option.wrong{border-color:rgba(240,96,96,.4);background:rgba(240,96,96,.07);color:var(--red);}
+    .rq-letter{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;color:var(--muted2);flex-shrink:0;padding-top:1px;}
+    .rq-feedback{margin-left:28px;margin-top:8px;font-size:13px;line-height:1.6;color:var(--muted2);display:none;}
+    .rq-feedback.show{display:block;}
+    .rq-feedback.good{color:var(--green);} .rq-feedback.bad{color:var(--muted);}
+    .recap-score-box{display:none;margin-top:40px;padding:28px 32px;border-radius:14px;background:rgba(45,186,126,.06);border:1px solid rgba(45,186,126,.2);text-align:center;}
+    .recap-score-box.show{display:block;}
+    .recap-score-num{font-family:"Playfair Display",serif;font-size:52px;font-weight:900;color:var(--green);line-height:1;}
+    .recap-score-label{font-size:14px;color:var(--muted);margin-top:8px;}
+    .recap-submit{margin-top:32px;padding:13px 32px;border-radius:10px;background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:var(--gold);font-family:"DM Sans",sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;}
+    .recap-submit:hover{background:rgba(212,168,67,.25);}
+    .recap-submit:disabled{opacity:.4;cursor:default;}
+    /* MASTERY MODAL */
+    .mastery-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:9200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .mastery-overlay.open{opacity:1;pointer-events:all;}
+    .mastery-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;width:calc(100% - 48px);max-width:620px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.6);transform:translateY(20px) scale(.97);transition:transform .3s;overflow:hidden;}
+    .mastery-overlay.open .mastery-modal{transform:translateY(0) scale(1);}
+    .m-header{padding:28px 32px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0;}
+    .m-header-left{flex:1;}
+    .m-eyebrow{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+    .m-header h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;margin-bottom:4px;}
+    .m-header p{font-size:13px;color:var(--muted);}
+    .m-prog-track{height:3px;background:var(--surface3);border-radius:2px;margin-top:16px;overflow:hidden;}
+    .m-prog-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease;}
+    .m-close{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:18px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;}
+    .m-close:hover{border-color:var(--border2);color:var(--text);}
+    .m-body{flex:1;overflow-y:auto;padding:28px 32px;}
+    .m-body::-webkit-scrollbar{width:4px;} .m-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+    .mq-counter{font-family:"DM Mono",monospace;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+    .mq-question{font-size:16px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:20px;}
+    .mq-options{display:grid;gap:8px;}
+    .mq-option{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:14px;color:var(--muted);line-height:1.5;transition:all .15s;user-select:none;}
+    .mq-option:hover:not(.locked){border-color:rgba(212,168,67,.3);color:var(--text);}
+    .mq-option.locked{cursor:default;}
+    .mq-option.correct{border-color:rgba(45,186,126,.4);background:rgba(45,186,126,.08);color:var(--green);}
+    .mq-option.reveal-correct{border-color:rgba(45,186,126,.25);color:var(--green);opacity:.7;}
+    .mq-option.wrong{border-color:rgba(240,96,96,.4);background:rgba(240,96,96,.07);color:var(--red);}
+    .mq-letter{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;color:var(--muted2);flex-shrink:0;width:18px;}
+    .mq-explanation{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.65;display:none;}
+    .mq-explanation.show{display:block;}
+    .mq-explanation.good{background:var(--green-dim);border:1px solid rgba(45,186,126,.2);color:var(--green);}
+    .mq-explanation.bad{background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+    .mq-next-btn{margin-top:18px;padding:11px 24px;border-radius:9px;background:var(--green);border:none;color:#071a10;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:none;}
+    .mq-next-btn.show{display:inline-flex;}
+    .mastery-result{text-align:center;padding:12px 0;}
+    .mastery-result h3{font-family:"Playfair Display",serif;font-size:26px;font-weight:900;margin:14px 0 8px;}
+    .mastery-result p{font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 20px;}
+    .m-ring{width:90px;height:90px;border-radius:50%;display:grid;place-items:center;margin:0 auto;font-family:"DM Mono",monospace;font-size:20px;font-weight:500;}
+    .m-ring.pass{background:var(--green-dim);border:2px solid rgba(45,186,126,.4);color:var(--green);}
+    .m-ring.fail{background:var(--red-dim);border:2px solid rgba(240,96,96,.3);color:var(--red);}
+    .review-sections{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin:16px 0;text-align:left;}
+    .review-label{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+    .review-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--gold);transition:background .15s;}
+    .review-item:hover{background:rgba(212,168,67,.08);}
+    .m-result-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;}
+    .mq-retry-btn{padding:11px 22px;border-radius:9px;background:var(--green-dim);border:1px solid var(--green-bright);color:var(--green);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+    .mq-done-btn{padding:11px 22px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+    /* CHAPTER MODAL */
+    .ch-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);z-index:9100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+    .ch-modal-overlay.open{opacity:1;pointer-events:all;}
+    .ch-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:36px;width:calc(100% - 48px);max-width:500px;max-height:80vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+    .modal-eyebrow{font-family:"DM Mono",monospace;font-size:10px;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+    .ch-modal h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;margin-bottom:6px;}
+    .modal-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+    .modal-ch-list{display:flex;flex-direction:column;gap:6px;margin-bottom:24px;}
+    .modal-ch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:background .15s;}
+    .modal-ch:hover{background:var(--surface2);}
+    .modal-ch.current{background:var(--green-dim);border-color:var(--green-bright);cursor:default;}
+    .modal-ch-num{font-family:"DM Mono",monospace;font-size:12px;color:var(--muted2);width:24px;flex-shrink:0;}
+    .modal-ch-title{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+    .modal-ch-badge{font-family:"DM Mono",monospace;font-size:10px;padding:3px 8px;border-radius:5px;font-weight:500;}
+    .modal-ch-badge.live{background:var(--green-dim);color:var(--green);}
+    .modal-ch-badge.soon{background:var(--surface3);color:var(--muted2);}
+    .modal-close-btn{padding:10px 20px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+    /* CONFETTI + ANIMATIONS */
+    .confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9995;animation:confettiFall linear forwards;}
+    @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(220px) rotate(720deg);opacity:0;}}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+    .shake{animation:shake .4s ease;}
+    #checklist{display:grid;gap:8px;}
+    .info-note{margin-top:16px;padding:14px 18px;background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.15);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.75;}
+    .danger-note{margin-top:16px;padding:14px 18px;background:rgba(240,96,96,.05);border:1px solid rgba(240,96,96,.15);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.75;}
+    .score-track{font-family:"DM Mono",monospace;font-size:12px;color:var(--muted2);margin-left:12px;}
+    table.je-sample{width:100%;border-collapse:collapse;font-size:13px;margin-top:20px;}
+    table.je-sample th{padding:8px 12px;text-align:left;font-family:"DM Mono",monospace;font-size:9px;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;width:auto;background:var(--surface3);border-bottom:1px solid var(--border);}
+    table.je-sample td{padding:9px 12px;border-bottom:1px solid var(--border);font-family:"DM Mono",monospace;font-size:12px;color:var(--text);}
+    table.je-sample tr:last-child td{border-bottom:none;}
+  
+    /* ===== FLASHCARD DECK ===== */
+    .fc-deck-wrap{margin-top:20px;user-select:none;}
+    .fc-stage{position:relative;height:240px;perspective:900px;margin-bottom:18px;cursor:pointer;}
+    .fc-card{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);border-radius:16px;}
+    .fc-card.flipped{transform:rotateY(180deg);}
+    .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 36px;text-align:center;border:1px solid var(--border);}
+    .fc-front{background:var(--surface2);}
+    .fc-front:hover{border-color:var(--border2);}
+    .fc-back{background:var(--green-dim);border-color:rgba(45,186,126,.3);transform:rotateY(180deg);}
+    .fc-eyebrow{font-family:"DM Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
+    .fc-back .fc-eyebrow{color:rgba(45,186,126,.7);}
+    .fc-term{font-family:"Playfair Display",serif;font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--text);line-height:1.2;}
+    .fc-def{font-size:15px;color:var(--green);line-height:1.7;max-width:540px;}
+    .fc-hint{margin-top:12px;font-family:"DM Mono",monospace;font-size:10px;color:var(--muted2);letter-spacing:.08em;}
+    .fc-controls{display:flex;align-items:center;justify-content:center;gap:14px;}
+    .fc-arrow{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:20px;display:grid;place-items:center;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;flex-shrink:0;}
+    .fc-arrow:hover{border-color:var(--border2);background:var(--surface3);transform:scale(1.08);}
+    .fc-arrow:active{transform:scale(.95);}
+    .fc-counter{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;color:var(--muted2);min-width:80px;text-align:center;}
+    .fc-flip-btn{padding:9px 22px;border-radius:9px;border:1px solid rgba(212,168,67,.3);background:rgba(212,168,67,.08);color:var(--gold);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;}
+    .fc-flip-btn:hover{background:rgba(212,168,67,.18);}
+    .fc-progress{height:3px;background:var(--surface3);border-radius:2px;margin-bottom:14px;overflow:hidden;}
+    .fc-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .35s ease;}
+
+  </style>
+</head>
+<body>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const cfg = {
+      apiKey:"AIzaSyBM40MZMEiO_1M0_GWkY8YbkNYgM2L1FbY",
+      authDomain:"accounting-by-noah.firebaseapp.com",
+      projectId:"accounting-by-noah",
+      storageBucket:"accounting-by-noah.appspot.com",
+      messagingSenderId:"236792208295",
+      appId:"1:236792208295:web:6b3e8a9f2c1d5e7f8a9b0c"
+    };
+    let app,auth,db,ok=true;
+    try{app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);}catch(e){ok=false;console.warn(e);}
+
+    async function saveP(data){
+      if(!auth?.currentUser||!db)return;
+      try{await setDoc(doc(db,"progress2",auth.currentUser.uid),data,{merge:true});}catch(e){console.warn(e);}
+    }
+    async function loadP(uid){
+      if(!db)return;
+      try{
+        const snap=await getDoc(doc(db,"progress2",uid));
+        if(snap.exists()){
+          const d=snap.data();
+          if(d.checklist&&Array.isArray(d.checklist)){
+            const boxes=document.querySelectorAll("#checklist input[type=checkbox]");
+            d.checklist.forEach((v,i)=>{
+              if(boxes[i]){boxes[i].checked=v;const l=boxes[i].closest("label");if(l&&v){l.style.color="var(--green)";l.style.textDecoration="line-through";}}
+            });
+            if(typeof updateProgressBar==="function")updateProgressBar();
+          }
+        }
+      }catch(e){console.warn(e);}
+    }
+    window.signInWithGoogle=async function(){
+      if(!auth)return;
+      try{await signInWithPopup(auth,new GoogleAuthProvider());closeAuthModal();showToast("Signed in ✓");}catch(e){console.error(e);}
+    };
+    window.signOutUser=async function(){
+      if(!auth)return;
+      await signOut(auth);closeProfileDropdown();showToast("Signed out");
+    };
+    function renderSignInNav(){
+      document.getElementById("navAuth").innerHTML=`<button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Log In</button>`;
+    }
+    function renderUserNav(user){
+      const init=(user.displayName||user.email||"?")[0].toUpperCase();
+      const av=user.photoURL?`<img src="${user.photoURL}" class="user-avatar" referrerpolicy="no-referrer"/>`:`<div class="user-avatar-ph">${init}</div>`;
+      const name=(user.displayName||user.email||"").split(" ")[0];
+      document.getElementById("navAuth").innerHTML=`
+        <div class="nav-auth-wrap">
+          <button class="user-btn" onclick="toggleProfileDropdown()">
+            ${av}<span>${name}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="profile-dd" id="profileDropdown">
+            <div class="pd-head"><div class="pd-name">${user.displayName||"Student"}</div><div class="pd-email">${user.email}</div></div>
+            <div class="pd-prog">
+              <div class="pd-prog-label">Chapter 2 Progress</div>
+              <div class="pb-wrap"><div class="pb-fill" id="progressBarFill" style="width:0%"></div></div>
+              <div class="pd-pct" id="progressPct">0%</div>
+            </div>
+            <button class="dd-item" onclick="saveAllProgress();closeProfileDropdown()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>Save Progress
+            </button>
+            <button class="dd-item danger" onclick="signOutUser()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out
+            </button>
+          </div>
+        </div>`;
+      updateProgressBar();
+    }
+    window.updateProgressBar=function(){
+      const fill=document.getElementById("progressBarFill"),pct=document.getElementById("progressPct");
+      if(!fill)return;
+      const boxes=document.querySelectorAll("#checklist input[type=checkbox]");
+      const checked=[...boxes].filter(c=>c.checked).length,total=boxes.length||1;
+      const p=Math.round(checked/total*100);
+      fill.style.width=p+"%";if(pct)pct.textContent=p+"%";
+    };
+    window.saveAllProgress=async function(){
+      const boxes=document.querySelectorAll("#checklist input[type=checkbox]");
+      await saveP({checklist:[...boxes].map(c=>c.checked)});
+      updateProgressBar();showToast("Progress saved ✓");
+    };
+    if(ok&&auth){
+      onAuthStateChanged(auth,user=>{
+        if(user){renderUserNav(user);loadP(user.uid);}else{renderSignInNav();}
+      });
+    }
+  </script>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo"><img src="logo-accounting-by-noah.png" alt="logo"></div>
+      <div class="nav-brand-text">Accounting By Noah<small>Learning Portal</small></div>
+    </a>
+    <div class="nav-spacer"></div>
+    <div class="nav-pill">
+      <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.06em;flex-shrink:0;">CH</span>
+      <select id="chapterSelect" onchange="selectChapterFromDropdown()">
+        <option value="1">01 — Intro to Accounting &amp; Business</option>
+        <option value="2" selected>02 — Analyzing Transactions</option>
+        <option value="3">03 — Coming Soon</option>
+        <option value="4">04 — Coming Soon</option>
+        <option value="5">05 — Coming Soon</option>
+        <option value="6">06 — Coming Soon</option>
+        <option value="7">07 — Coming Soon</option>
+        <option value="8">08 — Coming Soon</option>
+        <option value="9">09 — Coming Soon</option>
+        <option value="10">10 — Coming Soon</option>
+        <option value="11">11 — Coming Soon</option>
+        <option value="12">12 — Coming Soon</option>
+        <option value="13">13 — Coming Soon</option>
+        <option value="14">14 — Coming Soon</option>
+      </select>
+    </div>
+    <button class="nav-btn" onclick="toggleStudyMode()">Study Mode</button>
+    <button class="nav-btn green" onclick="openMasteryModal()">Mastery Check</button>
+    <div id="navAuth">
+      <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Log In
+      </button>
+    </div>
+  </nav>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+    <div class="auth-modal">
+      <div class="auth-logo-ring">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2dba7e" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h3>Welcome back</h3>
+      <p>Sign in with Google to save your quiz scores, checklist progress, and pick up right where you left off.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">or</div>
+      <button class="auth-skip" onclick="closeAuthModal()">Continue without signing in</button>
+    </div>
+  </div>
+
+  <div id="toast">Saved</div>
+  <canvas id="cursorCanvas"></canvas>
+
+  <!-- MASTERY MODAL -->
+  <div class="mastery-overlay" id="masteryOverlay" onclick="if(event.target===this)closeMasteryModal()">
+    <div class="mastery-modal">
+      <div class="m-header">
+        <div class="m-header-left">
+          <div class="m-eyebrow">Chapter 2 — Mastery Check</div>
+          <h3>Test Your Knowledge</h3>
+          <p id="masterySubtitle">15 questions across all topics. No time pressure.</p>
+          <div class="m-prog-track"><div class="m-prog-fill" id="masteryProgressFill" style="width:0%"></div></div>
+        </div>
+        <button class="m-close" onclick="closeMasteryModal()">&#215;</button>
+      </div>
+      <div class="m-body" id="masteryBody"></div>
+    </div>
+  </div>
+
+  <!-- CHAPTER SELECT MODAL -->
+  <div class="ch-modal-overlay" id="chapterModal" onclick="if(event.target===this)closeChapterModal()">
+    <div class="ch-modal">
+      <div class="modal-eyebrow">Accounting By Noah</div>
+      <h3>Jump to a Chapter</h3>
+      <p class="modal-sub">Chapters 1 &amp; 2 are fully built. More coming soon.</p>
+      <div class="modal-ch-list" id="modalChapterList"></div>
+      <button class="modal-close-btn" onclick="closeChapterModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="wrap">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-head">
+        <div class="sb-label">Curriculum</div>
+        <div class="sb-title">14 Chapters</div>
+        <div class="sb-sub">Chapters 1 &amp; 2 are live.</div>
+      </div>
+      <div class="ch-list" id="chapterList"></div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+      <!-- HERO -->
+      <div class="ch-hero" id="hero">
+        <canvas id="heroCanvas"></canvas>
+        <div class="ch-hero-inner">
+          <div class="ch-tag">Chapter 02 — Active</div>
+          <h1>Analyzing Transactions</h1>
+          <p>From the accounting equation to a working ledger — master T-accounts, the chart of accounts, double-entry rules, journalizing, posting, trial balance, error detection, and horizontal analysis.</p>
+          <div class="hero-actions">
+            <a href="#sec01" class="jump-btn primary">Start Lesson &#8594;</a>
+            <a href="#sec11" class="jump-btn">Recap &amp; Checklist</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 0: TOC / OVERVIEW -->
+      <section class="section" id="sec00">
+        <div class="section-title-row"><span class="obj-badge">Overview</span><h2>What&#8217;s in this chapter</h2></div>
+        <p class="sec-intro">Chapter 1 introduced the accounting equation. Chapter 2 builds the complete recording system businesses actually use. Click any row to jump to that section.</p>
+        <div class="terms">
+          <div class="term toc-link" onclick="jumpTo('sec01')"><span class="term-tag">01</span><div class="term-body"><b>Accounts &amp; T-Accounts</b> — What accounts are, how T-accounts work, and how balance is calculated.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec02')"><span class="term-tag">02</span><div class="term-body"><b>Chart of Accounts</b> — How accounts are organized, numbered, and categorized in a ledger.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec03')"><span class="term-tag">03</span><div class="term-body"><b>Debit &amp; Credit Rules</b> — The double-entry system and rules for every account type.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec04')"><span class="term-tag">04</span><div class="term-body"><b>Normal Balances</b> — Each account&#8217;s expected side, and how unusual balances flag errors.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec05')"><span class="term-tag">05</span><div class="term-body"><b>Analyzing Transactions</b> — The 4-step method plus common transaction wording patterns.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec06')"><span class="term-tag">06</span><div class="term-body"><b>Journalizing</b> — Journal format, entry structure, and an interactive journal entry builder.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec07')"><span class="term-tag">07</span><div class="term-body"><b>Posting</b> — The 4-step posting process from journal to ledger with cross-references.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec08')"><span class="term-tag">08</span><div class="term-body"><b>Trial Balance</b> — What it proves, what it doesn&#8217;t, and how to build one from ledger balances.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec09')"><span class="term-tag">09</span><div class="term-body"><b>Errors &amp; Correcting Entries</b> — Detecting errors using the difference method and writing fixes.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec10')"><span class="term-tag">10</span><div class="term-body"><b>Horizontal Analysis</b> — Comparing two periods to identify favorable and unfavorable trends.</div><span class="toc-arrow">&#8595;</span></div>
+          <div class="term toc-link" onclick="jumpTo('sec11')"><span class="term-tag">11</span><div class="term-body"><b>Recap Quiz &amp; Checklist</b> — 10-question quiz plus your mastery checklist.</div><span class="toc-arrow">&#8595;</span></div>
+        </div>
+      </section>
+
+      <!-- SECTION 01: ACCOUNTS & T-ACCOUNTS -->
+      <section class="section" id="sec01">
+        <div class="section-title-row"><span class="obj-badge">Section 01</span><h2>Accounts &amp; T-Accounts</h2></div>
+        <p class="sec-intro">Every financial activity a business records has its own <strong>account</strong> — a form used to track increases and decreases. The simplest visual form is the T-account: left side = debit, right side = credit. The balance equals total debits minus total credits.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Account</span><div class="term-body">The form used to record increases and decreases in each financial statement item. Every asset, liability, equity item, revenue, and expense has its own account.</div></div>
+          <div class="term"><span class="term-tag">T-Account</span><div class="term-body">The simplest form of an account. Left side = <strong>debit</strong>. Right side = <strong>credit</strong>. Named for its T-shape. Used throughout accounting education because it clearly shows both sides of every transaction.</div></div>
+          <div class="term"><span class="term-tag">Debit (Dr)</span><div class="term-body">An amount entered on the <strong>left side</strong> of any account. A debit increases some accounts and decreases others — it depends entirely on the account type, not whether the amount is "good" or "bad."</div></div>
+          <div class="term"><span class="term-tag">Credit (Cr)</span><div class="term-body">An amount entered on the <strong>right side</strong> of any account. Like debits, credits are directional — they increase some accounts and decrease others.</div></div>
+          <div class="term"><span class="term-tag">Account Balance</span><div class="term-body">The <strong>difference</strong> between the total of all debit entries and the total of all credit entries in an account. If total debits exceed total credits, the account has a debit balance.</div></div>
+          <div class="term"><span class="term-tag">Ledger</span><div class="term-body">The complete group of all accounts for a business. Journals record transactions chronologically; the ledger shows the running balance of each individual account.</div></div>
+        </div>
+
+        <!-- T-Account Visual -->
+        <div class="t-vis" style="margin-top:28px;">
+          <div class="t-acct">
+            <div class="t-title">Cash — Account No. 11</div>
+            <div class="t-body">
+              <div class="t-side"><div class="t-side-label">Left Side</div><div class="t-side-name" style="color:var(--green);">DEBIT</div><div style="font-size:11px;color:var(--muted2);margin-top:6px;">Increases (+)</div></div>
+              <div class="t-side"><div class="t-side-label">Right Side</div><div class="t-side-name" style="color:var(--red);">CREDIT</div><div style="font-size:11px;color:var(--muted2);margin-top:6px;">Decreases (&#8722;)</div></div>
+            </div>
+            <div class="t-entries">
+              <span class="t-dr">Nov. 1 &nbsp; 25,000</span>
+              <span class="t-cr">Nov. 30 &nbsp; 2,000</span>
+              <span class="t-dr">Nov. 5 &nbsp; 20,000</span>
+              <span class="t-cr">Dec. 1 &nbsp; 2,400</span>
+            </div>
+            <div class="t-bal">Balance: Dr $40,600</div>
+          </div>
+          <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:12px;">
+            <div class="info-card">
+              <div class="info-card-label">Key insight</div>
+              <div>Debits and credits are <strong>positions</strong>, not value judgments. A debit is never automatically "good" or "bad." What matters is the <em>account type</em> — that determines whether a debit increases or decreases the account.</div>
+            </div>
+            <div class="eq-box" style="margin-top:0;">Balance = Total Debits &#8722; Total Credits</div>
+          </div>
+        </div>
+
+        <!-- Activity: T-Account Drill -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Left or Right Drill</div>
+          <div class="quiz-label" id="taDrillQ">Which side of a T-account is always the DEBIT side?</div>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button class="chk-btn" id="taLeft" onclick="checkTa('left')">&#8592; Left Side</button>
+            <button class="chk-btn" id="taRight" onclick="checkTa('right')" style="background:var(--surface3);border-color:var(--border);color:var(--muted);">Right Side &#8594;</button>
+          </div>
+          <div id="taDrillResult" class="result-badge" style="margin-top:10px;"></div>
+          <div style="margin-top:8px;font-size:12px;color:var(--muted2);" id="taDrillCounter">Question 1 of 5</div>
+        </div>
+      </section>
+
+      <!-- SECTION 02: CHART OF ACCOUNTS -->
+      <section class="section" id="sec02">
+        <div class="section-title-row"><span class="obj-badge">Section 02</span><h2>Chart of Accounts</h2></div>
+        <p class="sec-intro">Every business's complete set of accounts is its <strong>ledger</strong>. The organized numbered list is the <strong>chart of accounts</strong>. Accounts are listed in the order they appear in financial statements: balance sheet accounts first (assets, liabilities, equity), then income statement accounts (revenues, expenses).</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Chart of Accounts</span><div class="term-body">The numbered list of all accounts in a ledger, arranged by account type. The first digit of each account number signals its category.</div></div>
+          <div class="term"><span class="term-tag">Assets</span><div class="term-body">Resources <strong>owned</strong> by the business. Examples: Cash (11), Accounts Receivable (12), Supplies (14), Prepaid Insurance (15), Land (16), Office Equipment (18). All begin with <strong>1</strong> in NetSolutions.</div></div>
+          <div class="term"><span class="term-tag">Liabilities</span><div class="term-body">Debts <strong>owed</strong> to creditors. Many account titles include "payable." Examples: Accounts Payable (21), Unearned Rent (23). Begin with <strong>2</strong>.</div></div>
+          <div class="term"><span class="term-tag">Stockholders' Equity</span><div class="term-body">The stockholders' right to the assets. Common Stock (31), Retained Earnings (32), Dividends (33). Begin with <strong>3</strong>. Retained Earnings = net income kept in the business.</div></div>
+          <div class="term"><span class="term-tag">Revenues</span><div class="term-body">Increases in equity from selling services or products. Example: Fees Earned (41). Begin with <strong>4</strong>.</div></div>
+          <div class="term"><span class="term-tag">Expenses</span><div class="term-body">Assets used up or services consumed to generate revenues. Examples: Wages Expense (51), Supplies Expense (52), Rent Expense (53), Utilities Expense (54), Misc. Expense (59). Begin with <strong>5</strong>.</div></div>
+          <div class="term"><span class="term-tag">Unearned Revenue</span><div class="term-body">A <strong>liability</strong> created when cash is received <em>before</em> the service is provided. The business owes the service. Over time, the liability decreases and becomes revenue. Example: Unearned Rent.</div></div>
+          <div class="term"><span class="term-tag">Dividends</span><div class="term-body">Distributions of earnings to stockholders. Dividends reduce stockholders' equity. They are <strong>not</strong> an expense — they appear in the retained earnings statement, not the income statement.</div></div>
+        </div>
+
+        <!-- NetSolutions Chart Visual -->
+        <div style="margin-top:28px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+          <div style="padding:12px 18px;background:var(--surface3);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;text-align:center;">NetSolutions — Chart of Accounts</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
+            <div style="padding:14px 18px;border-right:1px solid var(--border);">
+              <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Balance Sheet Accounts</div>
+              <div style="font-size:12px;color:var(--green);font-family:'DM Mono',monospace;margin-bottom:4px;">1. Assets</div>
+              <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;padding-left:12px;">11 Cash<br>12 Accounts Receivable<br>14 Supplies<br>15 Prepaid Insurance<br>16 Land<br>18 Office Equipment</div>
+              <div style="font-size:12px;color:var(--red);font-family:'DM Mono',monospace;margin:8px 0 4px;">2. Liabilities</div>
+              <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;padding-left:12px;">21 Accounts Payable<br>23 Unearned Rent</div>
+              <div style="font-size:12px;color:var(--blue);font-family:'DM Mono',monospace;margin:8px 0 4px;">3. Stockholders' Equity</div>
+              <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;padding-left:12px;">31 Common Stock<br>32 Retained Earnings<br>33 Dividends</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Income Statement Accounts</div>
+              <div style="font-size:12px;color:var(--green);font-family:'DM Mono',monospace;margin-bottom:4px;">4. Revenue</div>
+              <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;padding-left:12px;">41 Fees Earned</div>
+              <div style="font-size:12px;color:var(--red);font-family:'DM Mono',monospace;margin:8px 0 4px;">5. Expenses</div>
+              <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;line-height:1.8;padding-left:12px;">51 Wages Expense<br>52 Supplies Expense<br>53 Rent Expense<br>54 Utilities Expense<br>59 Misc. Expense</div>
+            </div>
+          </div>
+          <div style="padding:10px 18px;font-size:12px;color:var(--muted2);font-family:'DM Mono',monospace;text-align:center;">First digit = account type &nbsp;·&nbsp; Second digit = position in group</div>
+        </div>
+
+        <!-- Activity: Sort the Accounts -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Sort the Accounts</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Click the correct account type for each account.</p>
+          <div class="cls-grid" id="classifierGrid"></div>
+          <div id="classifierScore" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted2);"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 03: DEBIT/CREDIT RULES -->
+      <section class="section" id="sec03">
+        <div class="section-title-row"><span class="obj-badge">Section 03</span><h2>Double-Entry System &amp; Debit/Credit Rules</h2></div>
+        <p class="sec-intro">All businesses use the <strong>double-entry accounting system</strong> — every transaction affects at least two accounts, and total debits must always equal total credits. The rules for which direction increases each account type flow logically from the accounting equation: Assets = Liabilities + Equity.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Double-Entry</span><div class="term-body">Every transaction is recorded in at least two accounts. Total debits = total credits for every transaction. This keeps the accounting equation in balance.</div></div>
+          <div class="term"><span class="term-tag">D/C Rules</span><div class="term-body"><strong>Assets</strong> increase with debits, decrease with credits. <strong>Liabilities &amp; Equity</strong> increase with credits, decrease with debits. Because <strong>expenses</strong> reduce equity, they increase with debits. Because <strong>revenues</strong> increase equity, they increase with credits. <strong>Dividends</strong> reduce equity, so they increase with debits.</div></div>
+        </div>
+        <div class="dc-grid" style="margin-top:24px;">
+          <div class="dc-card" id="dc0"><div class="dc-head">ASSETS</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus gn">+ Increase</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus rd">&#8722; Decrease</div></div></div><div class="dc-nb">Normal Balance: DEBIT</div></div>
+          <div class="dc-card" id="dc1"><div class="dc-head">LIABILITIES</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus rd">&#8722; Decrease</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus gn">+ Increase</div></div></div><div class="dc-nb">Normal Balance: CREDIT</div></div>
+          <div class="dc-card" id="dc2"><div class="dc-head">EQUITY</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus rd">&#8722; Decrease</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus gn">+ Increase</div></div></div><div class="dc-nb">Normal Balance: CREDIT</div></div>
+          <div class="dc-card" id="dc3"><div class="dc-head">REVENUES</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus rd">&#8722; Decrease</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus gn">+ Increase</div></div></div><div class="dc-nb">Normal Balance: CREDIT</div></div>
+          <div class="dc-card" id="dc4"><div class="dc-head">EXPENSES</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus gn">+ Increase</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus rd">&#8722; Decrease</div></div></div><div class="dc-nb">Normal Balance: DEBIT</div></div>
+          <div class="dc-card" id="dc5"><div class="dc-head">DIVIDENDS</div><div class="dc-t"><div class="dc-side"><div class="dc-sl">Debit</div><div class="dc-plus gn">+ Increase</div></div><div class="dc-side"><div class="dc-sl">Credit</div><div class="dc-plus rd">&#8722; Decrease</div></div></div><div class="dc-nb">Normal Balance: DEBIT</div></div>
+        </div>
+        <div class="eq-box" style="margin-top:20px;">Assets = Liabilities + Equity<div style="margin-top:10px;font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;">Assets increase with <span style="color:var(--green);">debits</span> &#8596; Liabilities &amp; Equity increase with <span style="color:var(--gold);">credits</span></div></div>
+
+        <!-- Activity: D/C Rules Quiz -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Debit &amp; Credit Rules Quiz</div>
+          <div class="quiz-label" id="dcQ"></div>
+          <div class="mc-opts" id="dcOpts"></div>
+          <div class="mc-feedback" id="dcFB"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;align-items:center;">
+            <button class="chk-btn" onclick="nextDcQ()">Next Question &#8594;</button>
+            <span class="score-track" id="dcScore">Score: 0/0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 04: NORMAL BALANCES -->
+      <section class="section" id="sec04">
+        <div class="section-title-row"><span class="obj-badge">Section 04</span><h2>Normal Balances</h2></div>
+        <p class="sec-intro">The <strong>normal balance</strong> of an account is the side (debit or credit) where it typically carries its balance — the same side used to record increases. An <strong>unusual balance</strong> (opposite side from normal) signals a possible error or an unusual situation.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Normal Balance</span><div class="term-body">The side where increases are recorded. Assets, expenses, and dividends → <strong>debit</strong> normal balance. Liabilities, equity, and revenues → <strong>credit</strong> normal balance.</div></div>
+          <div class="term"><span class="term-tag">Unusual Balance</span><div class="term-body">When a balance appears on the opposite side from normal. A <strong>credit balance in Supplies</strong> implies "negative supplies" — likely an error. A <strong>debit balance in Accounts Payable</strong> might mean an overpayment to a creditor.</div></div>
+        </div>
+
+        <!-- Click-to-reveal normal balance cards -->
+        <div class="nb-grid">
+          <div class="nb-card" onclick="revealNB(this,'dr')"><div class="nb-name">Asset</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+          <div class="nb-card" onclick="revealNB(this,'cr')"><div class="nb-name">Liability</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+          <div class="nb-card" onclick="revealNB(this,'cr')"><div class="nb-name">Equity</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+          <div class="nb-card" onclick="revealNB(this,'cr')"><div class="nb-name">Revenue</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+          <div class="nb-card" onclick="revealNB(this,'dr')"><div class="nb-name">Expense</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+          <div class="nb-card" onclick="revealNB(this,'dr')"><div class="nb-name">Dividends</div><div class="nb-sides"><div class="nb-dr">Debit</div><div class="nb-cr">Credit</div></div><div class="nb-hint">Click to reveal</div></div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted2);">Click each card to reveal the normal balance side.</div>
+
+        <!-- Normal Balance Flash Quiz -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Normal Balance Match</div>
+          <div class="quiz-label" id="nbQ"></div>
+          <div class="mc-opts" id="nbOpts"></div>
+          <div id="nbFB" class="result-badge" style="margin-top:10px;"></div>
+          <div style="display:flex;gap:10px;margin-top:12px;align-items:center;">
+            <button class="chk-btn" onclick="nextNbQ()">Next &#8594;</button>
+            <span class="score-track" id="nbScore"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 05: ANALYZING TRANSACTIONS -->
+      <section class="section" id="sec05">
+        <div class="section-title-row"><span class="obj-badge">Section 05</span><h2>Analyzing Transactions</h2></div>
+        <p class="sec-intro">Before writing any journal entry, a transaction must be analyzed. The textbook&#8217;s <strong>4-step method</strong> makes this systematic. Use it every time and it becomes instinct.</p>
+        <div class="two-col">
+          <div class="info-card">
+            <div class="info-card-label">4-Step Analysis Method</div>
+            <div class="num-list" style="margin-top:0;">
+              <div class="num-row"><div class="num-n">1</div><div class="num-text"><strong>Identify</strong> the accounts affected and their types (asset, liability, equity, revenue, expense, dividends).</div></div>
+              <div class="num-row"><div class="num-n">2</div><div class="num-text"><strong>Decide</strong> whether each account increases or decreases.</div></div>
+              <div class="num-row"><div class="num-n">3</div><div class="num-text"><strong>Apply</strong> debit/credit rules: assets &#8594; debit to increase; liabilities/equity/revenues &#8594; credit to increase; expenses/dividends &#8594; debit to increase.</div></div>
+              <div class="num-row"><div class="num-n">4</div><div class="num-text"><strong>Record</strong> the journal entry — debits first, credits indented below.</div></div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Common Transaction Patterns</div>
+            <div style="font-size:12px;color:var(--muted);line-height:2.1;font-family:'DM Mono',monospace;">
+              <div>&#34;Received cash for services&#34; &#8594; <span style="color:var(--green);">Dr Cash / Cr Fees Earned</span></div>
+              <div>&#34;On account&#34; (earned) &#8594; <span style="color:var(--green);">Dr A/R / Cr Fees Earned</span></div>
+              <div>&#34;Received cash on account&#34; &#8594; <span style="color:var(--green);">Dr Cash / Cr A/R</span></div>
+              <div>&#34;Purchased on account&#34; &#8594; <span style="color:var(--green);">Dr Asset / Cr A/P</span></div>
+              <div>&#34;Paid on account&#34; &#8594; <span style="color:var(--green);">Dr A/P / Cr Cash</span></div>
+              <div>&#34;Paid cash for expense&#34; &#8594; <span style="color:var(--green);">Dr Expense / Cr Cash</span></div>
+              <div>&#34;Paid dividends&#34; &#8594; <span style="color:var(--green);">Dr Dividends / Cr Cash</span></div>
+              <div>&#34;Received cash in advance&#34; &#8594; <span style="color:var(--green);">Dr Cash / Cr Unearned Rev.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NetSolutions Transaction Table -->
+        <div style="margin-top:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+          <div style="padding:12px 18px;background:var(--surface3);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;">Key Transaction Patterns — NetSolutions December</div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead><tr>
+              <th style="padding:9px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;background:var(--surface3);border-bottom:1px solid var(--border);">Pattern</th>
+              <th style="padding:9px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;background:var(--surface3);border-bottom:1px solid var(--border);">Debit</th>
+              <th style="padding:9px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;background:var(--surface3);border-bottom:1px solid var(--border);">Credit</th>
+              <th style="padding:9px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:.07em;text-transform:uppercase;background:var(--surface3);border-bottom:1px solid var(--border);">Effect</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Cash for services</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Fees Earned</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Asset &#8593;, Revenue &#8593;</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Services on account</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Accts Rec.</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Fees Earned</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Asset &#8593;, Revenue &#8593;</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Collect cash on account</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Accts Rec.</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Asset mix change</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Buy supplies on account</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Supplies</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Accts Pay.</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Asset &#8593;, Liability &#8593;</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Pay wages in cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Wages Exp.</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Expense &#8593;, Asset &#8595;</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Cash received in advance</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Unearned Rent</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Asset &#8593;, Liability &#8593;</td></tr>
+              <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--muted);">Pay creditors on account</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Accts Pay.</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted2);">Liability &#8595;, Asset &#8595;</td></tr>
+              <tr><td style="padding:9px 14px;color:var(--muted);">Pay dividends</td><td style="padding:9px 14px;color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Dividends</td><td style="padding:9px 14px;color:var(--green);font-family:'DM Mono',monospace;font-size:12px;">Cash</td><td style="padding:9px 14px;font-size:12px;color:var(--muted2);">Equity &#8595;, Asset &#8595;</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Activity: Wording Translator -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Common Wording Translator</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Match each phrase to its correct debit and credit accounts. Use the dropdown selectors.</p>
+          <div id="wordingGame"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;align-items:center;">
+            <button class="chk-btn" onclick="nextWording()">Next Phrase &#8594;</button>
+            <span class="score-track" id="wordingScore"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 06: JOURNALIZING -->
+      <section class="section" id="sec06">
+        <div class="section-title-row"><span class="obj-badge">Section 06</span><h2>Journalizing</h2></div>
+        <p class="sec-intro">The <strong>journal</strong> is the chronological record where transactions are first recorded. Each line is a <strong>journal entry</strong>. The process is <strong>journalizing</strong>. Every entry must have equal debits and credits — this is enforced by the double-entry rule.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Journal</span><div class="term-body">The initial record where transaction effects are recorded, in date order. Sometimes called the &#34;book of original entry.&#34;</div></div>
+          <div class="term"><span class="term-tag">Journal Entry Format</span><div class="term-body">Every entry has four parts: (1) the date, (2) the debit account and amount listed first, (3) the credit account and amount <em>indented</em> below, and (4) a brief explanation. The Post. Ref. column stays blank until posting.</div></div>
+          <div class="term"><span class="term-tag">Prepaid Expense</span><div class="term-body">Cash paid in advance for a future benefit. Recorded as an <strong>asset</strong> when paid. Example: a 12-month insurance premium &#8594; Dr Prepaid Insurance, Cr Cash. Short-term prepayments (like monthly rent) can be debited directly to the expense account.</div></div>
+          <div class="term"><span class="term-tag">Unearned Revenue</span><div class="term-body">Cash received before the service is performed. Recorded as a <strong>liability</strong>. Example: 3 months&#8217; rent received in advance &#8594; Dr Cash, Cr Unearned Rent.</div></div>
+        </div>
+
+        <!-- Sample journal entry visual -->
+        <table class="je-sample" style="margin-top:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+          <thead><tr>
+            <th style="width:90px;">Date</th>
+            <th>Description</th>
+            <th style="width:60px;text-align:center;">Post. Ref.</th>
+            <th style="width:110px;text-align:right;">Debit</th>
+            <th style="width:110px;text-align:right;">Credit</th>
+          </tr></thead>
+          <tbody>
+            <tr><td rowspan="3" style="color:var(--muted2);vertical-align:top;">Dec. 1</td><td style="color:var(--green);">Prepaid Insurance</td><td style="text-align:center;color:var(--gold);">15</td><td style="text-align:right;color:var(--green);">2,400</td><td></td></tr>
+            <tr><td style="padding-left:32px;color:var(--muted);">Cash</td><td style="text-align:center;color:var(--gold);">11</td><td></td><td style="text-align:right;color:var(--muted);">2,400</td></tr>
+            <tr><td colspan="4" style="font-size:12px;color:var(--muted2);font-style:italic;border-bottom:1px solid var(--border);">Paid premium on one-year insurance policy.</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Interactive Journal Entry Builder -->
+        <div class="je-builder">
+          <div class="je-head">
+            <h4>Journal Entry Builder</h4>
+            <select class="je-sc-sel" id="jeScenario" onchange="loadJeScenario()">
+              <option value="0">Dec 1 — Paid $2,400 insurance (1 year)</option>
+              <option value="1">Dec 1 — Paid $800 rent for December</option>
+              <option value="2">Dec 1 — Received $360 advance rent (3 months)</option>
+              <option value="3">Dec 4 — Purchased $1,800 office equip. on account</option>
+              <option value="4">Dec 13 — Paid $950 wages to employees</option>
+              <option value="5">Dec 16 — Received $3,100 cash for fees earned</option>
+              <option value="6">Dec 16 — Earned $1,750 in fees on account</option>
+              <option value="7">Dec 21 — Received $650 from customers on account</option>
+              <option value="8">Dec 23 — Purchased $1,450 supplies for cash</option>
+              <option value="9">Dec 31 — Paid $2,000 dividends</option>
+            </select>
+          </div>
+          <div class="je-body">
+            <div class="je-desc" id="jeDesc"></div>
+            <div class="je-th"><span>Account (Debit)</span><span>Account (Credit)</span><span>Amount</span><span></span></div>
+            <div class="je-row">
+              <select class="je-sel" id="jeDr">
+                <option value="">&#8212; Debit account &#8212;</option>
+                <option>Cash</option><option>Accounts Receivable</option><option>Supplies</option>
+                <option>Prepaid Insurance</option><option>Land</option><option>Office Equipment</option>
+                <option>Accounts Payable</option><option>Unearned Rent</option><option>Common Stock</option>
+                <option>Dividends</option><option>Fees Earned</option><option>Wages Expense</option>
+                <option>Supplies Expense</option><option>Rent Expense</option><option>Utilities Expense</option>
+                <option>Miscellaneous Expense</option>
+              </select>
+              <select class="je-sel" id="jeCr">
+                <option value="">&#8212; Credit account &#8212;</option>
+                <option>Cash</option><option>Accounts Receivable</option><option>Supplies</option>
+                <option>Prepaid Insurance</option><option>Land</option><option>Office Equipment</option>
+                <option>Accounts Payable</option><option>Unearned Rent</option><option>Common Stock</option>
+                <option>Dividends</option><option>Fees Earned</option><option>Wages Expense</option>
+                <option>Supplies Expense</option><option>Rent Expense</option><option>Utilities Expense</option>
+                <option>Miscellaneous Expense</option>
+              </select>
+              <input type="number" class="je-inp" id="jeAmt" placeholder="Amount" min="0">
+              <div></div>
+            </div>
+            <div class="je-acts">
+              <button class="je-verify" onclick="verifyJE()">Check Entry &#10003;</button>
+              <button class="je-reset" onclick="resetJE()">Reset</button>
+            </div>
+            <div class="je-res" id="jeResult"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 07: POSTING -->
+      <section class="section" id="sec07">
+        <div class="section-title-row"><span class="obj-badge">Section 07</span><h2>Posting to the Ledger</h2></div>
+        <p class="sec-intro">After journal entries are recorded, they are <strong>transferred to ledger accounts</strong> — a process called <strong>posting</strong>. The journal records transactions by date; the ledger shows the running balance of each individual account. Together they form the backbone of the accounting system.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Posting</span><div class="term-body">Transferring debits and credits from journal entries to individual ledger accounts. This is what lets you answer: &#34;What is our current Cash balance?&#34; or &#34;How much do we owe in Accounts Payable?&#34;</div></div>
+          <div class="term"><span class="term-tag">4-Step Posting Process</span><div class="term-body">For each debit/credit being posted: (1) enter the date in the ledger account, (2) enter the amount in the correct debit/credit column, (3) enter the journal page number in the ledger&#8217;s Post. Ref. column, (4) enter the account number in the journal&#8217;s Post. Ref. column. Steps 3 and 4 create the cross-reference that links journal and ledger.</div></div>
+          <div class="term"><span class="term-tag">Post. Ref. Column</span><div class="term-body">A cross-reference column in both the journal and the ledger. After posting, the journal shows the account number and the ledger shows the journal page number. This confirms posting is complete and lets you trace any entry in both directions.</div></div>
+        </div>
+
+        <!-- 4-Step visual -->
+        <div style="margin-top:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">The 4 Posting Steps — for each debit or credit amount</div>
+          <div class="num-list" style="margin-top:0;">
+            <div class="num-row"><div class="num-n">1</div><div class="num-text"><strong>Date</strong> — Enter the transaction date in the ledger account&#8217;s Date column.</div></div>
+            <div class="num-row"><div class="num-n">2</div><div class="num-text"><strong>Amount</strong> — Enter the amount in the correct debit or credit column of the ledger account.</div></div>
+            <div class="num-row"><div class="num-n">3</div><div class="num-text"><strong>Journal Page Ref</strong> — Enter the journal page number in the ledger account&#8217;s Post. Ref. column.</div></div>
+            <div class="num-row"><div class="num-n">4</div><div class="num-text"><strong>Account Number Ref</strong> — Enter the account number back in the journal&#8217;s Post. Ref. column. This confirms the posting is complete.</div></div>
+          </div>
+        </div>
+        <div class="info-note"><strong style="color:var(--gold);">Real-world note:</strong> Software like QuickBooks posts automatically when data is entered. That&#8217;s why you learn the manual process first — understanding the logic makes you a better user of any accounting system.</div>
+
+        <!-- Posting Simulation Activity -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Posting Simulation</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">A journal entry is shown on the left. Click the correct side (Debit or Credit) in each ledger account to post the amounts. Post the debit first.</p>
+          <div id="postSimWrap"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;align-items:center;">
+            <button class="chk-btn" onclick="nextPostSim()">Try New Entry &#8594;</button>
+            <span class="score-track" id="postMsg"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 08: TRIAL BALANCE -->
+      <section class="section" id="sec08">
+        <div class="section-title-row"><span class="obj-badge">Section 08</span><h2>Preparing the Trial Balance</h2></div>
+        <p class="sec-intro">An <strong>unadjusted trial balance</strong> is a list of all ledger accounts and their debit or credit balances. Its primary job: verify that total debits = total credits. It is &#34;unadjusted&#34; because it is prepared before any period-end adjusting entries.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Trial Balance</span><div class="term-body">A summary listing of account titles and debit or credit balances from the ledger. Used to check that total debits = total credits.</div></div>
+          <div class="term"><span class="term-tag">Unadjusted</span><div class="term-body">Prepared before adjusting entries. In the accounting cycle: journal entries &#8594; posting &#8594; unadjusted trial balance &#8594; adjusting entries &#8594; adjusted trial balance.</div></div>
+          <div class="term"><span class="term-tag">4 Steps to Prepare</span><div class="term-body">(1) Write company name, title &#34;Unadjusted Trial Balance,&#34; and date. (2) List each account with its debit or credit balance. (3) Total both columns. (4) Verify that debit total = credit total.</div></div>
+          <div class="term"><span class="term-tag">Critical Limitation</span><div class="term-body">A balanced trial balance does <strong>NOT</strong> prove everything is correct — only that debits = credits. Wrong accounts, omitted transactions, and duplicate postings can all hide behind a balanced trial balance.</div></div>
+        </div>
+        <div class="danger-note"><strong style="color:var(--red);">Important:</strong> A balanced trial balance is necessary but not sufficient for accuracy. Think of it as a sanity check, not a guarantee.</div>
+
+        <!-- Trial Balance Builder Activity -->
+        <div class="quiz-zone" style="padding:0;background:transparent;border:none;">
+          <div class="act-label" style="padding:24px 24px 0;">&#9889; Activity — Build the Trial Balance</div>
+          <p style="padding:0 24px;font-size:13px;color:var(--muted);margin-bottom:16px;">These are the ledger balances for Simmons Urgent Care Inc. at December 31. Enter each amount in the correct Debit or Credit column based on normal balance, then check if your totals balance.</p>
+          <div class="tb-wrap">
+            <div class="tb-header">
+              <div class="tb-company">Simmons Urgent Care Inc.</div>
+              <div class="tb-title-text">UNADJUSTED TRIAL BALANCE</div>
+              <div class="tb-date-text">December 31, 2018</div>
+            </div>
+            <div class="tb-body">
+              <div class="tb-row" style="border-bottom:none;padding-bottom:4px;"><span></span><span class="tb-col-h">Debit</span><span class="tb-col-h">Credit</span></div>
+              <div id="tbRows"></div>
+              <div class="tb-totals"><span class="tb-tot-label">TOTALS</span><span class="tb-tot-val" id="tbDrTotal">&#8212;</span><span class="tb-tot-val" id="tbCrTotal">&#8212;</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;padding:0 0 4px;">
+            <button class="chk-btn" onclick="checkTB()">Check Trial Balance</button>
+            <button class="je-reset" onclick="resetTB()">Reset</button>
+          </div>
+          <div class="tb-msg" id="tbMsg"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 09: ERRORS & CORRECTING ENTRIES -->
+      <section class="section" id="sec09">
+        <div class="section-title-row"><span class="obj-badge">Section 09</span><h2>Errors &amp; Correcting Entries</h2></div>
+        <p class="sec-intro">Errors fall into two types: those that unbalance the trial balance (detectable), and those that don&#8217;t (hidden). The <strong>difference clue method</strong> helps locate unbalanced errors systematically.</p>
+        <div class="two-col">
+          <div class="info-card">
+            <div class="info-card-label">Errors That Unbalance the Trial Balance</div>
+            <div class="num-list" style="margin-top:0;">
+              <div class="num-row"><div class="num-n" style="font-size:13px;">&#247;10</div><div class="num-text"><strong>Addition error</strong> — Re-add all columns and recompute account balances.</div></div>
+              <div class="num-row"><div class="num-n" style="font-size:13px;">&#247;2</div><div class="num-text"><strong>Wrong column</strong> — A debit entered as a credit (or vice versa). Look for an amount equal to half the difference.</div></div>
+              <div class="num-row"><div class="num-n" style="font-size:13px;">&#247;9</div><div class="num-text"><strong>Transposition or slide</strong> — Digits reversed (542&#8594;452) or decimal shifted (542&#8594;54.20). Both produce differences divisible by 9.</div></div>
+              <div class="num-row"><div class="num-n" style="font-size:13px;">other</div><div class="num-text"><strong>Omitted balance or posting</strong> — Look for a missing account or unposted entry equal to the difference.</div></div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Errors That Don&#8217;t Unbalance It</div>
+            <p>These are harder to find because the trial balance still balances. They often show up as an <strong>unusual account balance</strong>.</p>
+            <div class="danger-note" style="margin-top:12px;"><strong style="color:var(--red);">Classic example:</strong> A $12,500 purchase of Office Equipment on account was incorrectly debited to <em>Supplies</em>. The trial balance still balances — but Supplies has a huge, unusual balance. <br><br><strong style="color:var(--text);">Fix:</strong> Dr Office Equipment, Cr Supplies $12,500</div>
+          </div>
+        </div>
+        <div class="terms" style="margin-top:20px;">
+          <div class="term"><span class="term-tag">Transposition</span><div class="term-body">Digits reversed when copying — e.g., $542 written as $452. The difference between the correct and incorrect amounts is always divisible by 9.</div></div>
+          <div class="term"><span class="term-tag">Slide</span><div class="term-body">Decimal shifted — e.g., $542.00 written as $54.20 or $5,420.00. The difference is also divisible by 9.</div></div>
+          <div class="term"><span class="term-tag">Correcting Entry</span><div class="term-body">An entry prepared when an error has already been journalized and posted. It does not erase the error — it adds a new entry that brings accounts to their correct balances.</div></div>
+        </div>
+
+        <!-- Error Detective Activity -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Error Detective</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Use the difference clue below to identify the most likely error type.</p>
+          <div id="errorDetWrap"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;align-items:center;">
+            <button class="chk-btn" onclick="nextErrorDet()">Next Scenario &#8594;</button>
+            <span class="score-track" id="errorScore"></span>
+          </div>
+        </div>
+
+        <!-- Correcting Entry Workshop -->
+        <div class="quiz-zone" style="margin-top:16px;">
+          <div class="act-label">&#9889; Activity — Correcting Entry Workshop</div>
+          <div class="quiz-label">A $12,500 purchase of Office Equipment on account was incorrectly debited to Supplies. The entry has already been posted. What correcting journal entry is needed?</div>
+          <div class="mc-opts" id="ceOpts" style="margin-top:14px;">
+            <button class="mc-opt" onclick="checkCE(this,false)"><span class="mc-letter">A</span>Debit Supplies $12,500 / Credit Office Equipment $12,500</button>
+            <button class="mc-opt" onclick="checkCE(this,false)"><span class="mc-letter">B</span>Debit Accounts Payable $12,500 / Credit Supplies $12,500</button>
+            <button class="mc-opt" onclick="checkCE(this,true)"><span class="mc-letter">C</span>Debit Office Equipment $12,500 / Credit Supplies $12,500</button>
+            <button class="mc-opt" onclick="checkCE(this,false)"><span class="mc-letter">D</span>Debit Cash $12,500 / Credit Supplies $12,500</button>
+          </div>
+          <div class="mc-feedback" id="ceFB">The correcting entry moves the amount from the wrong account (Supplies) to the correct one (Office Equipment): Dr Office Equipment, Cr Supplies $12,500.</div>
+        </div>
+      </section>
+
+      <!-- SECTION 10: HORIZONTAL ANALYSIS -->
+      <section class="section" id="sec10">
+        <div class="section-title-row"><span class="obj-badge">Section 10</span><h2>Horizontal Analysis</h2></div>
+        <p class="sec-intro"><strong>Horizontal analysis</strong> compares each line item on a current financial statement to the same item in a prior period. You calculate the dollar change and percent change (using the earlier period as the base) to spot favorable and unfavorable trends.</p>
+        <div class="terms">
+          <div class="term"><span class="term-tag">Horizontal Analysis</span><div class="term-body">Comparing financial statement items across two or more periods. Both the <strong>dollar change</strong> and the <strong>percent change</strong> are computed, using the earlier period as the base.</div></div>
+          <div class="term"><span class="term-tag">Formula</span><div class="term-body">Dollar change = Current year &#8722; Prior year. Percent change = Dollar change &#247; Prior year &#215; 100. The prior (earlier) year is always the base.</div></div>
+          <div class="term"><span class="term-tag">Favorable vs. Unfavorable</span><div class="term-body">Revenue increases = favorable. Expense increases = generally unfavorable — <em>unless</em> linked to revenue-generating activity (e.g., hiring staff that brings in more clients). Context matters.</div></div>
+        </div>
+
+        <!-- J. Holmes Example Table -->
+        <div style="margin-top:24px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">J. Holmes, Attorney-at-Law — Horizontal Analysis</div>
+          <table class="ha-table">
+            <thead><tr><th>Account</th><th>Year 2</th><th>Year 1</th><th>$ Change</th><th>% Change</th></tr></thead>
+            <tbody>
+              <tr><td>Fees Earned</td><td>$187,500</td><td>$150,000</td><td class="ha-fav">+$37,500</td><td class="ha-fav">+25.0% &#8593;</td></tr>
+              <tr><td>Wages Expense</td><td>$60,000</td><td>$45,000</td><td class="ha-unfav">+$15,000</td><td class="ha-unfav">+33.3% &#8593;</td></tr>
+              <tr><td>Rent Expense</td><td>$15,000</td><td>$12,000</td><td class="ha-unfav">+$3,000</td><td class="ha-unfav">+25.0% &#8593;</td></tr>
+              <tr><td>Utilities Expense</td><td>$12,500</td><td>$9,000</td><td class="ha-unfav">+$3,500</td><td class="ha-unfav">+38.9% &#8593;</td></tr>
+              <tr><td>Supplies Expense</td><td>$2,700</td><td>$3,000</td><td class="ha-fav">&#8722;$300</td><td class="ha-fav">&#8722;10.0% &#8595;</td></tr>
+              <tr><td>Misc. Expense</td><td>$2,300</td><td>$1,800</td><td class="ha-unfav">+$500</td><td class="ha-unfav">+27.8% &#8593;</td></tr>
+              <tr style="font-weight:600;"><td>Net Income</td><td>$95,000</td><td>$79,200</td><td class="ha-fav">+$15,800</td><td class="ha-fav">+19.9% &#8593;</td></tr>
+            </tbody>
+          </table>
+          <div class="info-note" style="margin-top:12px;"><strong style="color:var(--gold);">Interpretation:</strong> Revenues rose 25% — favorable. Wages (+33%), rent (+25%), utilities (+39%) all increased — unfavorable on the surface. But these increases were driven by hiring a paralegal and expanding office space, which generated the extra revenue. Net income grew 19.9% overall — a favorable result.</div>
+        </div>
+
+        <!-- Horizontal Analysis Activity -->
+        <div class="quiz-zone">
+          <div class="act-label">&#9889; Activity — Compute the Change</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Fill in the dollar change and percent change. Use Year 1 as the base. Round percentages to one decimal place.</p>
+          <table class="ha-table" style="margin-top:0;">
+            <thead><tr><th>Account</th><th>Year 2</th><th>Year 1</th><th>$ Change</th><th>% Change</th></tr></thead>
+            <tbody id="haCalcBody"></tbody>
+          </table>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+            <button class="chk-btn" onclick="checkHA()">Check Answers</button>
+            <button class="je-reset" onclick="resetHA()">Reset</button>
+            <span class="score-track" id="haResult"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 11: RECAP + CHECKLIST -->
+      <section class="section" id="sec11" style="padding-bottom:0;border-bottom:none;">
+        <div class="section-title-row"><span class="obj-badge">Section 11</span><h2>Chapter Review</h2></div>
+        <p class="sec-intro">Review the key vocabulary below, then take the 10-question recap quiz. For the full randomized 65-question mastery quiz, use the <strong>Mastery Check</strong> button in the nav bar.</p>
+        <div style="margin-bottom:36px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Key Vocabulary — Chapter 2</div>
+          <p style="font-size:13px;color:var(--muted2);margin-bottom:14px;">17 terms — flip each card to see the definition. Use &#8592; &#8594; arrow keys or the buttons below.</p>
+          <div class="fc-deck-wrap" id="flashcardDeck2"></div>
+        </div>
+      </section>
+
+      <!-- RECAP QUIZ -->
+      <div class="recap-quiz" id="recapSection">
+        <div class="recap-header">
+          <h2>Chapter 2 Recap Quiz</h2>
+          <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--gold);" id="recapScoreNum">&#8212;</span>
+        </div>
+        <p class="recap-intro">10 questions — one per topic. Select an answer to see instant feedback. Submit at the bottom to see your final score.</p>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">01</span>The simplest form of an account, showing debits on the left and credits on the right, is called a:</div>
+          <div class="rq-options" data-correct="B"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Ledger</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>T-account</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Journal entry</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Trial balance</div></div>
+          <div class="rq-feedback">A T-account is the simplest account form — left = debit, right = credit. The balance is total debits minus total credits.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">02</span>In NetSolutions' chart of accounts, accounts beginning with "5" represent:</div>
+          <div class="rq-options" data-correct="D"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Assets</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Revenues</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Liabilities</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Expenses</div></div>
+          <div class="rq-feedback">In NetSolutions: 1=Assets, 2=Liabilities, 3=Equity, 4=Revenue, 5=Expenses. The first digit signals the account type.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">03</span>In the double-entry accounting system, total debits for each transaction must:</div>
+          <div class="rq-options" data-correct="B"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Always exceed total credits</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Equal total credits</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Involve only asset accounts</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Be recorded in the trial balance first</div></div>
+          <div class="rq-feedback">The fundamental rule: total debits = total credits for every transaction. This keeps the accounting equation balanced.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">04</span>Which account type is increased by a CREDIT?</div>
+          <div class="rq-options" data-correct="C"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Assets</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Expenses</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Revenues</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Dividends</div></div>
+          <div class="rq-feedback">Revenues increase equity, so revenues increase with credits. Assets, expenses, and dividends all increase with debits.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">05</span>NetSolutions received $360 cash in advance for 3 months of land rental. The credit entry is to:</div>
+          <div class="rq-options" data-correct="C"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Fees Earned</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Cash</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Unearned Rent</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Rent Expense</div></div>
+          <div class="rq-feedback">Cash received before the service is provided creates Unearned Rent — a liability. Dr Cash / Cr Unearned Rent.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">06</span>In the 4-step posting process, Step 4 requires entering the account number in the:</div>
+          <div class="rq-options" data-correct="A"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Journal's Post. Ref. column</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Ledger's Date column</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Trial balance</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Income statement</div></div>
+          <div class="rq-feedback">Step 4 closes the cross-reference loop: enter the account number in the journal's Post. Ref. column to confirm posting is complete.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">07</span>An unadjusted trial balance that balances proves that:</div>
+          <div class="rq-options" data-correct="B"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>All transactions were recorded correctly</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Total debits equal total credits in the ledger</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>No errors exist anywhere in the records</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Net income is positive</div></div>
+          <div class="rq-feedback">A balanced trial balance only proves debits = credits. Wrong accounts, omitted transactions, and duplicate entries can still hide behind it.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">08</span>If the difference between trial balance debit and credit totals is divisible by 9, the most likely cause is:</div>
+          <div class="rq-options" data-correct="C"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>An omitted account balance</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>A debit entered as a credit</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>A transposition or slide error</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>An addition error</div></div>
+          <div class="rq-feedback">Both transpositions (digit reversal) and slides (decimal shift) create differences divisible by 9. This is the key detection shortcut.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">09</span>A $12,500 purchase of Office Equipment on account was incorrectly debited to Supplies. The correcting entry is:</div>
+          <div class="rq-options" data-correct="C"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>Dr Supplies / Cr Office Equipment — $12,500</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>Dr Accounts Payable / Cr Supplies — $12,500</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>Dr Office Equipment / Cr Supplies — $12,500</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>Dr Cash / Cr Supplies — $12,500</div></div>
+          <div class="rq-feedback">Move the balance from the wrong account (Supplies) to the correct one (Office Equipment): Dr Office Equipment, Cr Supplies.</div>
+        </div>
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">10</span>In horizontal analysis, the base for computing percent change is:</div>
+          <div class="rq-options" data-correct="B"><div class="rq-option" data-val="A"><span class="rq-letter">A</span>The current year statement</div><div class="rq-option" data-val="B"><span class="rq-letter">B</span>The earlier (prior year) statement</div><div class="rq-option" data-val="C"><span class="rq-letter">C</span>The average of both statements</div><div class="rq-option" data-val="D"><span class="rq-letter">D</span>The statement with higher totals</div></div>
+          <div class="rq-feedback">The earlier statement is always the base. % change = (Current &#8722; Prior) &#247; Prior &#215; 100.</div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;margin-top:32px;flex-wrap:wrap;">
+          <button class="recap-submit" onclick="submitRecap()" id="recapBtn">Submit Quiz</button>
+          <span style="font-size:12px;color:var(--muted2);">Answer all questions before submitting.</span>
+        </div>
+        <div class="recap-score-box" id="recapScoreBox">
+          <div class="recap-score-num" id="recapFinalNum">&#8212;/10</div>
+          <div class="recap-score-label">Chapter 2 Recap Score</div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div style="margin-top:48px;padding-top:36px;border-top:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;">Chapter 2 Study Checklist</div>
+          <div id="checklist"></div>
+          <div class="info-note" style="margin-top:16px;">Progress auto-saves when signed in. Use <strong>Mastery Check</strong> in the nav for the full 65-question randomized quiz.</div>
+        </div>
+      </div><!-- end recap-quiz -->
+
+    </main>
+  </div><!-- end .wrap -->
+
+  <script>
+    // ===== UTILITIES =====
+    function jumpTo(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
+    let _tt;
+    function showToast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove("show"),1600);}
+    function escH(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]);}
+
+    // ===== MODALS =====
+    function openAuthModal(){document.getElementById("authModal").classList.add("open");document.body.style.overflow="hidden";}
+    function closeAuthModal(){document.getElementById("authModal").classList.remove("open");document.body.style.overflow="";}
+    function toggleProfileDropdown(){const d=document.getElementById("profileDropdown");if(d)d.classList.toggle("open");}
+    function closeProfileDropdown(){const d=document.getElementById("profileDropdown");if(d)d.classList.remove("open");}
+    document.addEventListener("click",e=>{if(!e.target.closest(".nav-auth-wrap"))closeProfileDropdown();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAuthModal();closeMasteryModal();closeChapterModal();}});
+
+    // ===== STUDY MODE =====
+    let studyMode=false;
+    function toggleStudyMode(){studyMode=!studyMode;document.documentElement.style.setProperty("--bg",studyMode?"#111418":"#0d1117");document.documentElement.style.setProperty("--surface",studyMode?"#1a1f27":"#161b22");showToast(studyMode?"Study Mode On":"Study Mode Off");}
+
+    // ===== CHAPTER NAV =====
+    const CH_TITLES={1:"Intro to Accounting & Business",2:"Analyzing Transactions"};
+    const chapters=Array.from({length:14},(_,i)=>{const n=i+1;return{num:n,title:n<=2?CH_TITLES[n]:"Coming Soon",status:n<=2?"Active":"Planned",active:n===2};});
+    function renderChapters(){
+      const list=document.getElementById("chapterList");list.innerHTML="";
+      chapters.forEach(ch=>{
+        const b=document.createElement("button");b.className="ch-btn"+(ch.active?" active":"");
+        b.onclick=()=>goChapter(ch.num);
+        b.innerHTML=`<div class="ch-num">${String(ch.num).padStart(2,"0")}</div><div class="ch-text"><b>${escH(ch.title)}</b><span>${escH(ch.status)}</span></div>`;
+        list.appendChild(b);
+      });
+    }
+    function goChapter(n){
+      if(n===1){window.location.href="chapter1.html";return;}
+      if(n===2){jumpTo("hero");return;}
+      showToast("Chapter "+n+" — coming soon!");
+    }
+    function selectChapterFromDropdown(){
+      const v=parseInt(document.getElementById("chapterSelect").value,10);
+      if(v===1){window.location.href="chapter1.html";return;}
+      if(v===2){jumpTo("hero");document.getElementById("chapterSelect").value="2";return;}
+      showToast("Chapter "+v+" — coming soon!");
+      document.getElementById("chapterSelect").value="2";
+    }
+    function openChapterModal(){
+      const list=document.getElementById("modalChapterList");list.innerHTML="";
+      chapters.forEach(ch=>{
+        const d=document.createElement("div");d.className="modal-ch"+(ch.active?" current":"");
+        d.innerHTML=`<span class="modal-ch-num">${String(ch.num).padStart(2,"0")}</span><span class="modal-ch-title">${escH(ch.title)}</span><span class="modal-ch-badge ${ch.num<=2?"live":"soon"}">${ch.num<=2?"Live":"Soon"}</span>`;
+        d.onclick=()=>{closeChapterModal();goChapter(ch.num);};
+        list.appendChild(d);
+      });
+      document.getElementById("chapterModal").classList.add("open");document.body.style.overflow="hidden";
+    }
+    function closeChapterModal(){document.getElementById("chapterModal").classList.remove("open");document.body.style.overflow="";}
+
+    // ===== CONFETTI =====
+    function spawnConfetti(a){
+      const colors=["#2dba7e","#d4a843","#4f9cf9","#f06060","#a78bfa"];
+      const r=a.getBoundingClientRect();
+      for(let i=0;i<20;i++){const el=document.createElement("div");el.className="confetti-piece";el.style.cssText=`left:${r.left+Math.random()*r.width}px;top:${r.top+window.scrollY}px;background:${colors[i%5]};animation-duration:${.6+Math.random()*.5}s;transform:rotate(${Math.random()*360}deg)`;document.body.appendChild(el);el.addEventListener("animationend",()=>el.remove());}
+    }
+
+    // ===== CURSOR TRAIL =====
+    (function(){
+      const canvas=document.getElementById("cursorCanvas"),ctx=canvas.getContext("2d");
+      let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight;
+      window.addEventListener("resize",()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;});
+      const TRAIL_LEN=22,trail=[];
+      let mouse={x:-200,y:-200},leader={x:-200,y:-200};
+      window.addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+      function draw(){
+        leader.x+=(mouse.x-leader.x)*.18;leader.y+=(mouse.y-leader.y)*.18;
+        trail.unshift({x:leader.x,y:leader.y});
+        if(trail.length>TRAIL_LEN)trail.pop();
+        ctx.clearRect(0,0,w,h);
+        trail.forEach((pt,i)=>{
+          const progress=i/TRAIL_LEN,radius=(1-progress)*4.5,alpha=(1-progress)*.45*(1-progress);
+          ctx.beginPath();ctx.arc(pt.x,pt.y,Math.max(.1,radius),0,Math.PI*2);
+          ctx.fillStyle=`rgba(45,186,126,${alpha})`;ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // ===== HERO CANVAS =====
+    // ── Falling Dr/Cr Symbols Hero ──────────────────────────────────────
+    (function(){
+      const canvas=document.getElementById("heroCanvas");if(!canvas)return;
+      const ctx=canvas.getContext("2d");
+      let W,H;
+      function resize(){
+        W=canvas.width=canvas.parentElement.offsetWidth;
+        H=canvas.height=canvas.parentElement.offsetHeight;
+      }
+      resize();
+      window.addEventListener("resize",resize);
+
+      // Symbol pool: accounting symbols, debit/credit labels, amounts
+      const SYMBOLS=[
+        "Dr","Cr","Dr","Cr",
+        "Debit","Credit",
+        "Dr 500","Cr 500",
+        "= 0","≡","∑",
+        "A=L+E",
+        "Dr","Cr",
+        "$","$",
+        "↑ Dr","↑ Cr",
+        "T","T",
+      ];
+
+      // Two color families: green (Dr) and gold (Cr)
+      const DR_COLORS=["rgba(45,186,126,",  "rgba(52,210,140,",  "rgba(30,160,100,"];
+      const CR_COLORS=["rgba(212,168,67,",  "rgba(230,185,80,",  "rgba(180,140,50,"];
+
+      function makeSymbol(){
+        const isDr=Math.random()>.5;
+        const pool=isDr?["Dr","Dr","Debit","Dr","↑ Dr","T"]:["Cr","Cr","Credit","Cr","↑ Cr","T"];
+        const colorArr=isDr?DR_COLORS:CR_COLORS;
+        const fontSize=Math.random()*16+11; // 11-27px
+        return {
+          x:Math.random()*W,
+          y:-40-Math.random()*H*.5,
+          vy:0.4+Math.random()*1.1,
+          vx:(Math.random()-.5)*.25,
+          rot:Math.random()*Math.PI*2,
+          rotV:(Math.random()-.5)*.018,
+          text:pool[Math.floor(Math.random()*pool.length)],
+          fontSize,
+          alpha:0.08+Math.random()*0.22,
+          colorBase:colorArr[Math.floor(Math.random()*colorArr.length)],
+          isDr,
+          drift:Math.random()*Math.PI*2, // for gentle sway
+          driftSpeed:0.008+Math.random()*0.012,
+          driftAmp:0.18+Math.random()*0.22,
+        };
+      }
+
+      const COUNT=55;
+      const symbols=Array.from({length:COUNT},()=>{
+        const s=makeSymbol();
+        // Spread initial positions through the whole height so it doesn't start empty
+        s.y=Math.random()*H;
+        return s;
+      });
+
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        ctx.save();
+        symbols.forEach(s=>{
+          s.y+=s.vy;
+          s.x+=s.vx+Math.sin(s.drift)*s.driftAmp;
+          s.drift+=s.driftSpeed;
+          s.rot+=s.rotV;
+
+          // Recycle when off-screen bottom
+          if(s.y>H+60){
+            Object.assign(s,makeSymbol());
+          }
+          // Wrap x
+          if(s.x<-60)s.x=W+20;
+          if(s.x>W+60)s.x=-20;
+
+          ctx.save();
+          ctx.translate(s.x,s.y);
+          ctx.rotate(s.rot);
+          ctx.globalAlpha=s.alpha;
+          ctx.font=`700 ${s.fontSize}px 'DM Mono', monospace`;
+          ctx.fillStyle=s.colorBase+s.alpha+")";
+          ctx.textAlign="center";
+          ctx.textBaseline="middle";
+          ctx.fillText(s.text,0,0);
+          ctx.restore();
+        });
+        ctx.restore();
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // =============================================
+    // ACT 1: T-ACCOUNT DRILL
+    // =============================================
+    const taQs=[
+      {q:"Which side of a T-account is always the DEBIT side?",ans:"left"},
+      {q:"Which side of a T-account is always the CREDIT side?",ans:"right"},
+      {q:"Cash is an asset. Which side INCREASES Cash?",ans:"left"},
+      {q:"Fees Earned is a revenue. Which side INCREASES it?",ans:"right"},
+      {q:"Wages Expense is an expense. Which side INCREASES Wages Expense?",ans:"left"},
+    ];
+    let taIdx=0,taScore=0;
+    function checkTa(chosen){
+      const q=taQs[taIdx];const r=document.getElementById("taDrillResult");
+      if(chosen===q.ans){r.textContent="Correct ✓";r.className="result-badge show good";taScore++;spawnConfetti(r);}
+      else{r.textContent="Incorrect — "+(q.ans==="left"?"Left (debit)":"Right (credit)")+" is correct.";r.className="result-badge show bad";}
+      taIdx++;
+      setTimeout(()=>{
+        if(taIdx<taQs.length){document.getElementById("taDrillQ").textContent=taQs[taIdx].q;document.getElementById("taDrillCounter").textContent=`Question ${taIdx+1} of ${taQs.length}`;r.className="result-badge";}
+        else{document.getElementById("taDrillQ").textContent=`Drill complete! Score: ${taScore}/${taQs.length}`;document.getElementById("taDrillCounter").textContent="";document.getElementById("taLeft").disabled=true;document.getElementById("taRight").disabled=true;}
+      },1200);
+    }
+
+    // =============================================
+    // ACT 2: CLASSIFIER
+    // =============================================
+    const clsAccts=[
+      {name:"Cash",correct:"Asset"},{name:"Accounts Payable",correct:"Liability"},
+      {name:"Fees Earned",correct:"Revenue"},{name:"Wages Expense",correct:"Expense"},
+      {name:"Common Stock",correct:"Equity"},{name:"Prepaid Insurance",correct:"Asset"},
+      {name:"Unearned Rent",correct:"Liability"},{name:"Dividends",correct:"Dividends"},
+    ];
+    let clsScore=0;
+    function renderClassifier(){
+      const g=document.getElementById("classifierGrid");g.innerHTML="";
+      const types=["Asset","Liability","Equity","Revenue","Expense","Dividends"];
+      clsAccts.forEach((acct,i)=>{
+        const item=document.createElement("div");item.className="cls-item";item.id="cls_"+i;
+        item.innerHTML=`<div class="cls-acct">${acct.name}</div><div class="cls-btns">${types.map(t=>`<button class="cls-btn" onclick="checkCls(${i},'${t}')">${t}</button>`).join("")}</div>`;
+        g.appendChild(item);
+      });
+    }
+    function checkCls(i,chosen){
+      const acct=clsAccts[i],item=document.getElementById("cls_"+i);
+      item.querySelectorAll(".cls-btn").forEach(b=>{b.disabled=true;if(b.textContent===acct.correct)b.classList.add("correct");else if(b.textContent===chosen&&chosen!==acct.correct)b.classList.add("wrong");});
+      if(chosen===acct.correct){clsScore++;spawnConfetti(item);}
+      const done=document.querySelectorAll(".cls-btn:disabled").length;
+      if(done===clsAccts.length*6)document.getElementById("classifierScore").textContent=`Score: ${clsScore}/${clsAccts.length} — ${clsScore>=6?"🎉 Excellent!":"Keep reviewing account types!"}`;
+    }
+
+    // =============================================
+    // ACT 3: D/C RULES QUIZ
+    // =============================================
+    const dcQs=[
+      {q:"Revenue accounts are increased by:",opts:["Debits","Credits","Either","Neither"],c:1,fb:"Revenues increase equity, so revenues increase with credits."},
+      {q:"Expense accounts are increased by:",opts:["Credits","Debits","Journal entries","Posting"],c:1,fb:"Expenses reduce equity, so they increase with debits — opposite side from equity."},
+      {q:"Liability accounts are decreased by:",opts:["Credits","Debits","Neither","Posting"],c:1,fb:"Liabilities normally increase with credits, so they decrease with debits."},
+      {q:"Asset accounts have what normal balance?",opts:["Credit","Debit","Neither","Both"],c:1,fb:"Assets increase with debits, so their normal balance is a debit balance."},
+      {q:"Dividends are increased by:",opts:["Credits","Debits","Revenue entries","Trial balance"],c:1,fb:"Dividends reduce equity. Like expenses, they increase with debits."},
+      {q:"Company receives cash for services. Cash is:",opts:["Credited","Debited","Unchanged","Expensed"],c:1,fb:"Receiving cash increases the asset Cash. Assets increase with debits."},
+      {q:"The normal balance of Accounts Payable is:",opts:["Debit","Credit","Neither","Zero"],c:1,fb:"Accounts Payable is a liability. Liabilities increase with credits, so their normal balance is credit."},
+    ];
+    let dcIdx=0,dcScore=0,dcAns=0;
+    function renderDcQ(){
+      const q=dcQs[dcIdx%dcQs.length];
+      document.getElementById("dcQ").textContent=q.q;
+      document.getElementById("dcFB").textContent="";document.getElementById("dcFB").className="mc-feedback";
+      document.getElementById("dcOpts").innerHTML=q.opts.map((o,i)=>`<button class="mc-opt" onclick="answerDcQ(${i})"><span class="mc-letter">${String.fromCharCode(65+i)}</span>${o}</button>`).join("");
+      document.getElementById("dcScore").textContent=`Score: ${dcScore}/${dcAns}`;
+    }
+    function answerDcQ(chosen){
+      const q=dcQs[dcIdx%dcQs.length];const opts=document.querySelectorAll("#dcOpts .mc-opt");
+      opts.forEach((o,i)=>{o.classList.add("locked");if(i===q.c)o.classList.add(i===chosen?"correct":"reveal");else if(i===chosen)o.classList.add("wrong");});
+      dcAns++;if(chosen===q.c){dcScore++;spawnConfetti(opts[chosen]);}
+      const fb=document.getElementById("dcFB");fb.textContent=q.fb;fb.className="mc-feedback show";
+      document.getElementById("dcScore").textContent=`Score: ${dcScore}/${dcAns}`;
+    }
+    function nextDcQ(){dcIdx++;renderDcQ();}
+
+    // =============================================
+    // ACT 4: NORMAL BALANCE CARDS + QUIZ
+    // =============================================
+    function revealNB(card,side){card.classList.remove("rev-dr","rev-cr");card.classList.add("rev-"+side);const h=card.querySelector(".nb-hint");if(h)h.textContent="Normal: "+(side==="dr"?"DEBIT ✓":"CREDIT ✓");}
+    const nbQs=[
+      {q:"Normal balance of an ASSET account:",c:"Debit",opts:["Debit","Credit"]},
+      {q:"Normal balance of a LIABILITY account:",c:"Credit",opts:["Debit","Credit"]},
+      {q:"Normal balance of a REVENUE account:",c:"Credit",opts:["Debit","Credit"]},
+      {q:"Normal balance of an EXPENSE account:",c:"Debit",opts:["Debit","Credit"]},
+      {q:"Normal balance of DIVIDENDS:",c:"Debit",opts:["Debit","Credit"]},
+      {q:"Normal balance of EQUITY (Common Stock):",c:"Credit",opts:["Debit","Credit"]},
+      {q:"Accounts Receivable is an asset. Normal balance:",c:"Debit",opts:["Debit","Credit"]},
+      {q:"Unearned Revenue is a liability. Normal balance:",c:"Credit",opts:["Debit","Credit"]},
+    ];
+    let nbIdx=0,nbScore=0,nbAns=0;
+    function renderNbQ(){
+      const item=nbQs[nbIdx%nbQs.length];
+      document.getElementById("nbQ").textContent=item.q;
+      document.getElementById("nbOpts").innerHTML=item.opts.map(o=>`<button class="mc-opt" onclick="answerNbQ('${o}')"><span class="mc-letter">${o[0]}</span>${o}</button>`).join("");
+      document.getElementById("nbFB").className="result-badge";
+      document.getElementById("nbScore").textContent=nbAns>0?`Score: ${nbScore}/${nbAns}`:"";
+    }
+    function answerNbQ(chosen){
+      const item=nbQs[nbIdx%nbQs.length];nbAns++;
+      const fb=document.getElementById("nbFB");
+      document.querySelectorAll("#nbOpts .mc-opt").forEach(b=>b.disabled=true);
+      if(chosen===item.c){nbScore++;fb.textContent="Correct ✓";fb.className="result-badge show good";spawnConfetti(fb);}
+      else{fb.textContent=`Incorrect — answer is ${item.c}`;fb.className="result-badge show bad";}
+      document.getElementById("nbScore").textContent=`Score: ${nbScore}/${nbAns}`;
+    }
+    function nextNbQ(){nbIdx++;renderNbQ();}
+
+    // =============================================
+    // ACT 5: WORDING TRANSLATOR
+    // =============================================
+    const wordPhrases=[
+      {phrase:"Received cash for services provided",dr:"Cash",cr:"Fees Earned"},
+      {phrase:"Services provided on account",dr:"Accounts Receivable",cr:"Fees Earned"},
+      {phrase:"Received cash from customer on account",dr:"Cash",cr:"Accounts Receivable"},
+      {phrase:"Purchased supplies on account",dr:"Supplies",cr:"Accounts Payable"},
+      {phrase:"Paid creditors on account",dr:"Accounts Payable",cr:"Cash"},
+      {phrase:"Issued common stock for cash",dr:"Cash",cr:"Common Stock"},
+      {phrase:"Paid dividends to stockholders",dr:"Dividends",cr:"Cash"},
+      {phrase:"Received advance payment for services not yet provided",dr:"Cash",cr:"Unearned Rent"},
+    ];
+    const wordAccts=["Cash","Accounts Receivable","Supplies","Accounts Payable","Common Stock","Fees Earned","Wages Expense","Dividends","Unearned Rent","Prepaid Insurance","Office Equipment","Rent Expense"];
+    let wordIdx=0,wordScore=0,wordAns=0;
+    function renderWording(){
+      const item=wordPhrases[wordIdx%wordPhrases.length];
+      const opts=wordAccts.map(a=>`<option>${a}</option>`).join("");
+      document.getElementById("wordingGame").innerHTML=`
+        <div class="word-item"><div class="word-phrase">"${item.phrase}"</div>
+        <div class="word-row">
+          <div class="word-field"><label>Debit Account</label><select class="word-sel" id="wDr"><option value="">— Select —</option>${opts}</select></div>
+          <div class="word-field"><label>Credit Account</label><select class="word-sel" id="wCr"><option value="">— Select —</option>${opts}</select></div>
+          <button class="word-chk" onclick="checkWording()">Check</button>
+        </div><div class="word-res" id="wRes"></div></div>`;
+      document.getElementById("wordingScore").textContent=wordAns>0?`Score: ${wordScore}/${wordAns}`:"";
+    }
+    function checkWording(){
+      const item=wordPhrases[wordIdx%wordPhrases.length];
+      const dr=document.getElementById("wDr").value,cr=document.getElementById("wCr").value,res=document.getElementById("wRes");
+      wordAns++;const ok=dr===item.dr&&cr===item.cr;
+      if(ok){wordScore++;res.textContent=`✓ Correct! Dr ${item.dr} / Cr ${item.cr}`;res.className="word-res show pass";spawnConfetti(res);}
+      else{res.textContent=`✗ Answer: Dr ${item.dr} / Cr ${item.cr}`;res.className="word-res show fail";}
+      document.getElementById("wordingScore").textContent=`Score: ${wordScore}/${wordAns}`;
+    }
+    function nextWording(){wordIdx++;renderWording();}
+
+    // =============================================
+    // ACT 6: JOURNAL ENTRY BUILDER
+    // =============================================
+    const jeSc=[
+      {desc:"NetSolutions paid a $2,400 insurance premium for a one-year policy beginning December 1.",dr:"Prepaid Insurance",cr:"Cash",amt:2400},
+      {desc:"NetSolutions paid $800 rent for December. Since it expires in one month, debit directly to expense.",dr:"Rent Expense",cr:"Cash",amt:800},
+      {desc:"NetSolutions received $360 cash as three months' advance rent on land from a retailer.",dr:"Cash",cr:"Unearned Rent",amt:360},
+      {desc:"NetSolutions purchased office equipment on account from Executive Supply Co. for $1,800.",dr:"Office Equipment",cr:"Accounts Payable",amt:1800},
+      {desc:"NetSolutions paid a receptionist and part-time assistant $950 for two weeks' wages.",dr:"Wages Expense",cr:"Cash",amt:950},
+      {desc:"NetSolutions received $3,100 cash for fees earned in the first half of December.",dr:"Cash",cr:"Fees Earned",amt:3100},
+      {desc:"NetSolutions earned $1,750 in fees during the first half of December — billed but not yet collected.",dr:"Accounts Receivable",cr:"Fees Earned",amt:1750},
+      {desc:"NetSolutions received $650 from customers who had previously been billed on account.",dr:"Cash",cr:"Accounts Receivable",amt:650},
+      {desc:"NetSolutions purchased $1,450 of supplies, paying cash.",dr:"Supplies",cr:"Cash",amt:1450},
+      {desc:"NetSolutions paid $2,000 in dividends to stockholders on December 31.",dr:"Dividends",cr:"Cash",amt:2000},
+    ];
+    function loadJeScenario(){
+      const idx=parseInt(document.getElementById("jeScenario").value);
+      document.getElementById("jeDesc").textContent=jeSc[idx].desc;
+      document.getElementById("jeDr").value="";document.getElementById("jeCr").value="";document.getElementById("jeAmt").value="";
+      const r=document.getElementById("jeResult");r.className="je-res";r.textContent="";
+    }
+    function verifyJE(){
+      const idx=parseInt(document.getElementById("jeScenario").value),s=jeSc[idx];
+      const dr=document.getElementById("jeDr").value,cr=document.getElementById("jeCr").value,amt=parseFloat(document.getElementById("jeAmt").value);
+      const r=document.getElementById("jeResult");
+      if(!dr||!cr||!amt){r.textContent="Please fill in all three fields.";r.className="je-res show fail";return;}
+      if(dr===s.dr&&cr===s.cr&&Math.abs(amt-s.amt)<.01){r.innerHTML=`✓ Correct! Dr ${s.dr} $${s.amt.toLocaleString()} / Cr ${s.cr} $${s.amt.toLocaleString()}`;r.className="je-res show pass";spawnConfetti(r);}
+      else{let msg="✗ Not quite. ";if(dr!==s.dr)msg+=`Debit: ${s.dr}. `;if(cr!==s.cr)msg+=`Credit: ${s.cr}. `;if(Math.abs(amt-s.amt)>=.01)msg+=`Amount: $${s.amt.toLocaleString()}.`;r.textContent=msg;r.className="je-res show fail";}
+    }
+    function resetJE(){document.getElementById("jeDr").value="";document.getElementById("jeCr").value="";document.getElementById("jeAmt").value="";const r=document.getElementById("jeResult");r.className="je-res";r.textContent="";}
+
+    // =============================================
+    // ACT 7: POSTING SIMULATION
+    // =============================================
+    const postScs=[
+      {date:"Dec. 1",desc:"Paid insurance premium",drAcct:"Prepaid Insurance",drAmt:2400,drNo:15,crAcct:"Cash",crAmt:2400,crNo:11,explain:"Prepaid Insurance (15) debited — asset increases. Cash (11) credited — asset decreases."},
+      {date:"Dec. 4",desc:"Purchased office equipment on account",drAcct:"Office Equipment",drAmt:1800,drNo:18,crAcct:"Accounts Payable",crAmt:1800,crNo:21,explain:"Office Equipment (18) debited — asset increases. Accounts Payable (21) credited — liability increases."},
+      {date:"Dec. 16",desc:"Received cash for fees earned",drAcct:"Cash",drAmt:3100,drNo:11,crAcct:"Fees Earned",crAmt:3100,crNo:41,explain:"Cash (11) debited — asset increases. Fees Earned (41) credited — revenue increases."},
+    ];
+    let postIdx=0,postState={dr:false,cr:false};
+    function renderPostSim(){
+      const s=postScs[postIdx%postScs.length];postState={dr:false,cr:false};
+      document.getElementById("postSimWrap").innerHTML=`
+        <div class="post-sim">
+          <div class="post-journal"><h4>JOURNAL ENTRY TO POST</h4>
+            <div class="post-row"><span class="post-acct">${s.date}</span></div>
+            <div class="post-row"><span class="post-acct">${s.drAcct}</span><span class="post-amt dr">$${s.drAmt.toLocaleString()} Dr</span></div>
+            <div class="post-row"><span class="post-acct cr">${s.crAcct}</span><span class="post-amt cr">$${s.crAmt.toLocaleString()} Cr</span></div>
+            <div style="margin-top:10px;font-size:12px;color:var(--muted2);">${s.desc}</div>
+          </div>
+          <div class="post-ledgers">
+            <div style="font-size:12px;color:var(--muted2);margin-bottom:6px;">Click the correct side of each ledger account:</div>
+            <div class="post-ledger" id="pl0">
+              <div class="post-ledger-title">${s.drAcct} <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);">No. ${s.drNo}</span></div>
+              <div class="post-ledger-body">
+                <div class="post-side" id="pl0L" onclick="tryPost(0,'left')" title="Post debit here"><div class="post-side-label">DEBIT</div></div>
+                <div class="post-side" id="pl0R" onclick="tryPost(0,'right')" title="Post credit here"><div class="post-side-label">CREDIT</div></div>
+              </div>
+            </div>
+            <div class="post-ledger" id="pl1">
+              <div class="post-ledger-title">${s.crAcct} <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);">No. ${s.crNo}</span></div>
+              <div class="post-ledger-body">
+                <div class="post-side" id="pl1L" onclick="tryPost(1,'left')" title="Post debit here"><div class="post-side-label">DEBIT</div></div>
+                <div class="post-side" id="pl1R" onclick="tryPost(1,'right')" title="Post credit here"><div class="post-side-label">CREDIT</div></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      document.getElementById("postMsg").textContent="Post the debit amount first.";
+    }
+    function tryPost(ledger,side){
+      const s=postScs[postIdx%postScs.length],msg=document.getElementById("postMsg");
+      if(ledger===0&&!postState.dr){
+        if(side==="left"){document.getElementById("pl0L").innerHTML=`<div class="post-side-label">DEBIT</div><div class="pa">$${s.drAmt.toLocaleString()}</div>`;document.getElementById("pl0").classList.add("posted");postState.dr=true;msg.textContent="✓ Debit posted! Now post the credit.";spawnConfetti(document.getElementById("pl0"));}
+        else msg.textContent="✗ Debits go on the LEFT side. Try again.";
+      }else if(ledger===1&&postState.dr&&!postState.cr){
+        if(side==="right"){document.getElementById("pl1R").innerHTML=`<div class="post-side-label">CREDIT</div><div class="pa">$${s.crAmt.toLocaleString()}</div>`;document.getElementById("pl1").classList.add("posted");postState.cr=true;msg.textContent=`✓ Both posted! ${s.explain}`;spawnConfetti(document.getElementById("pl1"));}
+        else msg.textContent="✗ Credits go on the RIGHT side. Try again.";
+      }else if(ledger===1&&!postState.dr){msg.textContent="Post the debit first!";}
+    }
+    function nextPostSim(){postIdx++;renderPostSim();}
+
+    // =============================================
+    // ACT 8: TRIAL BALANCE BUILDER
+    // =============================================
+    const tbAccts=[
+      {name:"Cash",bal:21000,norm:"debit"},{name:"Accounts Receivable",bal:22000,norm:"debit"},
+      {name:"Supplies",bal:7800,norm:"debit"},{name:"Office Equipment",bal:62500,norm:"debit"},
+      {name:"Accounts Payable",bal:7200,norm:"credit"},{name:"Common Stock",bal:30000,norm:"credit"},
+      {name:"Retained Earnings",bal:36300,norm:"credit"},{name:"Dividends",bal:15000,norm:"debit"},
+      {name:"Fees Earned",bal:250000,norm:"credit"},{name:"Wages Expense",bal:155000,norm:"debit"},
+      {name:"Supplies Expense",bal:22000,norm:"debit"},{name:"Rent Expense",bal:12000,norm:"debit"},
+      {name:"Utilities Expense",bal:4000,norm:"debit"},{name:"Misc. Expense",bal:2200,norm:"debit"},
+    ];
+    function renderTB(){
+      const rows=document.getElementById("tbRows");rows.innerHTML="";
+      tbAccts.forEach((a,i)=>{
+        const row=document.createElement("div");row.className="tb-row";
+        row.innerHTML=`<span class="tb-acct-name">${a.name}<br><span style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace;">Balance: $${a.bal.toLocaleString()}</span></span><input type="number" class="tb-inp" id="tb_dr_${i}" placeholder="0"><input type="number" class="tb-inp" id="tb_cr_${i}" placeholder="0">`;
+        rows.appendChild(row);
+      });
+    }
+    function checkTB(){
+      let drTotal=0,crTotal=0,correct=0;
+      tbAccts.forEach((a,i)=>{
+        const drEl=document.getElementById(`tb_dr_${i}`),crEl=document.getElementById(`tb_cr_${i}`);
+        const drVal=parseFloat(drEl.value)||0,crVal=parseFloat(crEl.value)||0;
+        if(a.norm==="debit"){if(Math.abs(drVal-a.bal)<.01&&crVal===0){drEl.className="tb-inp correct";crEl.className="tb-inp correct";correct++;drTotal+=a.bal;}else{drEl.className="tb-inp wrong";crEl.className="tb-inp wrong";drTotal+=drVal;crTotal+=crVal;}}
+        else{if(Math.abs(crVal-a.bal)<.01&&drVal===0){drEl.className="tb-inp correct";crEl.className="tb-inp correct";correct++;crTotal+=a.bal;}else{drEl.className="tb-inp wrong";crEl.className="tb-inp wrong";drTotal+=drVal;crTotal+=crVal;}}
+      });
+      document.getElementById("tbDrTotal").textContent="$"+drTotal.toLocaleString();
+      document.getElementById("tbCrTotal").textContent="$"+crTotal.toLocaleString();
+      const msg=document.getElementById("tbMsg");
+      if(correct===tbAccts.length){msg.textContent=`✓ Perfect! Total Debits = Total Credits = $${drTotal.toLocaleString()}. Trial balance is balanced!`;msg.className="tb-msg show balanced";spawnConfetti(msg);}
+      else{msg.textContent=`${correct}/${tbAccts.length} correct. ${Math.abs(drTotal-crTotal)>0?"Totals don't balance — check which column each account belongs in.":"Good direction! Check any highlighted accounts."}`;msg.className="tb-msg show unbalanced";}
+    }
+    function resetTB(){document.getElementById("tbRows").querySelectorAll(".tb-inp").forEach(el=>{el.value="";el.className="tb-inp";});document.getElementById("tbDrTotal").textContent="—";document.getElementById("tbCrTotal").textContent="—";const m=document.getElementById("tbMsg");m.className="tb-msg";m.textContent="";}
+
+    // =============================================
+    // ACT 9: ERROR DETECTIVE
+    // =============================================
+    const errScenarios=[
+      {scenario:"The trial balance shows debits of $45,320 and credits of $44,920. The difference is $400.",opts:["Addition error (re-add columns)","A balance was placed in the wrong column (÷2 → look for $200)","A transposition or slide error (÷9)","An omitted account balance"],c:1,fb:"Difference of $400 ÷ 2 = $200. Look for an account with a $200 balance that may have been placed in the wrong column."},
+      {scenario:"The trial balance shows debits of $87,543 and credits of $87,453. The difference is $90.",opts:["Addition error","Wrong column","Transposition or slide (÷9 ✓)","Omitted posting"],c:2,fb:"$90 ÷ 9 = 10 — evenly divisible by 9. Check for a transposition (digits reversed) or slide (decimal shifted) when copying balances."},
+      {scenario:"The trial balance shows debits of $120,000 and credits of $110,000. The difference is $10,000.",opts:["Transposition error","Slide error","Addition or omission error — look for an account with $10,000","A balance placed in the wrong column"],c:2,fb:"$10,000 is not divisible by 2 or 9 evenly. Check for an omitted account balance or a missing posting equal to $10,000."},
+      {scenario:"The trial balance shows debits of $55,282 and credits of $55,482. The difference is $200.",opts:["A $100 balance was placed in the wrong column (÷2 → $100)","An omitted account balance","A transposition error","An addition error"],c:0,fb:"Difference of $200 ÷ 2 = $100. Look for a $100 account balance that was placed in the wrong (debit vs. credit) column."},
+    ];
+    let errIdx=0,errScore=0,errAns=0;
+    function renderErrorDet(){
+      const s=errScenarios[errIdx%errScenarios.length];
+      document.getElementById("errorDetWrap").innerHTML=`
+        <div class="err-card">
+          <div class="err-scenario">${s.scenario}</div>
+          <div class="mc-opts">${s.opts.map((o,i)=>`<button class="mc-opt" onclick="answerErr(${i})"><span class="mc-letter">${String.fromCharCode(65+i)}</span>${o}</button>`).join("")}</div>
+          <div class="err-fb" id="errFB">${s.fb}</div>
+        </div>`;
+      document.getElementById("errorScore").textContent=errAns>0?`Score: ${errScore}/${errAns}`:"";
+    }
+    function answerErr(chosen){
+      const s=errScenarios[errIdx%errScenarios.length];errAns++;
+      document.querySelectorAll("#errorDetWrap .mc-opt").forEach((o,i)=>{o.classList.add("locked");if(i===s.c)o.classList.add(i===chosen?"correct":"reveal");else if(i===chosen)o.classList.add("wrong");});
+      if(chosen===s.c){errScore++;spawnConfetti(document.querySelector("#errorDetWrap .mc-opt"));}
+      document.getElementById("errFB").className="err-fb show";
+      document.getElementById("errorScore").textContent=`Score: ${errScore}/${errAns}`;
+    }
+    function nextErrorDet(){errIdx++;renderErrorDet();}
+
+    // =============================================
+    // ACT 9b: CORRECTING ENTRY
+    // =============================================
+    function checkCE(btn,isCorrect){
+      document.querySelectorAll("#ceOpts .mc-opt").forEach(b=>b.classList.add("locked"));
+      if(isCorrect){btn.classList.add("correct");spawnConfetti(btn);}else{btn.classList.add("wrong");document.querySelectorAll("#ceOpts .mc-opt").forEach(b=>{if(b.textContent.includes("Office Equipment $12,500 / Credit Supplies"))b.classList.add("reveal");});}
+      document.getElementById("ceFB").className="mc-feedback show";
+    }
+
+    // =============================================
+    // ACT 10: HORIZONTAL ANALYSIS CALCULATOR
+    // =============================================
+    const haData=[
+      {name:"Fees Earned",y2:187500,y1:150000},{name:"Wages Expense",y2:60000,y1:45000},
+      {name:"Utilities Expense",y2:12500,y1:9000},{name:"Net Income",y2:95000,y1:79200},
+    ];
+    function renderHA(){
+      const body=document.getElementById("haCalcBody");body.innerHTML="";
+      haData.forEach((row,i)=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td>${row.name}</td><td>$${row.y2.toLocaleString()}</td><td>$${row.y1.toLocaleString()}</td>
+          <td style="padding:4px;"><input type="number" class="ha-inp" id="ha_dollar_${i}" placeholder="enter change"></td>
+          <td style="padding:4px;"><input type="number" class="ha-inp" id="ha_pct_${i}" placeholder="% change" step="0.1"></td>`;
+        body.appendChild(tr);
+      });
+    }
+    function checkHA(){
+      let correct=0,total=haData.length*2;
+      haData.forEach((row,i)=>{
+        const dollarChange=row.y2-row.y1,pctChange=Math.round((dollarChange/row.y1)*1000)/10;
+        const dEl=document.getElementById(`ha_dollar_${i}`),pEl=document.getElementById(`ha_pct_${i}`);
+        const dVal=parseFloat(dEl.value),pVal=parseFloat(pEl.value);
+        if(Math.abs(dVal-dollarChange)<1){dEl.className="ha-inp correct";correct++;}else{dEl.className="ha-inp wrong";}
+        if(Math.abs(pVal-pctChange)<.2){pEl.className="ha-inp correct";correct++;}else{pEl.className="ha-inp wrong";}
+      });
+      document.getElementById("haResult").textContent=`Score: ${correct}/${total}${correct===total?" — Perfect! 🎉":""}`;
+      if(correct===total)spawnConfetti(document.getElementById("haResult"));
+    }
+    function resetHA(){haData.forEach((_,i)=>{document.getElementById(`ha_dollar_${i}`).className="ha-inp";document.getElementById(`ha_dollar_${i}`).value="";document.getElementById(`ha_pct_${i}`).className="ha-inp";document.getElementById(`ha_pct_${i}`).value="";});document.getElementById("haResult").textContent="";}
+
+    // =============================================
+    // RECAP QUIZ
+    // =============================================
+    document.querySelectorAll(".rq-options").forEach(group=>{
+      group.querySelectorAll(".rq-option").forEach(opt=>{
+        opt.addEventListener("click",()=>{
+          if(group.dataset.answered)return;
+          group.querySelectorAll(".rq-option").forEach(o=>o.classList.remove("selected"));
+          opt.classList.add("selected");group.dataset.selected=opt.dataset.val;
+        });
+      });
+    });
+    function submitRecap(){
+      const items=document.querySelectorAll(".rq-item");let score=0,answered=0;
+      items.forEach(item=>{
+        const group=item.querySelector(".rq-options"),fb=item.querySelector(".rq-feedback"),sel=group.dataset.selected;
+        if(!sel)return;answered++;group.dataset.answered=true;
+        const correct=group.dataset.correct;
+        group.querySelectorAll(".rq-option").forEach(opt=>{
+          opt.classList.remove("selected");
+          if(opt.dataset.val===correct){opt.classList.add("correct");}
+          else if(opt.dataset.val===sel&&sel!==correct){opt.classList.add("wrong");}
+          opt.style.cursor="default";
+        });
+        if(sel===correct){score++;fb.className="rq-feedback show good";}else{fb.className="rq-feedback show bad";}
+        fb.textContent=fb.textContent;
+      });
+      if(answered<items.length){showToast("Please answer all questions first.");return;}
+      document.getElementById("recapBtn").disabled=true;
+      document.getElementById("recapScoreNum").textContent=`${score}/10`;
+      const box=document.getElementById("recapScoreBox"),num=document.getElementById("recapFinalNum");
+      num.textContent=`${score}/10`;box.classList.add("show");
+      if(score>=8)spawnConfetti(box);
+      updateProgressBar();
+    }
+
+    // =============================================
+    // GLOSSARY + CHECKLIST
+    // =============================================
+    const glossary=[
+      ["Account","The form used to record increases and decreases in each financial statement item."],
+      ["T-Account","The simplest form of an account — left side is debit, right side is credit."],
+      ["Ledger","The complete group of all accounts for a business."],
+      ["Chart of Accounts","The numbered list of all accounts in a ledger, organized by type."],
+      ["Debit","An amount entered on the left side of an account."],
+      ["Credit","An amount entered on the right side of an account."],
+      ["Double-Entry System","A system where every transaction affects at least two accounts and debits always equal credits."],
+      ["Normal Balance","The side (debit or credit) where an account typically carries its balance."],
+      ["Journal","The initial record where transaction effects are recorded in chronological order."],
+      ["Journalizing","The process of recording a transaction in the journal."],
+      ["Posting","Transferring debits and credits from journal entries to ledger accounts."],
+      ["Post. Ref.","A cross-reference column linking journal entries to ledger accounts after posting."],
+      ["Unadjusted Trial Balance","A list of all account balances before adjusting entries; total debits must equal total credits."],
+      ["Transposition","An error where digits are reversed when copying a number (e.g., 542 written as 452)."],
+      ["Slide","An error where a decimal point is shifted, changing the value's magnitude."],
+      ["Correcting Journal Entry","An entry that corrects an error already journalized and posted."],
+      ["Horizontal Analysis","Comparing financial statement items across two periods using dollar and percent changes."],
+    ];
+    // ===== FLASHCARD DECK CH2 =====
+    (function(){
+      const deck=document.getElementById("flashcardDeck2");
+      if(!deck)return;
+      let idx=0,flipped=false;
+      function prog(){const f=document.getElementById("fcProg2");if(f)f.style.width=((idx+1)/glossary.length*100)+"%";}
+      function build(){
+        flipped=false;
+        const [t,d]=glossary[idx];
+        deck.innerHTML=`
+          <div class="fc-progress"><div class="fc-progress-fill" id="fcProg2"></div></div>
+          <div class="fc-stage" id="fcStage2" onclick="flipCard2()" title="Click to flip">
+            <div class="fc-card" id="fcCard2">
+              <div class="fc-face fc-front">
+                <div class="fc-eyebrow">Term ${idx+1} of ${glossary.length}</div>
+                <div class="fc-term">${t}</div>
+                <div class="fc-hint">click to reveal definition</div>
+              </div>
+              <div class="fc-face fc-back">
+                <div class="fc-eyebrow">Definition</div>
+                <div class="fc-def">${d}</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-controls">
+            <button class="fc-arrow" onclick="prevCard2()" title="Previous (&#8592;)">&#8592;</button>
+            <span class="fc-counter">${idx+1} / ${glossary.length}</span>
+            <button class="fc-flip-btn" onclick="flipCard2()">Flip</button>
+            <span class="fc-counter"></span>
+            <button class="fc-arrow" onclick="nextCard2()" title="Next (&#8594;)">&#8594;</button>
+          </div>`;
+        prog();
+      }
+      window.flipCard2=function(){flipped=!flipped;const c=document.getElementById("fcCard2");if(c)c.classList.toggle("flipped",flipped);};
+      window.nextCard2=function(){idx=(idx+1)%glossary.length;build();};
+      window.prevCard2=function(){idx=(idx-1+glossary.length)%glossary.length;build();};
+      document.addEventListener("keydown",e=>{
+        const rect=deck.getBoundingClientRect();
+        if(rect.top>window.innerHeight||rect.bottom<0)return;
+        if(document.activeElement&&["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName))return;
+        if(e.key==="ArrowRight"){e.preventDefault();nextCard2();}
+        else if(e.key==="ArrowLeft"){e.preventDefault();prevCard2();}
+        else if(e.key===" "||e.key==="Enter"){e.preventDefault();flipCard2();}
+      });
+      build();
+    })();
+
+    const checklist=[
+      "I can define account, T-account, ledger, and chart of accounts.",
+      "I can describe the structure of a T-account (left = debit, right = credit).",
+      "I can list the 5 categories of accounts in order (Assets, Liabilities, Equity, Revenues, Expenses).",
+      "I can explain the double-entry accounting system.",
+      "I can apply debit/credit rules for every account type.",
+      "I can identify the normal balance of any account type.",
+      "I can analyze any transaction using the 4-step method.",
+      "I can recognize common transaction wording patterns (on account, received cash, etc.).",
+      "I can write a properly formatted journal entry.",
+      "I can explain prepaid expenses and unearned revenue.",
+      "I can post a journal entry to the correct ledger account following the 4 posting steps.",
+      "I can prepare an unadjusted trial balance from ledger balances.",
+      "I can explain what a trial balance proves — and what it does not prove.",
+      "I can use the difference clue method (÷2, ÷9) to identify error types.",
+      "I can write a correcting journal entry for a misclassified account.",
+      "I can compute the dollar change and percent change in horizontal analysis.",
+      "I can identify favorable and unfavorable trends in horizontal analysis.",
+    ];
+    const clEl=document.getElementById("checklist");
+    if(clEl){checklist.forEach((item)=>{
+      const label=document.createElement("label");
+      label.style.cssText="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--muted);line-height:1.55;";
+      label.innerHTML=`<input type="checkbox" style="margin-top:2px;accent-color:var(--green);width:14px;height:14px;flex-shrink:0;"> ${item}`;
+      label.querySelector("input").addEventListener("change",function(){label.style.color=this.checked?"var(--green)":"var(--muted)";label.style.textDecoration=this.checked?"line-through":"none";if(typeof saveAllProgress==="function")saveAllProgress();if(typeof updateProgressBar==="function")updateProgressBar();});
+      clEl.appendChild(label);
+    });}
+
+    // =============================================
+    // MASTERY CHECK — 65 QUESTION BANK (randomized, draw 15)
+    // =============================================
+    const sectionMeta={
+      "accounts":{id:"sec01",label:"Section 01 — Accounts & T-Accounts"},
+      "chart":{id:"sec02",label:"Section 02 — Chart of Accounts"},
+      "dc":{id:"sec03",label:"Section 03 — Debit & Credit Rules"},
+      "normal":{id:"sec04",label:"Section 04 — Normal Balances"},
+      "analyze":{id:"sec05",label:"Section 05 — Analyzing Transactions"},
+      "journal":{id:"sec06",label:"Section 06 — Journalizing"},
+      "posting":{id:"sec07",label:"Section 07 — Posting"},
+      "trial":{id:"sec08",label:"Section 08 — Trial Balance"},
+      "errors":{id:"sec09",label:"Section 09 — Errors & Correcting Entries"},
+      "horiz":{id:"sec10",label:"Section 10 — Horizontal Analysis"},
+    };
+    const masteryQ=[
+      // SECTION A: KEY TERMS & CHART OF ACCOUNTS (1-15)
+      {s:"accounts",q:"A group of accounts for a business is called a:",opts:["Journal","Ledger","Trial balance","Chart of accounts"],c:1,e:"The ledger is the complete group of all accounts for a business."},
+      {s:"chart",q:"A list of all accounts in the ledger is called the:",opts:["T account","Journal entry","Chart of accounts","Posting reference"],c:2,e:"The chart of accounts is the numbered list of all accounts in the ledger."},
+      {s:"chart",q:"In a chart of accounts, balance sheet accounts are normally listed first in this order:",opts:["Liabilities, assets, stockholders' equity","Assets, liabilities, stockholders' equity","Assets, stockholders' equity, liabilities","Revenues, expenses, assets"],c:1,e:"Balance sheet accounts: Assets first, then Liabilities, then Stockholders' equity."},
+      {s:"chart",q:"Income statement accounts are normally listed in what order?",opts:["Expenses then revenues","Revenues then expenses","Assets then liabilities","Liabilities then expenses"],c:1,e:"Income statement: Revenues first, then Expenses."},
+      {s:"chart",q:"Assets are best defined as:",opts:["Debts owed to outsiders","The owners' withdrawals","Resources owned by a business","Revenues earned but not collected"],c:2,e:"Assets are resources owned by the business — cash, supplies, equipment, land, etc."},
+      {s:"chart",q:"Liabilities are:",opts:["Resources owned by a business","Rights of creditors that represent debts of the business","Owner contributions only","Cash and supplies only"],c:1,e:"Liabilities are debts owed to creditors — the creditors' rights against business assets."},
+      {s:"chart",q:"Stockholders' equity is:",opts:["The company's bank balance","The creditors' claim on assets","The stockholders' right to the assets of the business","The total of revenues and expenses"],c:2,e:"Stockholders' equity = the stockholders' right/claim to the assets of the business."},
+      {s:"chart",q:"Unearned revenue is created when a company:",opts:["Pays expenses in cash","Receives cash before providing services","Buys supplies on account","Earns revenue on account"],c:1,e:"Unearned revenue (a liability) is created when cash is received before the service is performed."},
+      {s:"chart",q:"Revenues are:",opts:["Assets used up in operations","Increases in owner's equity from selling services/products","Withdrawals by owners","Debts owed by the business"],c:1,e:"Revenues increase stockholders' equity by selling services or products."},
+      {s:"chart",q:"Expenses are:",opts:["Increases in stockholders' equity","Assets used up or services consumed to generate revenues","Liabilities that must be paid soon","Cash received in advance"],c:1,e:"Expenses are assets used up or services consumed in the process of generating revenues."},
+      {s:"chart",q:"Which account number group is typically used for assets in NetSolutions' chart of accounts?",opts:["2","3","1","5"],c:2,e:"NetSolutions: 1=Assets, 2=Liabilities, 3=Equity, 4=Revenue, 5=Expenses."},
+      {s:"chart",q:"In NetSolutions' chart of accounts, accounts beginning with 4 represent:",opts:["Assets","Revenues","Liabilities","Expenses"],c:1,e:"4=Revenues in NetSolutions' system. Fees Earned is account 41."},
+      {s:"chart",q:"In NetSolutions' chart of accounts, accounts beginning with 5 represent:",opts:["Stockholders' equity","Revenues","Liabilities","Expenses"],c:3,e:"5=Expenses: Wages Expense (51), Supplies Expense (52), etc."},
+      {s:"chart",q:"Which of the following is an asset account used in the chapter?",opts:["Accounts Payable","Fees Earned","Prepaid Insurance","Unearned Rent"],c:2,e:"Prepaid Insurance is an asset — cash paid in advance for a future benefit."},
+      {s:"chart",q:"Which of the following is a liability account used in the chapter?",opts:["Accounts Receivable","Unearned Rent","Supplies Expense","Dividends"],c:1,e:"Unearned Rent is a liability — cash received before the service is provided."},
+      // SECTION B: DEBITS, CREDITS, NORMAL BALANCES (16-30)
+      {s:"dc",q:"A debit is an amount entered on the:",opts:["Right side of an account","Left side of an account","Bottom of an account","Balance line of an account"],c:1,e:"Debit = left side of any account. Always."},
+      {s:"dc",q:"A credit is an amount entered on the:",opts:["Left side of an account","Right side of an account","Top of an account","Date column only"],c:1,e:"Credit = right side of any account. Always."},
+      {s:"dc",q:"In a double-entry accounting system:",opts:["Every transaction affects only one account","Debits must always equal credits","Credits must always be greater than debits","Only cash transactions are recorded"],c:1,e:"Every transaction: total debits = total credits. This is the double-entry rule."},
+      {s:"normal",q:"The normal balance of an account depends on:",opts:["The company's size","Whether increases are recorded as debits or credits","The date the account was opened","Whether the account is cash or non-cash"],c:1,e:"The normal balance is on the side used to record increases — which depends on account type."},
+      {s:"dc",q:"Revenue accounts are increased by:",opts:["Debits","Credits","Either, depending on the transaction","Posting references"],c:1,e:"Revenues increase equity → revenues increase with credits."},
+      {s:"dc",q:"Expense accounts are increased by:",opts:["Credits","Debits","Journal page numbers","Account titles only"],c:1,e:"Expenses reduce equity → expenses increase with debits (opposite of equity)."},
+      {s:"dc",q:"Dividends are increased by:",opts:["Credits","Debits","Revenues","Retained earnings credits"],c:1,e:"Dividends reduce equity → dividends increase with debits."},
+      {s:"dc",q:"Because revenues increase stockholders' equity, revenues are:",opts:["Increased by credits","Increased by debits","Decreased by credits","Always recorded as assets"],c:0,e:"Revenues increase equity. Equity increases with credits. Therefore revenues increase with credits."},
+      {s:"dc",q:"Because expenses decrease stockholders' equity, expenses are:",opts:["Increased by credits","Increased by debits","Increased by liabilities","Decreased by debits"],c:1,e:"Expenses reduce equity. Equity decreases with debits. Therefore expenses increase with debits."},
+      {s:"normal",q:"Which account normally has a debit balance?",opts:["Fees Earned","Unearned Rent","Wages Expense","Common Stock"],c:2,e:"Wages Expense is an expense. Expenses have debit normal balances."},
+      {s:"normal",q:"Which account normally has a credit balance?",opts:["Rent Expense","Supplies","Accounts Payable","Dividends"],c:2,e:"Accounts Payable is a liability. Liabilities have credit normal balances."},
+      {s:"normal",q:"Which account normally has a debit balance?",opts:["Accounts Receivable","Accounts Payable","Common Stock","Fees Earned"],c:0,e:"Accounts Receivable is an asset. Assets have debit normal balances."},
+      {s:"normal",q:"Which account normally has a credit balance?",opts:["Prepaid Insurance","Unearned Rent","Supplies Expense","Dividends"],c:1,e:"Unearned Rent is a liability. Liabilities have credit normal balances."},
+      {s:"accounts",q:"The balance of an account is:",opts:["The total debits only","The total credits only","The difference between debits and credits in the account","The number of journal entries posted"],c:2,e:"Account balance = total debits minus total credits (or vice versa if credits exceed debits)."},
+      {s:"accounts",q:"A T account is:",opts:["The most detailed financial statement","The simplest form of an account","A type of journal","A trial balance error report"],c:1,e:"A T-account is the simplest form of an account, named for its T-shape."},
+      // SECTION C: JOURNALIZING & POSTING (31-45)
+      {s:"journal",q:"The initial record in which the effects of a transaction are recorded is the:",opts:["Ledger","Trial balance","Journal","Worksheet"],c:2,e:"The journal is the initial record — the book of original entry — for all transactions."},
+      {s:"journal",q:"The process of recording a transaction in the journal is called:",opts:["Posting","Journalizing","Balancing","Reconciling"],c:1,e:"Journalizing = recording transactions in the journal."},
+      {s:"posting",q:"Posting is the process of:",opts:["Preparing financial statements","Transferring debits and credits from journal entries to accounts","Listing accounts in a trial balance","Correcting all journal errors"],c:1,e:"Posting transfers debits and credits from the journal to individual ledger accounts."},
+      {s:"posting",q:"In the 4-step posting process, Step 1 is:",opts:["Enter the account number in the journal","Enter the date in the ledger account","Enter the amount in the ledger account","Total the account"],c:1,e:"Step 1: Enter the date in the ledger account's Date column."},
+      {s:"posting",q:"In the 4-step posting process, Step 2 is:",opts:["Enter the amount in the proper debit/credit column of the ledger","Enter the journal page number in the journal","Enter the company name","Post the account title only"],c:0,e:"Step 2: Enter the dollar amount in the correct debit or credit column of the ledger account."},
+      {s:"posting",q:"In the 4-step posting process, Step 3 is:",opts:["Enter the account number in the ledger","Enter the journal page number in the ledger's Post. Ref. column","Enter the balance in the journal","Enter the date in the journal"],c:1,e:"Step 3: Enter the journal page number in the ledger's Post. Ref. column."},
+      {s:"posting",q:"In the 4-step posting process, Step 4 is:",opts:["Enter the account number in the journal's Post. Ref. column","Enter the debit amount in the journal","Enter the trial balance total","Enter the balance in the ledger"],c:0,e:"Step 4: Enter the account number in the journal's Post. Ref. column. This completes the cross-reference."},
+      {s:"journal",q:"NetSolutions paid a $2,400 insurance premium covering one year. Which account was debited?",opts:["Insurance Expense","Cash","Prepaid Insurance","Unearned Rent"],c:2,e:"A one-year premium creates an asset. Dr Prepaid Insurance, Cr Cash."},
+      {s:"journal",q:"In the same insurance transaction, which account was credited?",opts:["Prepaid Insurance","Cash","Accounts Payable","Supplies"],c:1,e:"Cash was paid out, so Cash is credited. Dr Prepaid Insurance, Cr Cash."},
+      {s:"journal",q:"NetSolutions paid $800 rent for December. The chapter records this by debiting:",opts:["Prepaid Rent","Rent Expense","Unearned Rent","Accounts Payable"],c:1,e:"Short-term rent paid for the current month is debited directly to Rent Expense."},
+      {s:"journal",q:"NetSolutions received $360 cash in advance for 3 months' rent on land. This creates:",opts:["A revenue only","An expense","A liability called Unearned Rent","A dividend"],c:2,e:"Cash received before the service (use of land) is performed creates Unearned Rent — a liability."},
+      {s:"journal",q:"NetSolutions purchased office equipment on account for $1,800. The credit entry is to:",opts:["Accounts Payable","Cash","Fees Earned","Supplies Expense"],c:0,e:"Buying on account creates Accounts Payable (liability increases). Dr Office Equipment, Cr Accounts Payable."},
+      {s:"analyze",q:"NetSolutions paid $180 for a newspaper ad. The debit was to:",opts:["Advertising Revenue","Miscellaneous Expense","Supplies Expense","Accounts Payable"],c:1,e:"A small advertising expense is typically debited to Miscellaneous Expense."},
+      {s:"journal",q:"NetSolutions received $3,100 cash for fees earned. The credit is to:",opts:["Cash","Accounts Receivable","Fees Earned","Unearned Rent"],c:2,e:"Revenue was earned, so Fees Earned is credited. Dr Cash, Cr Fees Earned."},
+      {s:"journal",q:"NetSolutions earned $1,750 on account. The debit is to:",opts:["Fees Earned","Cash","Accounts Receivable","Unearned Rent"],c:2,e:"Not yet collected, so Accounts Receivable (asset) increases. Dr Accounts Receivable, Cr Fees Earned."},
+      // SECTION D: TRIAL BALANCE & ERRORS (46-57)
+      {s:"trial",q:"A trial balance is:",opts:["A list of only asset accounts","A summary listing of account titles and balances in the ledger","A list of journal entries not yet posted","A list of corrected errors only"],c:1,e:"A trial balance lists all account titles and their balances from the ledger."},
+      {s:"trial",q:"The main purpose of a trial balance is to:",opts:["Prove all transactions are correct","Verify that total debits equal total credits","Calculate net income","Replace the ledger"],c:1,e:"The trial balance verifies that total debits = total credits in the ledger."},
+      {s:"trial",q:"The trial balance discussed in this chapter is specifically called an:",opts:["Adjusted trial balance","Post-closing trial balance","Unadjusted trial balance","Error trial balance"],c:2,e:"It is the unadjusted trial balance — prepared before any adjusting entries."},
+      {s:"trial",q:"Which comes first when preparing a trial balance?",opts:["Total the debit and credit columns","List company name, title, and date","Verify the columns are equal","Prepare adjusting entries"],c:1,e:"Step 1: Write company name, title 'Unadjusted Trial Balance,' and the date."},
+      {s:"trial",q:"Before preparing a trial balance, each ledger account must have:",opts:["A journal page number only","A determined balance","A correcting entry","At least two postings"],c:1,e:"Each account's balance must be calculated before it can appear on the trial balance."},
+      {s:"errors",q:"If trial balance totals are not equal, one possible cause is:",opts:["The company made a profit","An error in posting or addition","Too many accounts in the ledger","Revenues exceed expenses"],c:1,e:"Unequal totals indicate a posting error, math error, omitted balance, or wrong column."},
+      {s:"errors",q:"If the difference between debit and credit totals is 10, 100, or 1,000, you should first suspect:",opts:["A transposition error","A slide error","An addition error","An omitted journal"],c:2,e:"A round number difference (10, 100, 1000) usually points to an addition/arithmetic error."},
+      {s:"errors",q:"If the difference between the debit and credit totals is evenly divisible by 2, it may indicate:",opts:["A slide","A debit entered as a credit (or vice versa)","An addition error only","A missing company name"],c:1,e:"Divisible by 2 → a balance may be in the wrong column. The misplaced amount = difference ÷ 2."},
+      {s:"errors",q:"If the difference is evenly divisible by 9, a likely cause is:",opts:["Trial balance title is wrong","Transposition or slide error","Omitted account title","Missing date"],c:1,e:"Divisible by 9 → check for a transposition (digits reversed) or slide (decimal shifted)."},
+      {s:"errors",q:"A transposition error is:",opts:["Moving a whole number one decimal place","Recording a debit instead of a credit","Reversing the order of digits (like 542 as 452)","Forgetting to post an entry"],c:2,e:"Transposition = digits reversed. 542 written as 452 or 524. Difference is always divisible by 9."},
+      {s:"errors",q:"A slide error is:",opts:["Reversing account titles","Moving the entire number one or more places left or right","Recording in the wrong journal","Using the wrong account title only"],c:1,e:"Slide = decimal shifted. $542.00 written as $54.20 or $5,420.00. Difference is divisible by 9."},
+      {s:"trial",q:"The trial balance provides:",opts:["Complete proof the ledger is error-free","Proof only that debits and credits are equal","Proof that all revenues are collected","Proof that all accounts are normal"],c:1,e:"The trial balance proves only that debits = credits. It does not catch all errors."},
+      // SECTION E: CORRECTING ENTRIES & HORIZONTAL ANALYSIS (58-65)
+      {s:"errors",q:"An error that does not make trial balance totals unequal:",opts:["Cannot happen","Is impossible under double-entry accounting","Can still occur and may show up as an unusual account balance","Means the ledger is correct"],c:2,e:"Wrong account (same amount) keeps balance but shows up as an unusual balance in the misused account."},
+      {s:"errors",q:"A credit balance in Supplies is unusual because:",opts:["Supplies is a revenue account","A business cannot have 'negative' supplies","Supplies should always equal cash","Supplies is never used"],c:1,e:"Supplies is an asset with a debit normal balance. A credit balance implies 'negative supplies' — a red flag."},
+      {s:"errors",q:"If an error has already been journalized and posted, it is usually corrected with a:",opts:["Closing entry","Adjusting entry","Correcting journal entry","Trial balance entry"],c:2,e:"A correcting journal entry is prepared to fix errors that have already been posted."},
+      {s:"errors",q:"In the example error, the company incorrectly debited Supplies instead of:",opts:["Cash","Office Equipment","Fees Earned","Rent Expense"],c:1,e:"The correct account was Office Equipment. Supplies was used by mistake."},
+      {s:"errors",q:"The correcting entry in that example includes:",opts:["Debit Supplies, credit Office Equipment","Debit Accounts Payable, credit Supplies","Debit Office Equipment, credit Supplies","Debit Cash, credit Supplies"],c:2,e:"Dr Office Equipment, Cr Supplies — moves the amount from the wrong account to the correct one."},
+      {s:"horiz",q:"Horizontal analysis compares:",opts:["Current assets to current liabilities only","One item in a current statement to the same item in prior statements","Debits to credits within one account","Two unrelated companies"],c:1,e:"Horizontal analysis compares the same line item across two or more periods."},
+      {s:"horiz",q:"When two statements are compared in horizontal analysis, the base for computing change is:",opts:["The current statement","The earlier statement","The larger statement","The statement with more accounts"],c:1,e:"The earlier (prior year) statement is always the base. % change = (Current − Prior) ÷ Prior × 100."},
+      {s:"horiz",q:"In the J. Holmes example, which was identified as a favorable trend?",opts:["Increase in wages expense","Increase in utilities expense","Increase in fees earned","Increase in miscellaneous expense"],c:2,e:"Fees earned increased 25% — favorable. Rising revenues are always favorable. Rising expenses are generally unfavorable."},
+    ];
+
+    let masteryState={current:0,score:0,answered:false,order:[],missed:[]};
+    function openMasteryModal(){
+      const shuffled=[...masteryQ.keys()].sort(()=>Math.random()-.5).slice(0,15);
+      masteryState={current:0,score:0,answered:false,order:shuffled,missed:[]};
+      renderMasteryQ();
+      document.getElementById("masteryOverlay").classList.add("open");document.body.style.overflow="hidden";
+    }
+    function closeMasteryModal(){document.getElementById("masteryOverlay").classList.remove("open");document.body.style.overflow="";}
+    function renderMasteryQ(){
+      const total=15,idx=masteryState.order[masteryState.current],q=masteryQ[idx],num=masteryState.current+1;
+      const letters=["A","B","C","D"];
+      document.getElementById("masteryProgressFill").style.width=(masteryState.current/total*100)+"%";
+      document.getElementById("masterySubtitle").textContent=`Question ${num} of ${total}  ·  Score: ${masteryState.score}/${masteryState.current}`;
+      document.getElementById("masteryBody").innerHTML=
+        `<div class="mq-counter">Question ${num} / ${total}</div>
+        <div class="mq-question">${q.q}</div>
+        <div class="mq-options" id="mqOpts">${q.opts.map((o,i)=>`<div class="mq-option" onclick="selectMasteryA(${i})"><span class="mq-letter">${letters[i]}</span>${o}</div>`).join("")}</div>
+        <div class="mq-explanation" id="mqExp">${q.e}</div>
+        <button class="mq-next-btn" id="mqNext" onclick="nextMasteryQ()">${num===total?"See Results":"Next Question →"}</button>`;
+      masteryState.answered=false;
+    }
+    function selectMasteryA(chosen){
+      if(masteryState.answered)return;masteryState.answered=true;
+      const q=masteryQ[masteryState.order[masteryState.current]],opts=document.querySelectorAll(".mq-option");
+      opts.forEach((o,i)=>{o.classList.add("locked");if(i===q.c)o.classList.add(i===chosen?"correct":"reveal-correct");else if(i===chosen)o.classList.add("wrong");});
+      const ok=chosen===q.c;if(ok){masteryState.score++;}else{if(!masteryState.missed.includes(q.s))masteryState.missed.push(q.s);}
+      const exp=document.getElementById("mqExp");exp.classList.add("show",ok?"good":"bad");
+      document.getElementById("mqNext").classList.add("show");
+      if(ok)spawnConfetti(opts[chosen]);
+    }
+    function nextMasteryQ(){masteryState.current++;if(masteryState.current>=15)renderMasteryResult();else renderMasteryQ();}
+    function renderMasteryResult(){
+      const sc=masteryState.score,total=15,pct=sc/total;
+      document.getElementById("masteryProgressFill").style.width="100%";
+      document.getElementById("masterySubtitle").textContent=`Completed · ${sc}/${total} correct`;
+      const grade=pct>=.9?{label:"Mastered!",msg:"Outstanding — you have a strong command of Chapter 2.",ring:"pass"}:pct>=.7?{label:"Almost There",msg:"Solid foundation. Focus on the sections highlighted below.",ring:"pass"}:{label:"Keep Studying",msg:"Re-read the sections flagged below — each one links to the lesson.",ring:"fail"};
+      let reviewHtml="";
+      if(masteryState.missed.length>0){
+        const items=masteryState.missed.map(key=>{const m=sectionMeta[key];return`<div class="review-item" onclick="closeMasteryModal();setTimeout(()=>jumpTo('${m.id}'),200)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>${m.label}</div>`;}).join("");
+        reviewHtml=`<div class="review-sections"><div class="review-label">Study these sections</div>${items}</div>`;
+      }
+      document.getElementById("masteryBody").innerHTML=
+        `<div class="mastery-result"><div class="m-ring ${grade.ring}">${sc}/${total}</div><h3>${grade.label}</h3><p>${grade.msg}</p>${reviewHtml}<div class="m-result-btns"><button class="mq-retry-btn" onclick="openMasteryModal()">New Quiz</button><button class="mq-done-btn" onclick="closeMasteryModal()">Done</button></div></div>`;
+      if(pct>=.7)spawnConfetti(document.getElementById("masteryBody"));
+    }
+
+    // =============================================
+    // INIT ALL
+    // =============================================
+    renderChapters();
+    renderClassifier();
+    renderDcQ();
+    renderNbQ();
+    renderWording();
+    loadJeScenario();
+    renderPostSim();
+    renderTB();
+    renderErrorDet();
+    renderHA();
+  </script>
+</body>
+</html>
