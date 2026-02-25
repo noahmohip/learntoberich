@@ -1109,6 +1109,325 @@
     .recap-submit:hover { background: rgba(212,168,67,.25); }
     .recap-submit:disabled { opacity: .4; cursor: default; }
 
+    /* ===== MASTERY CHECK MODAL ===== */
+    .mastery-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(10px);
+      z-index: 9200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+    .mastery-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .mastery-modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 22px;
+      width: calc(100% - 48px);
+      max-width: 620px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 40px 100px rgba(0,0,0,.6);
+      transform: translateY(20px) scale(.97);
+      transition: transform .3s;
+      overflow: hidden;
+    }
+    .mastery-overlay.open .mastery-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .mastery-header {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .mastery-header-left { flex: 1; }
+
+    .mastery-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+
+    .mastery-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .mastery-header p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .mastery-progress-track {
+      height: 3px;
+      background: var(--surface3);
+      border-radius: 2px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .mastery-progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width .4s ease;
+    }
+
+    .mastery-close-btn {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background .15s, color .15s;
+      line-height: 1;
+    }
+    .mastery-close-btn:hover { background: var(--surface3); color: var(--text); }
+
+    .mastery-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    /* Question screen */
+    .mq-screen { display: none; }
+    .mq-screen.active { display: block; }
+
+    .mq-counter {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted2);
+      margin-bottom: 16px;
+    }
+
+    .mq-question {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .mq-options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .mq-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      font-size: 15px;
+      color: var(--text);
+      user-select: none;
+    }
+    .mq-option:hover:not(.locked) { border-color: rgba(45,186,126,.4); background: var(--green-dim); }
+    .mq-option.selected { border-color: rgba(45,186,126,.5); background: rgba(45,186,126,.08); }
+    .mq-option.correct  { border-color: rgba(45,186,126,.7); background: rgba(45,186,126,.12); color: var(--green); }
+    .mq-option.wrong    { border-color: rgba(240,96,96,.5);  background: rgba(240,96,96,.08);  color: var(--red); }
+    .mq-option.reveal-correct { border-color: rgba(45,186,126,.4); background: rgba(45,186,126,.06); }
+
+    .mq-letter {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: var(--surface3);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--muted2);
+      transition: background .15s, color .15s;
+    }
+    .mq-option.correct  .mq-letter { background: rgba(45,186,126,.25); color: var(--green); }
+    .mq-option.wrong    .mq-letter { background: rgba(240,96,96,.2);   color: var(--red); }
+
+    .mq-explanation {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border-left: 3px solid var(--border);
+      margin-bottom: 20px;
+      display: none;
+    }
+    .mq-explanation.show { display: block; }
+    .mq-explanation.good { border-left-color: var(--green); }
+    .mq-explanation.bad  { border-left-color: var(--red); }
+
+    .mq-next-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      background: var(--green);
+      color: #071a10;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+      display: none;
+    }
+    .mq-next-btn.show { display: block; }
+    .mq-next-btn:hover { opacity: .85; }
+
+    /* Result screen */
+    .mastery-result {
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .mastery-result-ring {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 900;
+    }
+    .mastery-result-ring.pass {
+      background: rgba(45,186,126,.12);
+      border: 3px solid rgba(45,186,126,.4);
+      color: var(--green);
+    }
+    .mastery-result-ring.fail {
+      background: rgba(240,96,96,.08);
+      border: 3px solid rgba(240,96,96,.3);
+      color: var(--red);
+    }
+
+    .mastery-result h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .mastery-result p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0 auto 28px;
+    }
+
+    .mastery-result-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .mq-retry-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .mq-retry-btn:hover { border-color: var(--border2); }
+
+    .mq-done-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      background: var(--green);
+      border: none;
+      color: #071a10;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .mq-done-btn:hover { opacity: .85; }
+
+    /* Review sections on results screen */
+    .review-sections {
+      margin: 0 auto 28px;
+      max-width: 420px;
+      text-align: left;
+    }
+
+    .review-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .review-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      border: 1px solid rgba(212,168,67,.2);
+      background: rgba(212,168,67,.04);
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: background .15s, border-color .15s;
+    }
+
+    .review-item:hover {
+      background: rgba(212,168,67,.1);
+      border-color: rgba(212,168,67,.4);
+      color: var(--gold);
+    }
+
+    .review-item svg { color: var(--gold); flex-shrink: 0; }
+
     /* ===== OVERVIEW SECTION — distinct from content sections ===== */
     #obj0 {
       background: linear-gradient(135deg, rgba(45,186,126,.06) 0%, rgba(212,168,67,.04) 100%);
@@ -1883,9 +2202,9 @@
     function renderSignInNav() {
       const wrap = document.getElementById('navAuthWrap');
       wrap.innerHTML = `
-        <button class="auth-btn" onclick="openAuthModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Sign In
+        <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Log In
         </button>`;
     }
 
@@ -1958,7 +2277,7 @@
       // Show sign-in UI anyway so it's clear what to set up
       window.addEventListener('DOMContentLoaded', () => {
         const wrap = document.getElementById('navAuthWrap');
-        if (wrap) wrap.innerHTML = `<button class="auth-btn" onclick="openAuthModal()" style="opacity:.6" title="Firebase not configured yet">Sign In</button>`;
+        if (wrap) wrap.innerHTML = `<button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;opacity:.6" title="Firebase not configured yet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Log In</button>`;
       });
     }
   </script>
@@ -1993,11 +2312,11 @@
       </select>
     </div>
     <button class="nav-btn" onclick="toggleStudyMode()">Study Mode</button>
-    <button class="nav-btn green" onclick="jumpTo('obj7')">Mastery Check</button>
+    <button class="nav-btn green" onclick="openMasteryModal()">Mastery Check</button>
     <div id="navAuthWrap">
-      <button class="auth-btn" onclick="openAuthModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Sign In
+      <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Log In
       </button>
     </div>
   </nav>
@@ -2030,6 +2349,26 @@
 
   <!-- Cursor trail canvas (full page) -->
   <canvas id="cursorCanvas"></canvas>
+
+  <!-- MASTERY CHECK MODAL -->
+  <div class="mastery-overlay" id="masteryOverlay" onclick="if(event.target===this)closeMasteryModal()">
+    <div class="mastery-modal">
+      <div class="mastery-header">
+        <div class="mastery-header-left">
+          <div class="mastery-eyebrow">Chapter 1 — Mastery Check</div>
+          <h3>Test Your Knowledge</h3>
+          <p id="masterySubtitle">15 questions across all topics. No time pressure.</p>
+          <div class="mastery-progress-track">
+            <div class="mastery-progress-fill" id="masteryProgressFill" style="width:0%"></div>
+          </div>
+        </div>
+        <button class="mastery-close-btn" onclick="closeMasteryModal()">×</button>
+      </div>
+      <div class="mastery-body" id="masteryBody">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
 
   <!-- CHAPTER SELECT MODAL -->
   <div class="modal-overlay" id="chapterModal" onclick="if(event.target===this) closeChapterModal()">
@@ -3629,6 +3968,198 @@
 
       document.getElementById('recapSubmit').disabled = true;
       if (typeof saveAllProgress === 'function') saveAllProgress();
+    }
+
+    // ===== MASTERY CHECK QUIZ =====
+
+    // Section metadata — maps tag to section ID and display name
+    const sectionMeta = {
+      'bus':    { id: 'obj1', label: 'Business & Users (Sections 01–02)' },
+      'ethics': { id: 'obj2', label: 'Ethics (Sections 03–04)' },
+      'gaap':   { id: 'obj3', label: 'GAAP & Standards (Sections 05–06)' },
+      'assump': { id: 'obj4', label: 'Assumptions & Principles (Sections 07–08)' },
+      'eq':     { id: 'obj5', label: 'Accounting Equation (Sections 09–10)' },
+      'trans':  { id: 'obj6', label: 'Transactions & Equity (Sections 11–12)' },
+      'stmts':  { id: 'obj7', label: 'Financial Statements (Sections 13–17)' },
+    };
+
+    const masteryQuestions = [
+      // Original 15
+      { section:'eq',     q:"What is the accounting equation?", options:["Assets = Revenue \u2212 Expenses","Assets = Liabilities + Stockholders' Equity","Profit = Revenues \u2212 Expenses","Liabilities = Assets + Equity"], correct:1, explain:"Assets = Liabilities + Stockholders' Equity. Every transaction must keep this balanced." },
+      { section:'bus',    q:"A service business is one that:", options:["Sells physical merchandise","Provides services rather than physical products","Manufactures goods in a factory","Only operates online"], correct:1, explain:"A service business provides services rather than selling physical goods." },
+      { section:'gaap',   q:"Which organization writes most U.S. accounting standards?", options:["IRS","SEC","FASB","IASB"], correct:2, explain:"FASB (Financial Accounting Standards Board) develops GAAP in the U.S. The SEC enforces reporting but does not write the standards." },
+      { section:'assump', q:"The business entity assumption means:", options:["The business will continue indefinitely","Transactions use a stable currency","Business records are kept separate from the owner's personal records","Results are reported for a specific period"], correct:2, explain:"Business entity: the business is treated as completely separate from its owner." },
+      { section:'trans',  q:"Which is a contra equity account with a normal debit balance?", options:["Common Stock","Accounts Payable","Retained Earnings","Expenses"], correct:3, explain:"Expenses carry a debit balance — opposite of equity's normal credit. When expenses increase, net income falls, reducing Retained Earnings and equity." },
+      { section:'trans',  q:"An owner invests $20,000 cash. Which accounts change?", options:["Cash up; Retained Earnings up","Cash up; Revenue up","Cash up; Common Stock up","Accounts Receivable up; Common Stock up"], correct:2, explain:"Owner investment = Cash (asset) up + Common Stock (equity) up." },
+      { section:'assump', q:"The historical cost principle says assets should be recorded at:", options:["Current market value","Estimated resale value","Original transaction cost","Replacement cost"], correct:2, explain:"Historical cost: record assets at what you actually paid, regardless of later market changes." },
+      { section:'trans',  q:"Dividends are best described as:", options:["An expense on the income statement","A distribution of earnings that reduces retained earnings","A liability owed to creditors","An increase to common stock"], correct:1, explain:"Dividends reduce Retained Earnings (equity) but are NOT expenses — they never appear on the income statement." },
+      { section:'stmts',  q:"Which financial statement is prepared FIRST?", options:["Balance Sheet","Statement of Cash Flows","Retained Earnings Statement","Income Statement"], correct:3, explain:"Income Statement first — its net income is needed for the Retained Earnings Statement, which is needed before the Balance Sheet." },
+      { section:'stmts',  q:"The balance sheet reports on:", options:["A period of time","A specific single date","The prior fiscal year only","A projected future date"], correct:1, explain:"The balance sheet is a snapshot — it shows financial position on one specific date." },
+      { section:'trans',  q:"Buying equipment on account affects which accounts?", options:["Equipment up; Cash down","Equipment up; Accounts Payable up","Cash down; Accounts Payable down","Equipment down; Retained Earnings up"], correct:1, explain:"Equipment (asset) up and Accounts Payable (liability) up. No cash changes yet." },
+      { section:'assump', q:"Which assumption allows quarterly reporting?", options:["Going concern","Monetary unit","Business entity","Time period"], correct:3, explain:"The time period assumption divides activity into specific reporting periods." },
+      { section:'stmts',  q:"Net income flows directly from the income statement to the:", options:["Balance sheet","Statement of cash flows","Retained earnings statement","General ledger"], correct:2, explain:"Net income flows to the retained earnings statement, which then flows to the balance sheet." },
+      { section:'gaap',   q:"Faithful representation means financial information:", options:["Influences a user's decision","Accurately reflects what actually happened","Is reported every quarter","Was audited by a CPA"], correct:1, explain:"Faithful representation means the numbers reflect economic reality." },
+      { section:'trans',  q:"Revenues $45,000, expenses $31,000. Net income is:", options:["$76,000","$31,000","$14,000","$45,000"], correct:2, explain:"$45,000 \u2212 $31,000 = $14,000. Net Income = Revenues \u2212 Expenses." },
+      // 50-question bank (answers per provided key)
+      { section:'bus',    q:"Accounting is best defined as:", options:["A system only for taxes","An information system that reports a business's economic activities","A way to track only cash","A method for banks only"], correct:1, explain:"Accounting is an information system that identifies, records, and communicates economic activities to interested users." },
+      { section:'bus',    q:"Which is an external user of accounting information?", options:["Store manager","Department supervisor","Investor","Company president"], correct:2, explain:"Investors are outside the business and use reports to evaluate investments. Managers, supervisors, and presidents are internal users." },
+      { section:'gaap',   q:"Which organization primarily develops U.S. accounting standards?", options:["IRS","FASB","SEC","GAAP"], correct:1, explain:"FASB develops U.S. GAAP. The SEC enforces reporting but does not write the standards." },
+      { section:'assump', q:"Which is NOT a standard accounting assumption or principle?", options:["Time period assumption","Monetary unit assumption","Color-coding assumption","Going concern assumption"], correct:2, explain:"There is no color-coding assumption. The four are monetary unit, time period, business entity, and going concern." },
+      { section:'eq',     q:"The accounting equation is:", options:["Assets = Liabilities + Stockholders' Equity","Assets = Revenue + Expenses","Cash = Liabilities + Dividends","Revenue = Expenses + Equity"], correct:0, explain:"Assets = Liabilities + Stockholders' Equity is the foundation of all accounting." },
+      { section:'trans',  q:"If a company pays a liability on account:", options:["Assets increase; liabilities increase","Assets decrease; liabilities decrease","Equity increases; liabilities decrease","Revenues increase; assets increase"], correct:1, explain:"Cash (asset) decreases and Accounts Payable (liability) decreases. Both sides go down equally." },
+      { section:'trans',  q:"Dividends are:", options:["An expense","A liability","A distribution of earnings to stockholders","Revenue"], correct:2, explain:"Dividends are distributions of earnings to stockholders — they reduce Retained Earnings but are never an expense." },
+      { section:'stmts',  q:"Which financial statement is prepared first?", options:["Balance sheet","Income statement","Statement of cash flows","Retained earnings statement"], correct:1, explain:"The income statement is prepared first. Net income is needed before completing the retained earnings statement." },
+      { section:'assump', q:"The principle that says revenue is recorded when earned is:", options:["Expense recognition principle","Revenue recognition principle","Historical cost principle","Full disclosure principle"], correct:1, explain:"Revenue recognition: record revenue when earned, not necessarily when cash is received." },
+      { section:'stmts',  q:"If ending cash on the SCF doesn't match cash on the balance sheet:", options:["That is normal","No issue exists","An error likely occurred","Only the income statement is affected"], correct:2, explain:"Ending cash on the statement of cash flows must equal cash on the balance sheet. A mismatch means there is an error." },
+      { section:'eq',     q:"Assets are best defined as:", options:["Amounts owed to creditors","Resources owned by a business","Owner withdrawals","Profits earned this year"], correct:1, explain:"Assets are resources owned or controlled by the business that provide future economic benefits." },
+      { section:'eq',     q:"Liabilities are:", options:["Resources the business controls","Amounts owed by the business","Owner investments","Revenues earned"], correct:1, explain:"Liabilities are obligations — amounts the business owes to others." },
+      { section:'eq',     q:"Stockholders' equity represents:", options:["Total cash in the business","Creditors' claims on assets","Owners' claim on assets","Only common stock"], correct:2, explain:"Stockholders' equity is the owners' residual claim after all liabilities have been satisfied." },
+      { section:'stmts',  q:"Which statement reports revenues and expenses?", options:["Balance sheet","Income statement","Statement of retained earnings","Statement of cash flows"], correct:1, explain:"The income statement summarizes revenues and expenses and calculates net income or net loss." },
+      { section:'stmts',  q:"Which statement shows assets, liabilities, and equity at a point in time?", options:["Income statement","Balance sheet","Statement of cash flows","Retained earnings statement"], correct:1, explain:"The balance sheet is a snapshot on one specific date — not over a period." },
+      { section:'stmts',  q:"Which statement explains changes in retained earnings?", options:["Balance sheet","Income statement","Statement of retained earnings","Statement of owner withdrawals"], correct:2, explain:"The retained earnings statement: Beginning RE + Net Income \u2212 Dividends = Ending RE." },
+      { section:'stmts',  q:"Which statement reports cash from operating, investing, and financing activities?", options:["Income statement","Statement of retained earnings","Statement of cash flows","Balance sheet"], correct:2, explain:"The statement of cash flows has three sections: operating, investing, and financing." },
+      { section:'trans',  q:"A business purchases supplies for cash. The effect is:", options:["Assets increase; liabilities increase","One asset increases; another asset decreases","Equity increases; assets decrease","Revenues increase; assets increase"], correct:1, explain:"Supplies (asset) up and Cash (asset) down. Total assets stay the same — just a shift within assets." },
+      { section:'trans',  q:"A business purchases equipment on account. The effect is:", options:["Assets increase; liabilities increase","Assets decrease; liabilities decrease","Equity increases; liabilities increase","Revenues increase; assets decrease"], correct:0, explain:"Equipment (asset) up and Accounts Payable (liability) up. Both sides rise equally." },
+      { section:'trans',  q:"A business earns revenue in cash. The effect is:", options:["Assets increase; equity increases","Assets increase; liabilities increase","Assets decrease; equity decreases","Liabilities decrease; equity increases"], correct:0, explain:"Cash (asset) up and Revenue (equity) up. Earning cash grows both sides." },
+      { section:'trans',  q:"A business pays wages expense in cash. The effect is:", options:["Assets increase; equity increases","Assets decrease; equity decreases","Liabilities decrease; equity increases","Assets decrease; liabilities decrease"], correct:1, explain:"Cash (asset) down and Wages Expense (contra equity) up, reducing net income and equity." },
+      { section:'trans',  q:"A business receives cash from issuing common stock. The effect is:", options:["Assets increase; equity increases","Assets increase; liabilities increase","Assets decrease; equity increases","Equity decreases; liabilities increase"], correct:0, explain:"Cash (asset) up and Common Stock (equity) up. Issuing stock grows both sides equally." },
+      { section:'trans',  q:"A business pays dividends in cash. The effect is:", options:["Assets decrease; liabilities decrease","Assets decrease; equity decreases","Assets increase; equity decreases","Liabilities increase; equity decreases"], correct:1, explain:"Cash (asset) down and Dividends (contra equity) up, reducing Retained Earnings." },
+      { section:'trans',  q:"Which of the following is a liability?", options:["Accounts Receivable","Supplies","Accounts Payable","Fees Earned"], correct:2, explain:"Accounts Payable is what the business owes to suppliers. The others are assets or revenue." },
+      { section:'trans',  q:"Which of the following is an asset?", options:["Wages Expense","Accounts Payable","Accounts Receivable","Dividends"], correct:2, explain:"Accounts Receivable is money customers owe the business — an asset." },
+      { section:'trans',  q:"Which is a stockholders' equity account?", options:["Common Stock","Accounts Payable","Rent Expense","Supplies"], correct:0, explain:"Common Stock represents owner investment — a stockholders' equity account." },
+      { section:'trans',  q:"Which is a revenue account?", options:["Wages Expense","Fees Earned","Dividends","Accounts Receivable"], correct:1, explain:"Fees Earned is revenue — it increases equity when services are performed." },
+      { section:'trans',  q:"Which is an expense account?", options:["Common Stock","Fees Earned","Rent Expense","Accounts Payable"], correct:2, explain:"Rent Expense is an expense — debit balance, reduces net income and equity." },
+      { section:'assump', q:"The time period assumption allows a business to:", options:["Ignore expenses","Report information for specific periods","Combine personal and business records","Record only cash transactions"], correct:1, explain:"The time period assumption divides activity into reporting periods — monthly, quarterly, annually." },
+      { section:'assump', q:"The monetary unit assumption means:", options:["Only foreign currency can be used","Accounting records use a stable currency unit","Inflation is recorded daily","Only cash is recorded"], correct:1, explain:"All transactions are measured and recorded in a stable monetary unit (dollars in the U.S.)." },
+      { section:'assump', q:"The going concern assumption means a business is assumed to:", options:["Close at year end","Continue operating in the future","Never borrow money","Always earn a profit"], correct:1, explain:"Going concern: the business will keep operating indefinitely, justifying long-term asset recording at cost." },
+      { section:'ethics', q:"Why is ethics important in accounting?", options:["To make reports look better","To ensure trustworthy financial information","To reduce all expenses","To eliminate taxes"], correct:1, explain:"Accounting only works when users trust the information. Unethical reporting harms lenders, investors, and employees." },
+      { section:'bus',    q:"Managerial accounting information is mainly used by:", options:["Investors and creditors","Internal managers","Government agencies only","Customers"], correct:1, explain:"Managerial accounting provides detailed internal reports for managers. External users rely on financial accounting." },
+      { section:'bus',    q:"Financial accounting mainly focuses on:", options:["Internal planning reports only","External reports for users outside the company","Daily employee schedules","Production methods"], correct:1, explain:"Financial accounting produces standardized external reports for investors, creditors, and regulators." },
+      { section:'bus',    q:"Which is an example of an internal user?", options:["Investor","Bank lender","Production supervisor","Supplier"], correct:2, explain:"A production supervisor works inside the business. Investors, bank lenders, and suppliers are external users." },
+      { section:'bus',    q:"Which is an example of an external user?", options:["Department manager","Store cashier","Creditor","Operations supervisor"], correct:2, explain:"A creditor is outside the business and uses financial statements to evaluate lending risk." },
+      { section:'eq',     q:"If assets are $145,000 and liabilities are $52,000, stockholders' equity is:", options:["$93,000","$197,000","$52,000","$145,000"], correct:0, explain:"Equity = Assets \u2212 Liabilities = $145,000 \u2212 $52,000 = $93,000." },
+      { section:'trans',  q:"Net income is calculated as:", options:["Assets \u2212 Liabilities","Revenues \u2212 Expenses","Cash + Receivables","Liabilities + Equity"], correct:1, explain:"Net Income = Revenues \u2212 Expenses. The bottom line of the income statement." },
+      { section:'trans',  q:"If revenues are greater than expenses, the business has:", options:["A net loss","A liability","Net income","Dividends"], correct:2, explain:"Revenues exceeding expenses = net income. The opposite = net loss." },
+      { section:'trans',  q:"If expenses are greater than revenues, the business has:", options:["Net income","Net loss","Retained earnings","Assets"], correct:1, explain:"Expenses exceeding revenues = net loss, which reduces Retained Earnings and equity." },
+      { section:'stmts',  q:"Beginning Retained Earnings + Net Income \u2212 Dividends =", options:["Ending Assets","Ending Liabilities","Ending Retained Earnings","Ending Revenue"], correct:2, explain:"The retained earnings formula. The ending balance flows to the balance sheet." },
+      { section:'stmts',  q:"Which statement is directly linked to the balance sheet through retained earnings?", options:["Income statement","Statement of retained earnings","Statement of cash flows only","Trial balance"], correct:1, explain:"The retained earnings statement produces ending RE that appears directly on the balance sheet." },
+      { section:'stmts',  q:"Which is one section of the statement of cash flows?", options:["Revenue activities","Expense activities","Operating activities","Equity activities"], correct:2, explain:"Operating activities cover cash from day-to-day business operations." },
+      { section:'stmts',  q:"Which is another section of the statement of cash flows?", options:["Investing activities","Sales activities","Profit activities","Retained activities"], correct:0, explain:"Investing activities cover cash flows for long-term assets." },
+      { section:'stmts',  q:"Which is the third section of the statement of cash flows?", options:["Financing activities","Collection activities","Earning activities","Posting activities"], correct:0, explain:"Financing activities cover cash flows with owners and lenders." },
+      { section:'assump', q:"The expense recognition (matching) principle means expenses should be recorded:", options:["When cash is paid only","In the same period as the related revenue","At year end only","Only when approved by management"], correct:1, explain:"Match expenses to the same period as the revenues they helped generate." },
+      { section:'trans',  q:"A business earns revenue on account. The effect is:", options:["Assets increase; equity increases","Assets increase; liabilities increase","Assets decrease; equity increases","Liabilities decrease; equity decreases"], correct:0, explain:"Accounts Receivable (asset) up and Revenue (equity) up." },
+      { section:'trans',  q:"A business collects cash from a customer on account. The effect is:", options:["Assets increase; equity increases","One asset increases; another asset decreases","Liabilities decrease; equity increases","Equity decreases; assets decrease"], correct:1, explain:"Cash up and Accounts Receivable down — converting one asset to another." },
+      { section:'eq',     q:"Which would most likely cause an accounting equation imbalance?", options:["Recording only one side of a transaction","Using dollar signs","Writing a date on the statement","Listing assets before liabilities"], correct:0, explain:"Recording only one side breaks the balance. The other choices are formatting only." },
+      { section:'stmts',  q:"Which statement is most accurate?", options:["The income statement is prepared after the balance sheet","Dividends are an expense on the income statement","Financial statements are interrelated","Cash flow totals do not need to match ending cash"], correct:2, explain:"The four statements are interrelated — each one feeds into the next, and ending cash must match across statements." },
+    ];
+
+    let masteryState = { current: 0, score: 0, answered: false, order: [], missed: [] };
+
+    function openMasteryModal() {
+      const shuffled = [...masteryQuestions.keys()].sort(() => Math.random() - 0.5).slice(0, 15);
+      masteryState = { current: 0, score: 0, answered: false, order: shuffled, missed: [] };
+      renderMasteryQuestion();
+      document.getElementById('masteryOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMasteryModal() {
+      document.getElementById('masteryOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function renderMasteryQuestion() {
+      const total   = 15;
+      const idx     = masteryState.order[masteryState.current];
+      const q       = masteryQuestions[idx];
+      const num     = masteryState.current + 1;
+      const letters = ['A','B','C','D'];
+
+      document.getElementById('masteryProgressFill').style.width = ((masteryState.current / total) * 100) + '%';
+      document.getElementById('masterySubtitle').textContent =
+        `Question ${num} of ${total}  \u00b7  Score: ${masteryState.score}/${masteryState.current}`;
+
+      document.getElementById('masteryBody').innerHTML =
+        '<div class="mq-counter">Question ' + num + ' / ' + total + '</div>' +
+        '<div class="mq-question">' + q.q + '</div>' +
+        '<div class="mq-options" id="mqOptions">' +
+        q.options.map((opt, i) =>
+          '<div class="mq-option" onclick="selectMasteryAnswer(' + i + ')">' +
+          '<span class="mq-letter">' + letters[i] + '</span>' + opt + '</div>'
+        ).join('') +
+        '</div>' +
+        '<div class="mq-explanation" id="mqExplain">' + q.explain + '</div>' +
+        '<button class="mq-next-btn" id="mqNext" onclick="nextMasteryQuestion()">' +
+        (num === total ? 'See Results' : 'Next Question \u2192') + '</button>';
+
+      masteryState.answered = false;
+    }
+
+    function selectMasteryAnswer(chosen) {
+      if (masteryState.answered) return;
+      masteryState.answered = true;
+      const q       = masteryQuestions[masteryState.order[masteryState.current]];
+      const correct = q.correct;
+      const options = document.querySelectorAll('.mq-option');
+      options.forEach((opt, i) => {
+        opt.classList.add('locked');
+        if (i === correct) opt.classList.add(i === chosen ? 'correct' : 'reveal-correct');
+        else if (i === chosen) opt.classList.add('wrong');
+      });
+      const isCorrect = chosen === correct;
+      if (isCorrect) {
+        masteryState.score++;
+      } else {
+        if (!masteryState.missed.includes(q.section)) masteryState.missed.push(q.section);
+      }
+      const explain = document.getElementById('mqExplain');
+      explain.classList.add('show', isCorrect ? 'good' : 'bad');
+      document.getElementById('mqNext').classList.add('show');
+      if (isCorrect) spawnConfetti(options[chosen]);
+    }
+
+    function nextMasteryQuestion() {
+      masteryState.current++;
+      if (masteryState.current >= 15) renderMasteryResult();
+      else renderMasteryQuestion();
+    }
+
+    function renderMasteryResult() {
+      const score = masteryState.score;
+      const total = 15;
+      const pct   = score / total;
+      document.getElementById('masteryProgressFill').style.width = '100%';
+      document.getElementById('masterySubtitle').textContent = 'Completed \u00b7 ' + score + '/' + total + ' correct';
+
+      const grade = pct >= 0.9
+        ? { label: 'Mastered!',     msg: 'Outstanding \u2014 you have a strong command of Chapter 1.', ring: 'pass' }
+        : pct >= 0.7
+        ? { label: 'Almost There',  msg: 'Solid foundation. Focus on the sections highlighted below.', ring: 'pass' }
+        : { label: 'Keep Studying', msg: 'Re-read the sections flagged below \u2014 each one links to the lesson.', ring: 'fail' };
+
+      let reviewHtml = '';
+      if (masteryState.missed.length > 0) {
+        const items = masteryState.missed.map(key => {
+          const meta = sectionMeta[key];
+          return '<div class="review-item" onclick="closeMasteryModal();setTimeout(()=>jumpTo(\'' + meta.id + '\'),200)">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
+            meta.label + '</div>';
+        }).join('');
+        reviewHtml = '<div class="review-sections"><div class="review-label">Study these sections</div>' + items + '</div>';
+      }
+
+      document.getElementById('masteryBody').innerHTML =
+        '<div class="mastery-result">' +
+        '<div class="mastery-result-ring ' + grade.ring + '">' + score + '/' + total + '</div>' +
+        '<h3>' + grade.label + '</h3>' +
+        '<p>' + grade.msg + '</p>' +
+        reviewHtml +
+        '<div class="mastery-result-btns">' +
+        '<button class="mq-retry-btn" onclick="openMasteryModal()">New Quiz</button>' +
+        '<button class="mq-done-btn" onclick="closeMasteryModal()">Done</button>' +
+        '</div></div>';
+
+      if (pct >= 0.7) spawnConfetti(document.getElementById('masteryBody'));
     }
 
   </script>
