@@ -517,7 +517,7 @@
     <div class="nav-spacer"></div>
     <a href="#chapters" class="nav-link">Chapters</a>
     <a href="#features" class="nav-link">Features</a>
-    <a href="chapter1.html" class="nav-btn">Chapter 1 →</a>
+    <a href="chapter1.html" class="nav-btn" style="font-size:12px;">Ch 1</a><a href="chapter2.html" class="nav-btn green" style="font-size:12px;">Ch 2</a>
     <div id="navAuthWrap">
       <!-- Populated by Firebase auth state -->
       <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
@@ -553,11 +553,12 @@
   <section class="hero" id="home">
     <canvas class="money-canvas" id="moneyCanvas"></canvas>
     <div class="hero-inner">
-      <div class="hero-eyebrow">Chapter 1 is live now</div>
+      <div class="hero-eyebrow">Chapters 1 &amp; 2 are live now</div>
       <h1>Accounting, finally<br><em>built to stick</em></h1>
       <p class="hero-sub">14 structured chapters covering everything from business basics to advanced financial statements — with interactive tools, quizzes, and cloud progress tracking built in.</p>
       <div class="hero-actions">
         <a href="chapter1.html" class="btn-primary">Start Chapter 1 →</a>
+        <a href="chapter2.html" class="btn-secondary" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);color:#d4a843;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;transition:opacity .15s;">Chapter 2 →</a>
         <a href="#chapters" class="btn-secondary">View All Chapters</a>
       </div>
       <div class="stats-strip">
@@ -573,7 +574,7 @@
   <section id="chapters" class="section">
     <div class="section-label">Curriculum</div>
     <h2 class="section-title">All 14 Chapters</h2>
-    <p class="section-sub">Chapter 1 is fully built with interactive tools, 65+ quiz questions, and progress tracking. Chapters 2–14 are scaffolded and ready for content.</p>
+    <p class="section-sub">Chapters 1 &amp; 2 are fully built with interactive tools, 65+ quiz questions each, and progress tracking. Chapters 3–14 are scaffolded and ready for content.</p>
     <div class="chapters-grid" id="chaptersGrid"></div>
   </section>
 
@@ -670,7 +671,7 @@
     // ── Chapter grid ─────────────────────────────────────────────
     const chapterData = [
       { n:1,  title:"Intro to Accounting & Business",       active:true  },
-      { n:2,  title:"Transaction Analysis & The Ledger",    active:false },
+      { n:2,  title:"Transaction Analysis & The Ledger",    active:true  },
       { n:3,  title:"Adjusting the Accounts",               active:false },
       { n:4,  title:"Completing the Accounting Cycle",      active:false },
       { n:5,  title:"Accounting for Merchandising",         active:false },
@@ -684,19 +685,22 @@
       { n:13, title:"Corporations: Organization & Capital", active:false },
       { n:14, title:"Long-Term Liabilities & Investments",  active:false },
     ];
-    const ch1Feats = ["65+ Questions","2 Simulators","Progress Tracking","Mastery Check"];
+    const chFeats = {
+      1: ["65+ Questions","7 Animations","Progress Tracking","Mastery Check"],
+      2: ["65+ Questions","10 Activities","Progress Tracking","Mastery Check"],
+    };
+    const chFiles = { 1: 'chapter1.html', 2: 'chapter2.html' };
 
     const grid = document.getElementById('chaptersGrid');
     chapterData.forEach(ch => {
       const el = document.createElement(ch.active ? 'a' : 'div');
-      if (ch.active) el.href = 'chapter1.html';
+      if (ch.active) el.href = chFiles[ch.n] || '#';
       el.className = 'chapter-card' + (ch.active ? ' active' : '');
       let html = `<div class="card-num">Chapter ${String(ch.n).padStart(2,'0')}</div>
                   <div class="card-title">${ch.title}</div>`;
       if (ch.active) {
-        html += `<div class="card-features">${ch1Feats.map(f=>`<span class="card-feat">${f}</span>`).join('')}</div>
-                 <div class="card-progress" id="ch1ProgressBadge"></div>
-                 <div class="card-progress" id="ch1ScoreBadge"></div>
+        const feats = chFeats[ch.n] || ["Interactive Lessons","Progress Tracking"];
+        html += `<div class="card-features">${feats.map(f=>`<span class="card-feat">${f}</span>`).join('')}</div>
                  <span class="card-badge live">Live Now</span>`;
       } else {
         html += `<span class="card-badge soon">Coming Soon</span>`;
