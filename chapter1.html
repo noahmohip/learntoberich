@@ -942,28 +942,44 @@
     }
 
     /* ===== SUMMARY — clean prose ===== */
-    .summary-list { display: grid; gap: 20px; margin-top: 24px; }
+    .summary-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
 
     .summary-item {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      gap: 16px;
-      align-items: baseline;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 22px 20px;
+      transition: border-color .18s, transform .18s, box-shadow .18s;
+      cursor: default;
+    }
+
+    .summary-item:hover {
+      border-color: rgba(45,186,126,.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,0,0,.25);
     }
 
     .summary-num {
       font-family: 'DM Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
       color: var(--green);
-      opacity: .7;
-      padding-top: 3px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 10px;
+      opacity: .8;
     }
 
     .summary-text {
-      font-size: 15px;
-      line-height: 1.8;
-      color: var(--text);
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--muted);
     }
 
     .summary-text b { color: var(--text); font-weight: 600; }
@@ -2067,6 +2083,136 @@
       border-radius: 4px;
       color: var(--gold);
     }
+  
+    /* ===== FLASHCARD DECK ===== */
+    .fc-deck-wrap {
+      margin-top: 20px;
+      user-select: none;
+    }
+    .fc-stage {
+      position: relative;
+      height: 240px;
+      perspective: 900px;
+      margin-bottom: 18px;
+      cursor: pointer;
+    }
+    .fc-card {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform .55s cubic-bezier(.4,0,.2,1);
+      border-radius: 16px;
+    }
+    .fc-card.flipped { transform: rotateY(180deg); }
+    .fc-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 36px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .fc-front {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+    .fc-front:hover { border-color: var(--border2); }
+    .fc-back {
+      background: var(--green-dim);
+      border-color: rgba(45,186,126,.3);
+      transform: rotateY(180deg);
+    }
+    .fc-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 14px;
+    }
+    .fc-front .fc-eyebrow { color: var(--muted2); }
+    .fc-back .fc-eyebrow { color: rgba(45,186,126,.7); }
+    .fc-term {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .fc-def {
+      font-size: 15px;
+      color: var(--green);
+      line-height: 1.7;
+      max-width: 540px;
+    }
+    .fc-hint {
+      margin-top: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted2);
+      letter-spacing: .08em;
+    }
+    .fc-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .fc-arrow {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 20px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, transform .1s;
+      flex-shrink: 0;
+    }
+    .fc-arrow:hover { border-color: var(--border2); background: var(--surface3); transform: scale(1.08); }
+    .fc-arrow:active { transform: scale(.95); }
+    .fc-counter {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted2);
+      min-width: 80px;
+      text-align: center;
+    }
+    .fc-flip-btn {
+      padding: 9px 22px;
+      border-radius: 9px;
+      border: 1px solid rgba(212,168,67,.3);
+      background: rgba(212,168,67,.08);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .fc-flip-btn:hover { background: rgba(212,168,67,.18); }
+    .fc-progress {
+      height: 3px;
+      background: var(--surface3);
+      border-radius: 2px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .fc-progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width .35s ease;
+    }
+
   </style>
 </head>
 <body>
@@ -2296,7 +2442,7 @@
       <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.06em;flex-shrink:0;">CH</span>
       <select id="chapterSelect" onchange="selectChapterFromDropdown()">
         <option value="1" selected>01 — Intro to Accounting & Business</option>
-        <option value="2">02 — Coming Soon</option>
+        <option value="2">02 — Analyzing Transactions</option>
         <option value="3">03 — Coming Soon</option>
         <option value="4">04 — Coming Soon</option>
         <option value="5">05 — Coming Soon</option>
@@ -2892,8 +3038,8 @@
           <span class="obj-badge">Glossary</span>
           <h2 style="font-size:20px;">Key Terms</h2>
         </div>
-        <p style="font-size:14px;color:var(--muted2);margin-bottom:16px;">All 28 terms from this chapter. Click any term to highlight it.</p>
-        <div class="terms" id="glossaryTerms"></div>
+        <p style="font-size:14px;color:var(--muted2);margin-bottom:16px;">28 terms — flip each card to see the definition. Use ← → arrow keys or the buttons below.</p>
+        <div class="fc-deck-wrap" id="flashcardDeck"></div>
       </section>
 
       <!-- ===== CHAPTER SUMMARY ===== -->
@@ -2904,13 +3050,34 @@
         </div>
         <p class="section-intro">Accounting is a system for explaining what a business owns, owes, earns, and spends. The equation is the structural core. The financial statements are the final output — and they connect in a chain that must be consistent.</p>
         <div class="summary-list">
-          <div class="summary-item"><span class="summary-num">01</span><div class="summary-text">Businesses use resources to provide goods or services and earn a profit. <b>Profit = Revenues − Expenses.</b> Accounting tracks and communicates this activity to both internal and external users.</div></div>
-          <div class="summary-item"><span class="summary-num">02</span><div class="summary-text"><b>Ethics matters</b> because accounting only works when users trust the information. Poor ethics causes real harm to lenders, employees, investors — not just owners.</div></div>
-          <div class="summary-item"><span class="summary-num">03</span><div class="summary-text"><b>GAAP</b> (written mainly by FASB, overseen by SEC) gives financial reporting its consistency. Reports must be relevant and faithfully represent what actually happened.</div></div>
-          <div class="summary-item"><span class="summary-num">04</span><div class="summary-text">Four <b>assumptions</b> (monetary unit, time period, business entity, going concern) and three <b>principles</b> (historical cost, revenue recognition, expense recognition) define how and when things get recorded.</div></div>
-          <div class="summary-item"><span class="summary-num">05</span><div class="summary-text">The accounting equation — <b>Assets = Liabilities + Stockholders' Equity</b> — must balance after every single transaction. Assets are resources owned; liabilities and equity are the two types of claims against them.</div></div>
-          <div class="summary-item"><span class="summary-num">06</span><div class="summary-text">Every transaction has at least two effects. <b>Common Stock</b> reflects owner investment; <b>Retained Earnings</b> reflects cumulative profit kept; <b>Dividends</b> reduce equity but are not expenses.</div></div>
-          <div class="summary-item"><span class="summary-num">07</span><div class="summary-text">The four statements flow in order: Income Statement → Retained Earnings Statement → Balance Sheet → Statement of Cash Flows. <b>Each feeds into the next</b>, and those connections let you catch errors.</div></div>
+          <div class="summary-item">
+            <span class="summary-num">01 &mdash; What Accounting Does</span>
+            <div class="summary-text">Businesses use resources to provide goods or services and earn a profit. <b>Profit = Revenues &minus; Expenses.</b> Accounting tracks and communicates this activity to both internal and external users.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">02 &mdash; Why Ethics Matters</span>
+            <div class="summary-text"><b>Ethics</b> is foundational because accounting only works when users trust the information. Poor ethics causes real harm to lenders, employees, and investors &mdash; not just owners.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">03 &mdash; GAAP &amp; Standard Setters</span>
+            <div class="summary-text"><b>GAAP</b> (written mainly by FASB, overseen by SEC) gives financial reporting its consistency. Reports must be <b>relevant</b> and <b>faithfully represent</b> what actually happened.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">04 &mdash; Assumptions &amp; Principles</span>
+            <div class="summary-text">Four <b>assumptions</b> (monetary unit, time period, business entity, going concern) and three <b>principles</b> (historical cost, revenue recognition, expense recognition) define how and when things get recorded.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">05 &mdash; The Accounting Equation</span>
+            <div class="summary-text">The equation &mdash; <b>Assets = Liabilities + Stockholders&rsquo; Equity</b> &mdash; must balance after every transaction. Assets are resources owned; liabilities and equity are the two types of claims against them.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">06 &mdash; Equity Accounts</span>
+            <div class="summary-text">Every transaction has at least two effects. <b>Common Stock</b> reflects owner investment; <b>Retained Earnings</b> reflects cumulative profit kept; <b>Dividends</b> reduce equity but are not expenses.</div>
+          </div>
+          <div class="summary-item">
+            <span class="summary-num">07 &mdash; The Four Statements</span>
+            <div class="summary-text">Statements flow in order: <b>Income Statement &rarr; Retained Earnings Statement &rarr; Balance Sheet &rarr; Cash Flows.</b> Each feeds into the next &mdash; those connections are your built-in error check.</div>
+          </div>
         </div>
       </section>
 
@@ -3044,10 +3211,10 @@
       <div class="next-chapter-bar">
         <div class="next-chapter-info">
           <strong>Up next</strong>
-          Chapter 2 — coming soon
+          Chapter 2 — Analyzing Transactions
         </div>
-        <a href="#" class="btn-next-chapter" onclick="openChapterModal(); return false;">
-          Next Chapter
+        <a href="chapter2.html" class="btn-next-chapter">
+          Start Chapter 2
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
       </div>
@@ -3062,9 +3229,14 @@
 
   <script>
     // ===== Chapter Navigation =====
+    const chTitles = {
+      1: "Intro to Accounting & Business",
+      2: "Analyzing Transactions",
+    };
+    const chStatuses = { 1: "Active", 2: "Live" };
     const chapters = Array.from({length: 14}, (_, i) => {
       const n = i + 1;
-      return { num: n, title: n === 1 ? "Intro to Accounting & Business" : "Coming Soon", status: n === 1 ? "Active" : "Planned", active: n === 1 };
+      return { num: n, title: chTitles[n] || "Coming Soon", status: chStatuses[n] || "Planned", active: n === 1 };
     });
 
     const chapterList = document.getElementById("chapterList");
@@ -3088,21 +3260,18 @@
     }
 
     function goChapter(n) {
+      if (n === 2) { window.location.href = "chapter2.html"; return; }
+      if (n !== 1) { showToast("Chapter " + n + " — coming soon!"); return; }
       chapters.forEach(c => c.active = (c.num === n));
       renderChapters();
       chapterSelect.value = String(n);
-      if (n === 1) {
-        document.getElementById("heroTitle").textContent = "Introduction to Accounting & Business";
-        document.getElementById("heroDesc").textContent = "19 sections covering everything from business fundamentals and ethics, through GAAP, the accounting equation, transaction analysis, and all four financial statements — plus a full glossary and study checklist.";
-      } else {
-        document.getElementById("heroTitle").textContent = `Chapter ${n} — Coming Soon`;
-        document.getElementById("heroDesc").textContent = "This chapter slot is scaffolded and ready. Add lesson content and it will render here automatically.";
-      }
       jumpTo("hero");
     }
 
     function selectChapterFromDropdown() {
-      goChapter(parseInt(chapterSelect.value, 10));
+      const n = parseInt(chapterSelect.value, 10);
+      if (n === 2) { window.location.href = "chapter2.html"; return; }
+      goChapter(n);
     }
 
     // ===== Utilities =====
@@ -3818,12 +3987,71 @@
       ["Statement of Cash Flows", "Statement summarizing cash receipts and cash payments for a period."],
     ];
 
-    const glossaryEl = document.getElementById("glossaryTerms");
-    if (glossaryEl) {
-      glossary.forEach(([term, def]) => {
-        glossaryEl.innerHTML += `<div class="term"><span class="term-tag" style="white-space:normal;min-width:160px;">${term}</span><div class="term-body">${def}</div></div>`;
+    // ===== FLASHCARD DECK =====
+    (function() {
+      const deck = document.getElementById("flashcardDeck");
+      if (!deck) return;
+      let idx = 0, flipped = false;
+
+      function renderProgress() {
+        document.getElementById("fcProgress1").style.width = ((idx + 1) / glossary.length * 100) + "%";
+      }
+
+      function buildCard() {
+        flipped = false;
+        const [term, def] = glossary[idx];
+        deck.innerHTML = `
+          <div class="fc-progress"><div class="fc-progress-fill" id="fcProgress1"></div></div>
+          <div class="fc-stage" id="fcStage1" onclick="flipCard1()" title="Click to flip">
+            <div class="fc-card" id="fcCard1">
+              <div class="fc-face fc-front">
+                <div class="fc-eyebrow">Term ${idx + 1} of ${glossary.length}</div>
+                <div class="fc-term">${term}</div>
+                <div class="fc-hint">click to reveal definition</div>
+              </div>
+              <div class="fc-face fc-back">
+                <div class="fc-eyebrow">Definition</div>
+                <div class="fc-def">${def}</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc-controls">
+            <button class="fc-arrow" onclick="prevCard1()" title="Previous (←)">&#8592;</button>
+            <span class="fc-counter" id="fcCounter1">${idx + 1} / ${glossary.length}</span>
+            <button class="fc-flip-btn" onclick="flipCard1()">Flip</button>
+            <span class="fc-counter"></span>
+            <button class="fc-arrow" onclick="nextCard1()" title="Next (→)">&#8594;</button>
+          </div>`;
+        renderProgress();
+      }
+
+      window.flipCard1 = function() {
+        flipped = !flipped;
+        const card = document.getElementById("fcCard1");
+        if (card) card.classList.toggle("flipped", flipped);
+      };
+      window.nextCard1 = function() {
+        idx = (idx + 1) % glossary.length;
+        buildCard();
+      };
+      window.prevCard1 = function() {
+        idx = (idx - 1 + glossary.length) % glossary.length;
+        buildCard();
+      };
+
+      // Arrow key navigation (only when deck is in viewport)
+      document.addEventListener("keydown", e => {
+        const rect = deck.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        if (!inView) return;
+        if (document.activeElement && ["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName)) return;
+        if (e.key === "ArrowRight") { e.preventDefault(); nextCard1(); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); prevCard1(); }
+        else if (e.key === " " || e.key === "Enter") { e.preventDefault(); flipCard1(); }
       });
-    }
+
+      buildCard();
+    })();
 
     // ===== Study Checklist =====
     const checklist = [
