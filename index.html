@@ -10,875 +10,805 @@
       --bg: #0d1117;
       --surface: #161b22;
       --surface2: #1c2333;
+      --surface3: #222d3e;
       --border: rgba(255,255,255,.08);
+      --border2: rgba(255,255,255,.13);
       --text: #e8edf3;
-      --muted: #8b96a8;
+      --muted: #b8c4d4;
+      --muted2: #8b96a8;
       --gold: #d4a843;
-      --gold-dim: rgba(212,168,67,.15);
+      --gold-dim: rgba(212,168,67,.12);
       --green: #2dba7e;
       --green-dim: rgba(45,186,126,.12);
+      --green-bright: rgba(45,186,126,.25);
+      --red: #f06060;
+      --red-dim: rgba(240,96,96,.1);
       --accent: #4f9cf9;
-      --radius: 14px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'DM Sans', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
     }
 
-    /* ---------- NAV ---------- */
+    /* ===== NAV ===== */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 0 40px;
-      height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(13,17,23,.85);
-      backdrop-filter: blur(16px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 0 40px; height: 68px;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(13,17,23,.88);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
-
     .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text);
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text); flex-shrink: 0;
     }
-
     .nav-logo {
-      width: 42px; height: 42px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      box-shadow: 0 0 20px rgba(45,186,126,.12);
+      width: 40px; height: 40px; border-radius: 10px; overflow: hidden;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      box-shadow: 0 0 20px rgba(45,186,126,.12); display: grid; place-items: center;
     }
-    .nav-logo img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .nav-brand-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: .01em;
-    }
-
+    .nav-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .nav-brand-text { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; }
     .nav-brand-text small {
-      display: block;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 400;
-      color: var(--muted);
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      display: block; font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 400; color: var(--muted2);
+      letter-spacing: .04em; text-transform: uppercase;
     }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .nav-spacer { flex: 1; }
     .nav-link {
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--muted);
-      transition: color .2s, background .2s;
+      padding: 8px 16px; border-radius: 8px; text-decoration: none;
+      font-size: 14px; font-weight: 500; color: var(--muted2);
+      transition: color .15s, background .15s; white-space: nowrap;
     }
-
     .nav-link:hover { color: var(--text); background: var(--surface2); }
-
-    .nav-cta {
-      padding: 9px 20px;
-      border-radius: 8px;
-      background: var(--green);
-      color: #071a10;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity .2s, transform .2s;
+    .nav-btn {
+      padding: 8px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
+      transition: border-color .15s, background .15s; white-space: nowrap;
     }
+    .nav-btn:hover { border-color: var(--border2); background: var(--surface3); }
+    .nav-btn.green { background: var(--green); border-color: var(--green); color: #071a10; }
+    .nav-btn.green:hover { opacity: .88; }
 
-    .nav-cta:hover { opacity: .85; transform: translateY(-1px); }
+    /* ===== AUTH ===== */
+    .nav-auth-wrap { position: relative; }
+    .user-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 12px 5px 5px; border-radius: 9px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .user-btn:hover { border-color: var(--border2); background: var(--surface3); }
+    .user-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; }
+    .user-avatar-placeholder {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green-dim); border: 1px solid rgba(45,186,126,.3);
+      display: grid; place-items: center; font-size: 12px; font-weight: 700;
+      color: var(--green); flex-shrink: 0;
+    }
+    .profile-dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 14px; padding: 8px; min-width: 220px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5); z-index: 500;
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: opacity .18s, transform .18s;
+    }
+    .profile-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .profile-header { padding: 12px 12px 10px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+    .profile-name { font-size: 14px; font-weight: 600; }
+    .profile-email { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+    .profile-progress { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+    .profile-progress-label {
+      font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted2); margin-bottom: 8px;
+    }
+    .progress-bar-wrap { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+    .progress-bar-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width .4s; }
+    .progress-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--green); }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px; font-size: 13px; color: var(--muted2);
+      cursor: pointer; transition: background .12s, color .12s;
+      border: none; background: transparent; width: 100%; text-align: left;
+      font-family: 'DM Sans', sans-serif; text-decoration: none;
+    }
+    .dropdown-item:hover { background: var(--surface2); color: var(--text); }
+    .dropdown-item.danger:hover { background: var(--red-dim); color: var(--red); }
 
-    /* ---------- HERO ---------- */
+    /* ===== AUTH MODAL ===== */
+    .auth-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7);
+      backdrop-filter: blur(8px); z-index: 9100;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    .auth-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .auth-modal {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 40px; max-width: 400px;
+      width: calc(100% - 48px); box-shadow: 0 40px 100px rgba(0,0,0,.6);
+      transform: translateY(16px) scale(.98); transition: transform .25s; text-align: center;
+    }
+    .auth-modal-overlay.open .auth-modal { transform: translateY(0) scale(1); }
+    .auth-logo-ring {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--green-dim); border: 2px solid rgba(45,186,126,.3);
+      display: grid; place-items: center; margin: 0 auto 20px;
+    }
+    .auth-modal h3 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+    .auth-modal p { font-size: 14px; color: var(--muted2); line-height: 1.65; margin-bottom: 28px; }
+    .google-btn {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; padding: 13px 20px; border-radius: 10px;
+      border: 1px solid var(--border2); background: #fff; color: #1f1f1f;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: box-shadow .15s, transform .15s;
+    }
+    .google-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,.3); transform: translateY(-1px); }
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--muted2); font-size: 12px;
+    }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .auth-skip {
+      width: 100%; padding: 11px; border-radius: 9px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted2); font-family: 'DM Sans', sans-serif;
+      font-size: 14px; cursor: pointer; transition: border-color .15s, color .15s;
+    }
+    .auth-skip:hover { border-color: var(--border2); color: var(--text); }
+
+    /* ===== HERO ===== */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 40px 80px;
-      position: relative;
-      overflow: hidden;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 40px 80px; position: relative; overflow: hidden;
     }
-
-    /* background grid lines */
     .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
       background-size: 56px 56px;
     }
-
     .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 900px 600px at 20% 40%, rgba(45,186,126,.12), transparent 60%),
+        radial-gradient(ellipse 900px 600px at 20% 40%, rgba(45,186,126,.13), transparent 60%),
         radial-gradient(ellipse 700px 500px at 80% 60%, rgba(79,156,249,.08), transparent 60%);
     }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      text-align: center;
-    }
-
+    .money-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .cursor-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+    .hero-inner { position: relative; z-index: 1; max-width: 900px; text-align: center; }
     .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--green);
-      background: var(--green-dim);
-      border: 1px solid rgba(45,186,126,.25);
-      padding: 6px 16px;
-      border-radius: 999px;
-      margin-bottom: 32px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--green);
+      background: var(--green-dim); border: 1px solid rgba(45,186,126,.25);
+      padding: 6px 16px; border-radius: 999px; margin-bottom: 32px;
       animation: fadeUp .8s ease both;
     }
-
     .hero-eyebrow::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s ease infinite;
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); animation: pulse 2s ease infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .5; transform: scale(0.75); }
-    }
-
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.7); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(44px, 7vw, 82px);
-      font-weight: 900;
-      line-height: 1.06;
-      letter-spacing: -.02em;
-      color: #f0f5fa;
+      font-size: clamp(44px,7vw,82px); font-weight: 900;
+      line-height: 1.06; letter-spacing: -.02em; color: #f0f5fa;
       animation: fadeUp .8s .1s ease both;
     }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--gold);
-    }
-
+    .hero h1 em { font-style: italic; color: var(--gold); }
     .hero-sub {
-      margin: 28px auto 0;
-      max-width: 620px;
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--muted);
-      font-weight: 400;
+      margin: 28px auto 0; max-width: 620px;
+      font-size: 18px; line-height: 1.7; color: var(--muted); font-weight: 400;
       animation: fadeUp .8s .2s ease both;
     }
-
     .hero-actions {
-      margin-top: 44px;
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
+      margin-top: 44px; display: flex; gap: 14px;
+      justify-content: center; flex-wrap: wrap;
       animation: fadeUp .8s .3s ease both;
     }
-
     .btn-primary {
-      padding: 16px 36px;
-      background: var(--green);
-      color: #071a10;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      padding: 16px 36px; background: var(--green); color: #071a10;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
       transition: transform .2s, box-shadow .2s;
       box-shadow: 0 8px 32px rgba(45,186,126,.25);
     }
-
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(45,186,126,.35); }
-
     .btn-secondary {
-      padding: 16px 36px;
-      background: transparent;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      padding: 16px 36px; background: transparent; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
       transition: border-color .2s, background .2s;
     }
+    .btn-secondary:hover { border-color: var(--border2); background: var(--surface2); }
 
-    .btn-secondary:hover { border-color: rgba(255,255,255,.2); background: var(--surface2); }
-
-    /* ---------- STATS STRIP ---------- */
+    /* stats */
     .stats-strip {
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      margin-top: 72px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      max-width: 760px;
-      margin-left: auto;
-      margin-right: auto;
-      animation: fadeUp .8s .4s ease both;
+      display: flex; justify-content: center; flex-wrap: wrap;
+      margin-top: 72px; animation: fadeUp .8s .45s ease both;
     }
+    .stat-item { padding: 20px 36px; border-right: 1px solid var(--border); text-align: center; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; line-height: 1; }
+    .stat-num span { color: var(--green); }
+    .stat-label { font-size: 12px; color: var(--muted2); letter-spacing: .04em; margin-top: 4px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
 
-    .stat {
-      flex: 1;
-      padding: 24px 20px;
-      text-align: center;
-      border-right: 1px solid var(--border);
-    }
+    /* ===== SECTIONS ===== */
+    .section { padding: 100px 40px; max-width: 1160px; margin: 0 auto; }
+    .section-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(28px,4vw,42px); font-weight: 900; line-height: 1.15; margin-bottom: 16px; }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .section-sub { font-size: 16px; color: var(--muted); line-height: 1.75; max-width: 600px; margin-bottom: 52px; }
 
-    .stat:last-child { border-right: none; }
-
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--gold);
-    }
-
-    .stat-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    /* ---------- CHAPTERS GRID ---------- */
-    .section-chapters {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 100px 40px;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .section-label {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 44px;
-      font-weight: 900;
-      letter-spacing: -.02em;
-      line-height: 1.1;
-    }
-
-    .section-sub {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.65;
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .chapters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
+    /* ===== CHAPTERS GRID ===== */
+    .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
     .chapter-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      text-decoration: none;
-      color: var(--text);
-      display: block;
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 22px 24px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 14px;
+      text-decoration: none; color: var(--text);
       transition: border-color .2s, transform .2s, box-shadow .2s;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
-
     .chapter-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(300px 200px at 50% 0%, rgba(45,186,126,.06), transparent);
-      opacity: 0;
-      transition: opacity .3s;
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--border); transition: background .2s;
     }
-
-    .chapter-card:hover::before { opacity: 1; }
-
-    .chapter-card.active {
-      border-color: rgba(45,186,126,.4);
-      box-shadow: 0 0 0 1px rgba(45,186,126,.2), 0 16px 40px rgba(45,186,126,.1);
-    }
-
-    .chapter-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(0,0,0,.3);
-      border-color: rgba(255,255,255,.15);
-    }
-
-    .chapter-card.active:hover { border-color: rgba(45,186,126,.6); }
-
-    .card-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .08em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
+    .chapter-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+    .chapter-card.active::before { background: var(--green); }
+    .chapter-card.active { border-color: rgba(45,186,126,.2); }
+    .chapter-card.active:hover { border-color: rgba(45,186,126,.4); box-shadow: 0 12px 40px rgba(45,186,126,.12); }
+    .card-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted2); letter-spacing: .06em; }
     .chapter-card.active .card-num { color: var(--green); }
-
-    .card-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 12px;
+    .card-title { font-size: 15px; font-weight: 600; line-height: 1.35; }
+    .card-features { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .card-feat {
+      font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted2);
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 3px 7px;
     }
-
+    .chapter-card.active .card-feat { background: var(--green-dim); border-color: rgba(45,186,126,.2); color: var(--green); }
     .card-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: .04em;
+      display: inline-block; margin-top: 6px;
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 4px 9px; border-radius: 5px;
+    }
+    .card-badge.live { background: var(--green-dim); border: 1px solid rgba(45,186,126,.25); color: var(--green); }
+    .card-badge.soon { background: var(--surface2); border: 1px solid var(--border); color: var(--muted2); }
+    .card-progress {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      color: var(--gold); margin-top: 2px; display: none;
     }
 
-    .card-badge.live {
-      background: var(--green-dim);
-      color: var(--green);
-      border: 1px solid rgba(45,186,126,.25);
-    }
-
-    .card-badge.soon {
-      background: rgba(139,150,168,.08);
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-
-    .card-badge.live::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--green);
-    }
-
-    /* ---------- FEATURES ---------- */
-    .section-features {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 40px 120px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    @media (max-width: 840px) {
-      .features-grid { grid-template-columns: 1fr; }
-      nav { padding: 0 20px; }
-      .hero { padding: 100px 20px 60px; }
-      .section-chapters, .section-features { padding-left: 20px; padding-right: 20px; }
-    }
-
+    /* ===== FEATURES ===== */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
     .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px 28px;
+      padding: 28px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 16px;
+      transition: border-color .2s, transform .2s;
     }
-
+    .feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
     .feature-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      margin-bottom: 20px;
+      width: 48px; height: 48px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 22px; margin-bottom: 16px;
     }
+    .feature-icon.teal { background: var(--green-dim); border: 1px solid rgba(45,186,126,.2); }
+    .feature-icon.gold { background: var(--gold-dim); border: 1px solid rgba(212,168,67,.2); }
+    .feature-icon.blue { background: rgba(79,156,249,.1); border: 1px solid rgba(79,156,249,.2); }
+    .feature-icon.purple { background: rgba(160,100,255,.1); border: 1px solid rgba(160,100,255,.2); }
+    .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
 
-    .feature-icon.teal { background: var(--green-dim); }
-    .feature-icon.gold { background: var(--gold-dim); }
-    .feature-icon.blue { background: rgba(79,156,249,.12); }
-
-    .feature-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    /* ===== QUIZ SPOTLIGHT ===== */
+    .quiz-spotlight {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 48px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: center; margin-top: 56px;
     }
-
-    .feature-desc {
-      font-size: 14px;
-      line-height: 1.7;
-      color: var(--muted);
+    .quiz-spotlight-text h3 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; margin-bottom: 12px; line-height: 1.2; }
+    .quiz-spotlight-text p { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 24px; }
+    .quiz-stat-row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .quiz-stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; color: var(--green); }
+    .quiz-stat-label { font-size: 12px; color: var(--muted2); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .05em; }
+    .quiz-mockup { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .qm-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+    .qm-q { font-size: 14px; font-weight: 600; line-height: 1.5; margin-bottom: 16px; }
+    .qm-opt {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); font-size: 13px;
+      margin-bottom: 8px; background: var(--surface);
     }
-
-    /* ---------- CTA BANNER ---------- */
-    .cta-banner {
-      margin: 0 40px 100px;
-      background: linear-gradient(135deg, #0f2a1c, #142235);
-      border: 1px solid rgba(45,186,126,.2);
-      border-radius: 24px;
-      padding: 72px 60px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+    .qm-opt.correct { border-color: rgba(45,186,126,.5); background: rgba(45,186,126,.08); color: var(--green); }
+    .qm-letter {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      width: 20px; height: 20px; border-radius: 4px;
+      background: var(--surface3); display: grid; place-items: center;
+      color: var(--muted2); flex-shrink: 0;
     }
+    .qm-opt.correct .qm-letter { background: rgba(45,186,126,.2); color: var(--green); }
 
-    .cta-banner::before {
-      content: '';
-      position: absolute;
-      top: -100px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse, rgba(45,186,126,.15), transparent 70%);
+    /* ===== PROGRESS SECTION ===== */
+    .progress-section {
+      background: linear-gradient(135deg, rgba(45,186,126,.06) 0%, rgba(212,168,67,.04) 100%);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
+    .progress-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .progress-card { padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; text-align: center; }
+    .progress-card-icon { font-size: 28px; margin-bottom: 12px; }
+    .progress-card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .progress-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
-    .cta-banner h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 42px;
-      font-weight: 900;
-      letter-spacing: -.02em;
-      position: relative;
+    /* ===== CTA ===== */
+    .cta-banner { padding: 100px 40px; text-align: center; background: var(--surface); border-top: 1px solid var(--border); }
+    .cta-banner h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px,4vw,48px); font-weight: 900; margin-bottom: 16px; }
+    .cta-banner p { font-size: 16px; color: var(--muted); max-width: 520px; margin: 0 auto 36px; line-height: 1.75; }
+    .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ===== FOOTER ===== */
+    footer { padding: 28px 40px; text-align: center; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted2); letter-spacing: .06em; border-top: 1px solid var(--border); }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--surface); border: 1px solid var(--border2);
+      color: var(--text); padding: 12px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 500; box-shadow: 0 8px 40px rgba(0,0,0,.4);
+      opacity: 0; transition: opacity .25s, transform .25s;
+      pointer-events: none; z-index: 9999; white-space: nowrap;
     }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .cta-banner p {
-      color: var(--muted);
-      font-size: 17px;
-      margin: 16px auto 0;
-      max-width: 500px;
-      position: relative;
-      line-height: 1.65;
-    }
-
-    .cta-banner .hero-actions { margin-top: 36px; }
-
-    /* ---------- FOOTER ---------- */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    footer a { color: var(--muted); text-decoration: none; }
-    footer a:hover { color: var(--text); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ---------- MONEY & CURSOR CANVASES ---------- */
-    .hero { isolation: isolate; }
-
-    #moneyCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* hero-inner already has z-index:1 so it sits above the canvas */
-
-    #cursorCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 9990;
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; gap: 8px; }
+      .hero { padding: 100px 20px 60px; }
+      .section { padding: 60px 20px; }
+      .quiz-spotlight { grid-template-columns: 1fr; padding: 28px; gap: 28px; }
+      .stat-item { padding: 16px 20px; }
+      .cta-banner { padding: 60px 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cursor trail canvas (full page) -->
-  <canvas id="cursorCanvas"></canvas>
+  <!-- Firebase Auth (same config as chapter1.html) -->
+  <script type="module">
+    import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ── Same config as chapter1.html ─────────────────────────────
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAPWmZttt-N29lZceK2dJEVqfU80YbqBXY",
+      authDomain:        "accounting-by-noah.firebaseapp.com",
+      projectId:         "accounting-by-noah",
+      storageBucket:     "accounting-by-noah.firebasestorage.app",
+      messagingSenderId: "855215961646",
+      appId:             "1:855215961646:web:9eda0eb4fae7b8710a51bf"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        renderUserNav(user);
+        await loadProgress(user.uid);
+      } else {
+        renderSignInNav();
+      }
+    });
+
+    window.signInWithGoogle = async function() {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        closeAuthModal();
+      } catch(e) {
+        console.error(e);
+        showToast('Sign-in failed — check console.');
+      }
+    };
+
+    window.signOutUser = async function() {
+      await signOut(auth);
+      closeProfileDropdown();
+      showToast('Signed out.');
+    };
+
+    async function loadProgress(uid) {
+      try {
+        const snap = await getDoc(doc(db, 'progress', uid));
+        if (!snap.exists()) return;
+        const data = snap.data();
+
+        // Show chapter 1 progress on card
+        if (data.checklist) {
+          const pct = Math.round((data.checklist.filter(Boolean).length / data.checklist.length) * 100);
+          const badge = document.getElementById('ch1ProgressBadge');
+          if (badge) { badge.textContent = pct + '% complete'; badge.style.display = 'block'; }
+          updateDropdownBar(pct);
+        }
+        if (data.recapScore !== undefined) {
+          const score = document.getElementById('ch1ScoreBadge');
+          if (score) { score.textContent = 'Recap quiz: ' + data.recapScore + '/10'; score.style.display = 'block'; }
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    function updateDropdownBar(pct) {
+      const fill  = document.getElementById('progressBarFill');
+      const label = document.getElementById('progressPct');
+      if (fill)  fill.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+    }
+
+    function renderSignInNav() {
+      document.getElementById('navAuthWrap').innerHTML = `
+        <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Log In
+        </button>`;
+    }
+
+    function renderUserNav(user) {
+      const initial = (user.displayName || user.email || '?')[0].toUpperCase();
+      const avatar  = user.photoURL
+        ? `<img src="${user.photoURL}" class="user-avatar" referrerpolicy="no-referrer" alt=""/>`
+        : `<div class="user-avatar-placeholder">${initial}</div>`;
+      const name = (user.displayName || user.email || '').split(' ')[0];
+      document.getElementById('navAuthWrap').innerHTML = `
+        <div class="nav-auth-wrap">
+          <button class="user-btn" onclick="toggleProfileDropdown()">
+            ${avatar}<span>${name}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-header">
+              <div class="profile-name">${user.displayName || 'Student'}</div>
+              <div class="profile-email">${user.email}</div>
+            </div>
+            <div class="profile-progress">
+              <div class="profile-progress-label">Chapter 1 Progress</div>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div></div>
+              <div class="progress-pct" id="progressPct">0%</div>
+            </div>
+            <a class="dropdown-item" href="chapter1.html">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Go to Chapter 1
+            </a>
+            <button class="dropdown-item danger" onclick="signOutUser()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>`;
+    }
+  </script>
 
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-brand">
-      <div class="nav-logo"><img src="logo-accounting-by-noah.png" alt="Accounting By Noah logo"></div>
-      <div class="nav-brand-text">
-        Accounting By Noah
-        <small>Learning Portal</small>
-      </div>
+      <div class="nav-logo"><img src="logo-accounting-by-noah.png" alt="Accounting By Noah"></div>
+      <div class="nav-brand-text">Accounting By Noah<small>Learning Portal</small></div>
     </a>
-    <div class="nav-links">
-      <a href="#chapters" class="nav-link">Chapters</a>
-      <a href="chapter1.html" class="nav-cta">Start Learning →</a>
+    <div class="nav-spacer"></div>
+    <a href="#chapters" class="nav-link">Chapters</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="chapter1.html" class="nav-btn">Chapter 1 →</a>
+    <div id="navAuthWrap">
+      <!-- Populated by Firebase auth state -->
+      <button class="nav-btn green" onclick="openAuthModal()" style="display:flex;align-items:center;gap:7px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Log In
+      </button>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <canvas id="moneyCanvas"></canvas>
-    <div class="hero-inner">
-      <div class="hero-eyebrow">Now Live — Chapter 1</div>
-      <h1>Learn accounting<br>the <em>right</em> way</h1>
-      <p class="hero-sub">
-        Concepts in plain English. Interactive simulators that build real intuition.
-        No memorization dumping — just clear ideas, applied immediately.
-      </p>
-      <div class="hero-actions">
-        <a href="chapter1.html" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Start Chapter 1
-        </a>
-        <a href="#chapters" class="btn-secondary">Browse All Chapters</a>
-      </div>
+  <div id="toast"></div>
 
+  <!-- AUTH MODAL -->
+  <div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+    <div class="auth-modal">
+      <div class="auth-logo-ring">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2dba7e" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h3>Welcome back</h3>
+      <p>Sign in with Google to save your quiz scores and checklist progress across all chapters and devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">or</div>
+      <button class="auth-skip" onclick="closeAuthModal()">Continue without signing in</button>
+    </div>
+  </div>
+
+  <!-- CURSOR CANVAS -->
+  <canvas class="cursor-canvas" id="cursorCanvas"></canvas>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <canvas class="money-canvas" id="moneyCanvas"></canvas>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Chapter 1 is live now</div>
+      <h1>Accounting, finally<br><em>built to stick</em></h1>
+      <p class="hero-sub">14 structured chapters covering everything from business basics to advanced financial statements — with interactive tools, quizzes, and cloud progress tracking built in.</p>
+      <div class="hero-actions">
+        <a href="chapter1.html" class="btn-primary">Start Chapter 1 →</a>
+        <a href="#chapters" class="btn-secondary">View All Chapters</a>
+      </div>
       <div class="stats-strip">
-        <div class="stat">
-          <div class="stat-num">14</div>
-          <div class="stat-label">Chapters</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">5</div>
-          <div class="stat-label">Objectives</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">3</div>
-          <div class="stat-label">Simulators</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">∞</div>
-          <div class="stat-label">Practice</div>
-        </div>
+        <div class="stat-item"><div class="stat-num"><span>14</span></div><div class="stat-label">Chapters</div></div>
+        <div class="stat-item"><div class="stat-num"><span>65</span>+</div><div class="stat-label">Quiz Questions</div></div>
+        <div class="stat-item"><div class="stat-num"><span>2</span></div><div class="stat-label">Simulators</div></div>
+        <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Practice</div></div>
       </div>
     </div>
   </section>
 
   <!-- CHAPTERS -->
-  <section id="chapters" class="section-chapters">
-    <div class="section-header">
-      <div class="section-label">Curriculum</div>
-      <h2 class="section-title">All 14 Chapters</h2>
-      <p class="section-sub">One chapter fully built, thirteen ready to be filled. The structure, navigation, and tools are in place — content drops in automatically.</p>
-    </div>
-
+  <section id="chapters" class="section">
+    <div class="section-label">Curriculum</div>
+    <h2 class="section-title">All 14 Chapters</h2>
+    <p class="section-sub">Chapter 1 is fully built with interactive tools, 65+ quiz questions, and progress tracking. Chapters 2–14 are scaffolded and ready for content.</p>
     <div class="chapters-grid" id="chaptersGrid"></div>
   </section>
 
   <!-- FEATURES -->
-  <section class="section-features">
-    <div class="section-header">
-      <div class="section-label">Why It Works</div>
-      <h2 class="section-title">Built for understanding,<br><em>not</em> memorization</h2>
-    </div>
-
+  <section id="features" class="section" style="padding-top:0">
+    <div class="section-label">Why It Works</div>
+    <h2 class="section-title">Built for understanding,<br><em>not</em> memorization</h2>
+    <p class="section-sub">Every tool is designed to make abstract concepts click — not just get you through the exam.</p>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon teal">⚖️</div>
-        <div class="feature-title">Interactive Equation Builder</div>
-        <p class="feature-desc">Drag sliders to change Assets, Liabilities, and Equity in real time. Watch the accounting equation balance — or break — live.</p>
+        <div class="feature-title">Live Equation Simulator</div>
+        <p class="feature-desc">Drag sliders to change Assets, Liabilities, and Equity in real time. Watch the accounting equation balance — or break — as you adjust each value.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon gold">📒</div>
-        <div class="feature-title">Live Journal Entry Tool</div>
-        <p class="feature-desc">Record debit and credit entries and immediately see how each transaction moves the A/L/E balances. Undo, redo, reset.</p>
+        <div class="feature-title">Try a Journal Entry</div>
+        <p class="feature-desc">Record debit and credit entries and immediately see how each transaction moves the A/L/E balances. Undo, redo, start over — no stakes, just learning.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon blue">🃏</div>
-        <div class="feature-title">Flashcards & Mini Quizzes</div>
-        <p class="feature-desc">Test yourself on key terms and formulas right inside the chapter. No external tools needed — review is built directly into the lesson.</p>
+        <div class="feature-icon blue">🎯</div>
+        <div class="feature-title">Mastery Check Quiz</div>
+        <p class="feature-desc">65+ questions, 15 drawn randomly every attempt. Results show exactly which sections you missed — with one-click links back to the lesson.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon purple">☁️</div>
+        <div class="feature-title">Progress Syncs Everywhere</div>
+        <p class="feature-desc">Sign in with Google and your checklist and quiz scores save automatically. Pick up right where you left off on any device.</p>
+      </div>
+    </div>
+
+    <div class="quiz-spotlight">
+      <div class="quiz-spotlight-text">
+        <div class="section-label">Mastery Check</div>
+        <h3>Know exactly where<br>to study next</h3>
+        <p>After every quiz, you see a breakdown of which sections you missed — not just a number. Click any section in the results and jump straight there.</p>
+        <div class="quiz-stat-row">
+          <div class="quiz-stat"><div class="quiz-stat-num">65</div><div class="quiz-stat-label">Questions</div></div>
+          <div class="quiz-stat"><div class="quiz-stat-num">7</div><div class="quiz-stat-label">Topics</div></div>
+          <div class="quiz-stat"><div class="quiz-stat-num">∞</div><div class="quiz-stat-label">Attempts</div></div>
+        </div>
+      </div>
+      <div class="quiz-mockup">
+        <div class="qm-label">Question 3 / 15</div>
+        <div class="qm-q">The accounting equation is:</div>
+        <div class="qm-opt"><span class="qm-letter">A</span>Assets = Revenue − Expenses</div>
+        <div class="qm-opt correct"><span class="qm-letter">B</span>Assets = Liabilities + Stockholders' Equity ✓</div>
+        <div class="qm-opt"><span class="qm-letter">C</span>Profit = Revenues − Expenses</div>
+        <div class="qm-opt"><span class="qm-letter">D</span>Liabilities = Assets + Equity</div>
       </div>
     </div>
   </section>
 
+  <!-- PROGRESS SECTION -->
+  <div class="progress-section">
+    <div class="section">
+      <div class="section-label">Your Progress</div>
+      <h2 class="section-title">Learning that follows you</h2>
+      <p class="section-sub">Sign in once and everything saves automatically — no accounts to manage beyond your Google login.</p>
+      <div class="progress-cards">
+        <div class="progress-card">
+          <div class="progress-card-icon">✅</div>
+          <div class="progress-card-title">Checklist Sync</div>
+          <p class="progress-card-desc">Check off each topic as you finish it. Saves instantly and restores on every device you sign in from.</p>
+        </div>
+        <div class="progress-card">
+          <div class="progress-card-icon">🏆</div>
+          <div class="progress-card-title">Quiz Scores Saved</div>
+          <p class="progress-card-desc">Your recap quiz score is stored per chapter. Retake any quiz — previous scores stay until you beat them.</p>
+        </div>
+        <div class="progress-card">
+          <div class="progress-card-icon">📱</div>
+          <div class="progress-card-title">Any Device</div>
+          <p class="progress-card-desc">Progress lives in the cloud, not the browser. Switch from laptop to phone mid-chapter without losing a checkbox.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CTA -->
   <div class="cta-banner">
-    <h2>Ready to start?</h2>
-    <p>Chapter 1 covers the nature of business, GAAP, the accounting equation, transactions, and the financial statements.</p>
-    <div class="hero-actions">
+    <h2>Ready to get started?</h2>
+    <p>Chapter 1 covers business basics, ethics, GAAP, the accounting equation, transactions, and all four financial statements — fully interactive.</p>
+    <div class="cta-actions">
       <a href="chapter1.html" class="btn-primary">Open Chapter 1 →</a>
+      <button class="btn-secondary" onclick="openAuthModal()">Sign In with Google</button>
     </div>
   </div>
 
   <!-- FOOTER -->
-  <footer>
-    Accounting By Noah &nbsp;·&nbsp; 14 Chapters &nbsp;·&nbsp; Built for learning
-  </footer>
+  <footer>Accounting By Noah &nbsp;·&nbsp; 14 Chapters &nbsp;·&nbsp; Built for learning</footer>
 
   <script>
-    const chapterTitles = {
-      1: "Intro to Accounting & Business"
-    };
+    // ── Chapter grid ─────────────────────────────────────────────
+    const chapterData = [
+      { n:1,  title:"Intro to Accounting & Business",       active:true  },
+      { n:2,  title:"Transaction Analysis & The Ledger",    active:false },
+      { n:3,  title:"Adjusting the Accounts",               active:false },
+      { n:4,  title:"Completing the Accounting Cycle",      active:false },
+      { n:5,  title:"Accounting for Merchandising",         active:false },
+      { n:6,  title:"Inventories",                          active:false },
+      { n:7,  title:"Accounting Information Systems",       active:false },
+      { n:8,  title:"Fraud, Internal Control & Cash",       active:false },
+      { n:9,  title:"Accounting for Receivables",           active:false },
+      { n:10, title:"Plant Assets & Intangibles",           active:false },
+      { n:11, title:"Current Liabilities & Payroll",        active:false },
+      { n:12, title:"Accounting for Partnerships",          active:false },
+      { n:13, title:"Corporations: Organization & Capital", active:false },
+      { n:14, title:"Long-Term Liabilities & Investments",  active:false },
+    ];
+    const ch1Feats = ["65+ Questions","2 Simulators","Progress Tracking","Mastery Check"];
 
     const grid = document.getElementById('chaptersGrid');
-    for (let i = 1; i <= 14; i++) {
-      const isActive = i === 1;
-      const title = chapterTitles[i] || "Coming Soon";
-      const card = document.createElement('a');
-      card.href = isActive ? 'chapter1.html' : '#chapters';
-      card.className = 'chapter-card' + (isActive ? ' active' : '');
-      card.innerHTML = `
-        <div class="card-num">Chapter ${String(i).padStart(2,'0')}</div>
-        <div class="card-title">${title}</div>
-        <span class="card-badge ${isActive ? 'live' : 'soon'}">
-          ${isActive ? 'Live Now' : 'Coming Soon'}
-        </span>
-      `;
-      grid.appendChild(card);
+    chapterData.forEach(ch => {
+      const el = document.createElement(ch.active ? 'a' : 'div');
+      if (ch.active) el.href = 'chapter1.html';
+      el.className = 'chapter-card' + (ch.active ? ' active' : '');
+      let html = `<div class="card-num">Chapter ${String(ch.n).padStart(2,'0')}</div>
+                  <div class="card-title">${ch.title}</div>`;
+      if (ch.active) {
+        html += `<div class="card-features">${ch1Feats.map(f=>`<span class="card-feat">${f}</span>`).join('')}</div>
+                 <div class="card-progress" id="ch1ProgressBadge"></div>
+                 <div class="card-progress" id="ch1ScoreBadge"></div>
+                 <span class="card-badge live">Live Now</span>`;
+      } else {
+        html += `<span class="card-badge soon">Coming Soon</span>`;
+      }
+      el.innerHTML = html;
+      grid.appendChild(el);
+    });
+
+    // ── Auth helpers (called from onclicks — non-module scope) ───
+    function openAuthModal() {
+      document.getElementById('authModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
-  </script>
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function toggleProfileDropdown() {
+      const dd = document.getElementById('profileDropdown');
+      if (dd) dd.classList.toggle('open');
+    }
+    function closeProfileDropdown() {
+      const dd = document.getElementById('profileDropdown');
+      if (dd) dd.classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      const wrap = document.querySelector('.nav-auth-wrap');
+      if (wrap && !wrap.contains(e.target)) closeProfileDropdown();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeAuthModal(); closeProfileDropdown(); }
+    });
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
 
-  <script>
-    // ============================================================
-    // FALLING MONEY
-    // ============================================================
-    (function initFallingMoney() {
-      const canvas = document.getElementById("moneyCanvas");
+    // ── Falling money ────────────────────────────────────────────
+    (function() {
+      const canvas = document.getElementById('moneyCanvas');
       const hero   = canvas.parentElement;
-      const ctx    = canvas.getContext("2d");
+      const ctx    = canvas.getContext('2d');
       let w, h;
-
       const BILLS = [
-        { bg: "#1a3a1e", fg: "#2dba7e", label: "$100" },
-        { bg: "#1e2f1a", fg: "#4ddf9a", label: "$50"  },
-        { bg: "#2a2010", fg: "#d4a843", label: "$20"  },
-        { bg: "#12201a", fg: "#1e9e68", label: "$1"   },
+        {bg:"#1a3a1e",fg:"#2dba7e",label:"$100"},
+        {bg:"#1e2f1a",fg:"#4ddf9a",label:"$50"},
+        {bg:"#2a2010",fg:"#d4a843",label:"$20"},
+        {bg:"#12201a",fg:"#1e9e68",label:"$1"},
       ];
-
-      function resize() {
-        w = canvas.width  = hero.offsetWidth;
-        h = canvas.height = hero.offsetHeight;
+      function resize() { w=canvas.width=hero.offsetWidth; h=canvas.height=hero.offsetHeight; }
+      function makeBill(sy) {
+        const b=BILLS[Math.floor(Math.random()*BILLS.length)], bw=46+Math.random()*20, bh=bw*.44;
+        return {x:Math.random()*(w+60)-30, y:sy!==undefined?sy:-bh-Math.random()*40,
+          bw,bh,speed:.5+Math.random()*1.1,wobbleAmp:16+Math.random()*28,
+          wobbleFreq:.011+Math.random()*.018,wobblePhase:Math.random()*Math.PI*2,
+          rot:(Math.random()-.5)*.5,rotSpeed:(Math.random()-.5)*.018,
+          alpha:.13+Math.random()*.22,frame:Math.random()*200,
+          bg:b.bg,fg:b.fg,label:b.label};
       }
-
-      function makeBill(scatterY) {
-        const bill = BILLS[Math.floor(Math.random() * BILLS.length)];
-        const bw = 46 + Math.random() * 20;
-        const bh = bw * 0.44;
-        return {
-          x:           Math.random() * (w + 60) - 30,
-          y:           scatterY !== undefined ? scatterY : -bh - Math.random() * 40,
-          bw, bh,
-          speed:       0.5 + Math.random() * 1.1,
-          wobbleAmp:   16 + Math.random() * 28,
-          wobbleFreq:  0.011 + Math.random() * 0.018,
-          wobblePhase: Math.random() * Math.PI * 2,
-          rot:         (Math.random() - 0.5) * 0.5,
-          rotSpeed:    (Math.random() - 0.5) * 0.018,
-          alpha:       0.13 + Math.random() * 0.22,
-          bg: bill.bg, fg: bill.fg, label: bill.label,
-          frame: Math.random() * 200,
-        };
-      }
-
       function drawBill(b) {
-        ctx.save();
-        ctx.globalAlpha = b.alpha;
-        ctx.translate(
-          b.x + Math.sin(b.frame * b.wobbleFreq + b.wobblePhase) * b.wobbleAmp,
-          b.y
-        );
+        ctx.save(); ctx.globalAlpha=b.alpha;
+        ctx.translate(b.x+Math.sin(b.frame*b.wobbleFreq+b.wobblePhase)*b.wobbleAmp,b.y);
         ctx.rotate(b.rot);
-
-        const rx = b.bw / 2, ry = b.bh / 2, corner = 3;
-
-        // Body
+        const rx=b.bw/2,ry=b.bh/2,c=3;
         ctx.beginPath();
-        ctx.moveTo(-rx + corner, -ry);
-        ctx.lineTo( rx - corner, -ry);
-        ctx.quadraticCurveTo( rx, -ry,  rx, -ry + corner);
-        ctx.lineTo( rx,  ry - corner);
-        ctx.quadraticCurveTo( rx,  ry,  rx - corner,  ry);
-        ctx.lineTo(-rx + corner,  ry);
-        ctx.quadraticCurveTo(-rx,  ry, -rx,  ry - corner);
-        ctx.lineTo(-rx, -ry + corner);
-        ctx.quadraticCurveTo(-rx, -ry, -rx + corner, -ry);
-        ctx.closePath();
-        ctx.fillStyle = b.bg;
-        ctx.fill();
-
-        // Inner border
-        ctx.strokeStyle = b.fg;
-        ctx.lineWidth = 0.7;
-        ctx.globalAlpha = b.alpha * 0.6;
-        const pad = 2.5;
-        ctx.strokeRect(-rx + pad, -ry + pad, b.bw - pad * 2, b.bh - pad * 2);
-
-        // Portrait oval
-        ctx.globalAlpha = b.alpha * 0.4;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, rx * 0.22, ry * 0.52, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = b.fg;
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        // Labels
-        ctx.globalAlpha = b.alpha * 0.9;
-        ctx.fillStyle = b.fg;
-        ctx.font = `bold ${b.bh * 0.34}px "DM Mono", monospace`;
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "left";
-        ctx.fillText(b.label, -rx + 4.5, 0);
-        ctx.textAlign = "right";
-        ctx.fillText(b.label, rx - 4.5, 0);
-
-        // Vertical detail lines
-        ctx.globalAlpha = b.alpha * 0.12;
-        ctx.strokeStyle = b.fg;
-        ctx.lineWidth = 0.4;
-        for (let i = -3; i <= 3; i++) {
-          const lx = i * (rx * 0.28);
-          ctx.beginPath();
-          ctx.moveTo(lx, -ry + pad + 1);
-          ctx.lineTo(lx,  ry - pad - 1);
-          ctx.stroke();
-        }
-
+        ctx.moveTo(-rx+c,-ry);ctx.lineTo(rx-c,-ry);ctx.quadraticCurveTo(rx,-ry,rx,-ry+c);
+        ctx.lineTo(rx,ry-c);ctx.quadraticCurveTo(rx,ry,rx-c,ry);
+        ctx.lineTo(-rx+c,ry);ctx.quadraticCurveTo(-rx,ry,-rx,ry-c);
+        ctx.lineTo(-rx,-ry+c);ctx.quadraticCurveTo(-rx,-ry,-rx+c,-ry);ctx.closePath();
+        ctx.fillStyle=b.bg;ctx.fill();
+        ctx.strokeStyle=b.fg;ctx.lineWidth=.7;ctx.globalAlpha=b.alpha*.6;
+        ctx.strokeRect(-rx+2.5,-ry+2.5,b.bw-5,b.bh-5);
+        ctx.globalAlpha=b.alpha*.4;
+        ctx.beginPath();ctx.ellipse(0,0,rx*.22,ry*.52,0,0,Math.PI*2);
+        ctx.strokeStyle=b.fg;ctx.lineWidth=.8;ctx.stroke();
+        ctx.globalAlpha=b.alpha*.9;ctx.fillStyle=b.fg;
+        ctx.font=`bold ${b.bh*.34}px "DM Mono",monospace`;
+        ctx.textBaseline='middle';
+        ctx.textAlign='left';ctx.fillText(b.label,-rx+4.5,0);
+        ctx.textAlign='right';ctx.fillText(b.label,rx-4.5,0);
         ctx.restore();
       }
-
-      resize();
-      window.addEventListener("resize", resize);
-
-      // Pre-scatter bills across full hero height so it's populated on load
-      const bills = Array.from({ length: 22 }, (_, i) =>
-        makeBill(Math.random() * (h + 60) - 30)
-      );
-
+      resize(); window.addEventListener('resize',resize);
+      const bills=Array.from({length:22},()=>makeBill(Math.random()*(h+60)-30));
       function draw() {
-        ctx.clearRect(0, 0, w, h);
-
-        // Occasionally trickle in new bills to replace recycled ones
-        if (Math.random() < 0.02 && bills.length < 24) bills.push(makeBill());
-
-        bills.forEach((b, i) => {
-          b.frame++;
-          b.y   += b.speed;
-          b.rot += b.rotSpeed;
-          drawBill(b);
-          if (b.y > h + b.bh + 10) bills[i] = makeBill();
-        });
-
+        ctx.clearRect(0,0,w,h);
+        if (Math.random()<.02&&bills.length<24) bills.push(makeBill());
+        bills.forEach((b,i)=>{b.frame++;b.y+=b.speed;b.rot+=b.rotSpeed;drawBill(b);if(b.y>h+b.bh+10)bills[i]=makeBill();});
         requestAnimationFrame(draw);
       }
       draw();
     })();
 
-    // ============================================================
-    // CURSOR TRAIL
-    // ============================================================
-    (function initCursorTrail() {
-      const canvas = document.getElementById("cursorCanvas");
-      const ctx    = canvas.getContext("2d");
-      let w = canvas.width  = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
-
-      window.addEventListener("resize", () => {
-        w = canvas.width  = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      });
-
-      const TRAIL_LEN = 22;
-      const trail  = [];
-      const mouse  = { x: -300, y: -300 };
-      const leader = { x: -300, y: -300 };
-
-      window.addEventListener("mousemove", e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-      });
-
+    // ── Cursor trail ─────────────────────────────────────────────
+    (function() {
+      const canvas=document.getElementById('cursorCanvas');
+      const ctx=canvas.getContext('2d');
+      let w=canvas.width=window.innerWidth, h=canvas.height=window.innerHeight;
+      window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;});
+      const TRAIL=22,trail=[],mouse={x:-300,y:-300},leader={x:-300,y:-300};
+      window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
       function draw() {
-        leader.x += (mouse.x - leader.x) * 0.18;
-        leader.y += (mouse.y - leader.y) * 0.18;
-
-        trail.unshift({ x: leader.x, y: leader.y });
-        if (trail.length > TRAIL_LEN) trail.pop();
-
-        ctx.clearRect(0, 0, w, h);
-
-        trail.forEach((pt, i) => {
-          const progress = i / TRAIL_LEN;
-          const radius   = (1 - progress) * 4.5;
-          const alpha    = (1 - progress) * 0.45 * (1 - progress);
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, Math.max(0.1, radius), 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(45,186,126,${alpha})`;
-          ctx.fill();
+        leader.x+=(mouse.x-leader.x)*.18;leader.y+=(mouse.y-leader.y)*.18;
+        trail.unshift({x:leader.x,y:leader.y});
+        if(trail.length>TRAIL)trail.pop();
+        ctx.clearRect(0,0,w,h);
+        trail.forEach((pt,i)=>{
+          const p=i/TRAIL,r=(1-p)*4.5,a=(1-p)*.45*(1-p);
+          ctx.beginPath();ctx.arc(pt.x,pt.y,Math.max(.1,r),0,Math.PI*2);
+          ctx.fillStyle=`rgba(45,186,126,${a})`;ctx.fill();
         });
-
         requestAnimationFrame(draw);
       }
       draw();
