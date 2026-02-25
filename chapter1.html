@@ -14,8 +14,8 @@
       --border: rgba(255,255,255,.08);
       --border2: rgba(255,255,255,.13);
       --text: #e8edf3;
-      --muted: #8b96a8;
-      --muted2: #6a7585;
+      --muted: #b8c4d4;
+      --muted2: #8b96a8;
       --gold: #d4a843;
       --gold-dim: rgba(212,168,67,.12);
       --green: #2dba7e;
@@ -400,40 +400,70 @@
       margin-bottom: 28px;
     }
 
-    /* TERM GRID */
-    .terms { display: grid; gap: 12px; }
+    /* ===== PROSE DEFINITIONS (replaces box-heavy terms) ===== */
+    .terms { display: grid; gap: 0; }
 
     .term {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      padding: 16px;
-      border-radius: 11px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 160px 1fr auto;
+      gap: 20px;
+      align-items: baseline;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
     }
+    .terms .term:last-child { border-bottom: none; }
 
     .term-tag {
       font-family: 'DM Mono', monospace;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: var(--surface3);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      white-space: nowrap;
-      flex-shrink: 0;
+      color: var(--green);
       letter-spacing: .04em;
+      padding-top: 1px;
     }
 
     .term-body {
-      font-size: 14px;
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.75;
       color: var(--text);
     }
 
     .term-body b { color: var(--text); font-weight: 600; }
+
+    /* TOC jump rows */
+    .term.toc-link {
+      cursor: pointer;
+      transition: background .15s, padding-left .15s;
+      border-radius: 8px;
+      padding: 14px 10px 14px 0;
+    }
+
+    .term.toc-link:hover {
+      background: rgba(45,186,126,.06);
+      padding-left: 10px;
+    }
+
+    .term.toc-link:hover .term-tag {
+      color: var(--green);
+    }
+
+    .term.toc-link:hover .toc-arrow {
+      opacity: 1;
+      transform: translateY(2px);
+    }
+
+    .toc-arrow {
+      font-size: 14px;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity .15s, transform .15s;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    @media (max-width: 600px) {
+      .term { grid-template-columns: 1fr; gap: 4px; }
+    }
 
     /* EQUATION BOX */
     .eq-box {
@@ -470,59 +500,74 @@
 
     .copy-btn:hover { background: var(--green-dim); }
 
-    /* QUIZ */
+    /* ===== QUIZ ZONES — visually distinct from content ===== */
     .quiz-block {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: rgba(212,168,67,.05);
+      border: 1px solid rgba(212,168,67,.2);
+      border-left: 3px solid var(--gold);
       border-radius: 11px;
-      padding: 20px;
-      margin-top: 20px;
+      padding: 22px 24px;
+      margin-top: 32px;
+    }
+
+    .quiz-block::before {
+      content: 'Quick Check';
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
     }
 
     .quiz-label {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 12px;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.55;
     }
 
     .quiz-input {
       width: 100%;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(212,168,67,.2);
       border-radius: 8px;
-      padding: 10px 14px;
+      padding: 11px 14px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 400;
       color: var(--text);
       outline: none;
       transition: border-color .15s;
     }
 
-    .quiz-input:focus { border-color: var(--green); }
+    .quiz-input:focus { border-color: var(--gold); }
 
     .quiz-row {
       display: flex;
       gap: 10px;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 12px;
       flex-wrap: wrap;
     }
 
     .quiz-check-btn {
       padding: 9px 20px;
       border-radius: 8px;
-      background: var(--green);
-      color: #071a10;
-      border: none;
+      background: rgba(212,168,67,.15);
+      color: var(--gold);
+      border: 1px solid rgba(212,168,67,.3);
       font-family: 'DM Sans', sans-serif;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      transition: opacity .15s;
+      transition: background .15s;
     }
 
-    .quiz-check-btn:hover { opacity: .85; }
+    .quiz-check-btn:hover { background: rgba(212,168,67,.25); }
 
     .result-badge {
       display: none;
@@ -567,21 +612,19 @@
     .flashcard:hover { border-color: var(--border2); transform: translateY(-2px); }
     .flashcard.flipped { background: var(--green-dim); border-color: rgba(45,186,126,.3); color: var(--green); }
 
-    /* GAAP GRID */
+    /* ===== PROSE CONTENT BLOCKS ===== */
     .gaap-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 20px;
+      gap: 40px;
+      margin-top: 28px;
     }
 
-    @media (max-width: 700px) { .gaap-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .gaap-grid { grid-template-columns: 1fr; gap: 24px; } }
 
     .gaap-card {
-      padding: 18px;
-      border-radius: 11px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      padding: 0 0 0 16px;
+      border-left: 2px solid rgba(212,168,67,.4);
     }
 
     .gaap-card-label {
@@ -591,13 +634,13 @@
       font-weight: 500;
       letter-spacing: .1em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .gaap-card p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.7;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.8;
     }
 
     .gaap-card b { color: var(--text); font-weight: 600; }
@@ -863,86 +906,404 @@
 
     .je-note b { color: var(--text); }
 
-    /* ===== FINANCIAL STATEMENTS ===== */
-    .statements-grid {
+    /* ===== FINANCIAL STATEMENTS — numbered prose list ===== */
+    .statements-list { display: grid; gap: 0; margin-top: 24px; }
+
+    .stmt-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 20px;
+      grid-template-columns: 40px 1fr;
+      gap: 20px;
+      align-items: baseline;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
     }
-
-    @media (max-width: 700px) { .statements-grid { grid-template-columns: 1fr; } }
-
-    .stmt-card {
-      padding: 20px;
-      border-radius: 11px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
+    .statements-list .stmt-row:last-child { border-bottom: none; }
 
     .stmt-num {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--gold-dim);
-      border: 1px solid rgba(212,168,67,.2);
-      display: grid;
-      place-items: center;
       font-family: 'Playfair Display', serif;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 900;
       color: var(--gold);
-      flex-shrink: 0;
+      opacity: .6;
     }
 
     .stmt-text b {
       display: block;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
+      color: var(--text);
       margin-bottom: 4px;
     }
 
     .stmt-text p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.75;
     }
 
-    /* ===== SUMMARY ===== */
-    .summary-grid {
-      display: grid;
-      gap: 10px;
-      margin-top: 20px;
-    }
+    /* ===== SUMMARY — clean prose ===== */
+    .summary-list { display: grid; gap: 20px; margin-top: 24px; }
 
     .summary-item {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 16px;
+      align-items: baseline;
     }
 
     .summary-num {
       font-family: 'DM Mono', monospace;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--green);
-      padding-top: 2px;
-      flex-shrink: 0;
+      opacity: .7;
+      padding-top: 3px;
     }
 
     .summary-text {
-      font-size: 14px;
-      line-height: 1.7;
-      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
     }
 
-    .summary-text b { color: var(--text); }
+    .summary-text b { color: var(--text); font-weight: 600; }
+
+    /* ===== RECAP QUIZ ===== */
+    .recap-quiz {
+      border-top: 1px solid var(--border);
+      padding: 48px 40px;
+      background: rgba(212,168,67,.025);
+    }
+
+    .recap-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .recap-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -.01em;
+    }
+
+    .recap-intro {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 680px;
+    }
+
+    .rq-item {
+      margin-bottom: 32px;
+    }
+
+    .rq-item:last-child { margin-bottom: 0; }
+
+    .rq-q {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.55;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .rq-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--gold);
+      padding-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .rq-options { display: grid; gap: 8px; margin-left: 28px; }
+
+    .rq-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      user-select: none;
+    }
+
+    .rq-option:hover { border-color: rgba(212,168,67,.3); color: var(--text); }
+    .rq-option.selected { border-color: rgba(212,168,67,.4); background: rgba(212,168,67,.06); color: var(--text); }
+    .rq-option.correct { border-color: rgba(45,186,126,.4); background: rgba(45,186,126,.08); color: var(--green); }
+    .rq-option.wrong { border-color: rgba(240,96,96,.4); background: rgba(240,96,96,.07); color: var(--red); }
+
+    .rq-letter {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted2);
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .rq-feedback {
+      margin-left: 28px;
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted2);
+      display: none;
+    }
+
+    .rq-feedback.show { display: block; }
+    .rq-feedback.good { color: var(--green); }
+    .rq-feedback.bad { color: var(--muted); }
+
+    .recap-score {
+      display: none;
+      margin-top: 40px;
+      padding: 28px 32px;
+      border-radius: 14px;
+      background: rgba(45,186,126,.06);
+      border: 1px solid rgba(45,186,126,.2);
+      text-align: center;
+    }
+
+    .recap-score.show { display: block; }
+
+    .recap-score-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+    }
+
+    .recap-score-label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .recap-submit {
+      margin-top: 32px;
+      padding: 13px 32px;
+      border-radius: 10px;
+      background: rgba(212,168,67,.15);
+      border: 1px solid rgba(212,168,67,.3);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .recap-submit:hover { background: rgba(212,168,67,.25); }
+    .recap-submit:disabled { opacity: .4; cursor: default; }
+
+    /* ===== OVERVIEW SECTION — distinct from content sections ===== */
+    #obj0 {
+      background: linear-gradient(135deg, rgba(45,186,126,.06) 0%, rgba(212,168,67,.04) 100%);
+      border-top: none;
+      border-bottom: 2px solid rgba(45,186,126,.15);
+      padding: 40px 40px 36px;
+    }
+
+    #obj0 .section-title-row .obj-badge {
+      color: var(--green);
+    }
+
+    #obj0 .section-title-row h2 {
+      font-size: 22px;
+    }
+
+    #obj0 .section-intro {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* ===== NEXT CHAPTER MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 36px 40px 32px;
+      max-width: 480px;
+      width: calc(100% - 48px);
+      box-shadow: 0 32px 80px rgba(0,0,0,.5);
+      transform: translateY(12px);
+      transition: transform .25s;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .modal h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .modal-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .modal-chapters {
+      display: grid;
+      gap: 8px;
+      max-height: 340px;
+      overflow-y: auto;
+      margin-bottom: 24px;
+      padding-right: 4px;
+    }
+
+    .modal-ch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+
+    .modal-ch:hover { border-color: var(--green-bright); background: var(--green-dim); }
+
+    .modal-ch.current { opacity: .4; cursor: default; }
+    .modal-ch.current:hover { border-color: var(--border); background: var(--surface2); }
+
+    .modal-ch-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted2);
+      width: 28px;
+      flex-shrink: 0;
+    }
+
+    .modal-ch-title {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .modal-ch-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .modal-ch-badge.live { background: var(--green-dim); color: var(--green); border: 1px solid rgba(45,186,126,.25); }
+    .modal-ch-badge.soon { background: var(--surface3); color: var(--muted2); }
+
+    .modal-close {
+      width: 100%;
+      padding: 11px;
+      border-radius: 9px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+
+    .modal-close:hover { border-color: var(--border2); color: var(--text); }
+    .next-chapter-bar {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .next-chapter-info {
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    .next-chapter-info strong {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 4px;
+    }
+
+    .btn-next-chapter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: var(--green);
+      color: #071a10;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s, transform .15s;
+      box-shadow: 0 4px 20px rgba(45,186,126,.25);
+    }
+
+    .btn-next-chapter:hover { opacity: .88; transform: translateX(3px); }
+
+    @media (max-width: 600px) {
+      .next-chapter-bar { flex-direction: column; align-items: flex-start; }
+      .recap-quiz { padding: 32px 20px; }
+    }
 
     /* ===== COMING SOON ===== */
     .coming-section {
@@ -1094,9 +1455,513 @@
     /* Make ch-hero a stacking context so canvas stays behind content */
     .ch-hero { isolation: isolate; }
     .ch-hero-inner { position: relative; z-index: 1; }
+
+    /* ===== AUTH STYLES ===== */
+    .auth-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .auth-btn:hover { border-color: var(--border2); background: var(--surface3); }
+    .auth-btn svg { flex-shrink: 0; }
+
+    .user-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px 5px 5px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .user-btn:hover { border-color: var(--border2); background: var(--surface3); }
+
+    .user-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .user-avatar-placeholder {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--green-dim);
+      border: 1px solid rgba(45,186,126,.3);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* Auth modal */
+    .auth-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(8px);
+      z-index: 9100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .auth-modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .auth-modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 400px;
+      width: calc(100% - 48px);
+      box-shadow: 0 40px 100px rgba(0,0,0,.6);
+      transform: translateY(16px) scale(.98);
+      transition: transform .25s;
+      text-align: center;
+    }
+    .auth-modal-overlay.open .auth-modal { transform: translateY(0) scale(1); }
+
+    .auth-logo-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--green-dim);
+      border: 2px solid rgba(45,186,126,.3);
+      display: grid;
+      place-items: center;
+      margin: 0 auto 20px;
+    }
+
+    .auth-modal h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .auth-modal p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background: #fff;
+      color: #1f1f1f;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .google-btn:hover { box-shadow: 0 4px 20px rgba(0,0,0,.3); transform: translateY(-1px); }
+    .google-btn:active { transform: translateY(0); }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--muted2);
+      font-size: 12px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .auth-skip {
+      width: 100%;
+      padding: 11px;
+      border-radius: 9px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .auth-skip:hover { border-color: var(--border2); color: var(--text); }
+
+    /* Profile dropdown */
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 8px;
+      min-width: 220px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity .18s, transform .18s;
+    }
+    .profile-dropdown.open {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .profile-header {
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+    .profile-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .profile-email {
+      font-size: 12px;
+      color: var(--muted2);
+      margin-top: 2px;
+    }
+
+    .profile-progress {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+    .profile-progress-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 8px;
+    }
+    .progress-bar-wrap {
+      height: 5px;
+      background: var(--surface3);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 3px;
+      transition: width .4s ease;
+    }
+    .progress-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .dropdown-item:hover { background: var(--surface2); color: var(--text); }
+    .dropdown-item.danger:hover { background: var(--red-dim); color: var(--red); }
+
+    .nav-auth-wrap { position: relative; }
+
+    /* Progress ring on checklist items for signed-in users */
+    .ch1-progress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--green-dim);
+      border: 1px solid rgba(45,186,126,.2);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      margin-left: 12px;
+    }
+
+    /* Firebase config notice banner */
+    .firebase-notice {
+      background: rgba(212,168,67,.08);
+      border: 1px solid rgba(212,168,67,.25);
+      border-left: 3px solid var(--gold);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 16px 40px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: none;
+    }
+    .firebase-notice.show { display: block; }
+    .firebase-notice b { color: var(--gold); }
+    .firebase-notice code {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      background: rgba(212,168,67,.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--gold);
+    }
   </style>
 </head>
 <body>
+
+  <!-- Firebase SDKs (modular v10) -->
+  <script type="module">
+    // ============================================================
+    // FIREBASE SETUP
+    // ============================================================
+    // 1. Go to https://console.firebase.google.com
+    // 2. Create a project → Add Web App → copy config below
+    // 3. Enable Google Sign-In: Authentication → Sign-in method → Google
+    // 4. Enable Firestore: Firestore Database → Create database (start in test mode)
+    // 5. Add your GitHub Pages domain to Auth → Settings → Authorized domains
+    //    e.g. yourusername.github.io
+    // ============================================================
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ─── REPLACE THIS BLOCK WITH YOUR FIREBASE CONFIG ──────────
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAPWmZttt-N29lZceK2dJEVqfU80YbqBXY",
+      authDomain:        "accounting-by-noah.firebaseapp.com",
+      projectId:         "accounting-by-noah",
+      storageBucket:     "accounting-by-noah.firebasestorage.app",
+      messagingSenderId: "855215961646",
+      appId:             "1:855215961646:web:9eda0eb4fae7b8710a51bf"
+    };
+    // ────────────────────────────────────────────────────────────
+
+    // Detect unconfigured state
+    const isConfigured = firebaseConfig.apiKey !== "REPLACE_WITH_YOUR_API_KEY";
+
+    if (!isConfigured) {
+      document.getElementById('firebaseNotice').classList.add('show');
+    }
+
+    let app, auth, db, currentUser = null;
+
+    if (isConfigured) {
+      app  = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db   = getFirestore(app);
+
+      // ── Auth state listener ──────────────────────────────────
+      onAuthStateChanged(auth, async user => {
+        currentUser = user;
+        if (user) {
+          renderUserNav(user);
+          await loadProgress(user.uid);
+        } else {
+          renderSignInNav();
+        }
+      });
+    }
+
+    // ── Sign in with Google ──────────────────────────────────
+    window.signInWithGoogle = async function() {
+      if (!isConfigured) return;
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        closeAuthModal();
+      } catch (e) {
+        console.error("Sign-in error:", e);
+        showToast("Sign-in failed — check console.");
+      }
+    };
+
+    // ── Sign out ─────────────────────────────────────────────
+    window.signOutUser = async function() {
+      if (!isConfigured) return;
+      await signOut(auth);
+      closeProfileDropdown();
+      showToast("Signed out.");
+    };
+
+    // ── Save progress to Firestore ───────────────────────────
+    window.saveProgress = async function(data) {
+      if (!currentUser || !isConfigured) return;
+      const ref = doc(db, "progress", currentUser.uid);
+      await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge: true });
+    };
+
+    // ── Load progress from Firestore ─────────────────────────
+    async function loadProgress(uid) {
+      if (!isConfigured) return;
+      try {
+        const ref  = doc(db, "progress", uid);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const data = snap.data();
+
+        // Restore checklist
+        if (data.checklist) {
+          const labels = document.querySelectorAll('#checklist label');
+          labels.forEach((label, i) => {
+            const cb = label.querySelector('input[type=checkbox]');
+            if (cb && data.checklist[i]) {
+              cb.checked = true;
+              label.style.color = 'var(--green)';
+              label.style.textDecoration = 'line-through';
+            }
+          });
+        }
+
+        // Restore recap score display
+        if (data.recapScore !== undefined) {
+          const scoreEl = document.getElementById('recapScore');
+          const scoreNum = document.getElementById('recapScoreNum');
+          const scoreLabel = document.getElementById('recapScoreLabel');
+          const pct = data.recapScore / 10;
+          scoreNum.textContent = `${data.recapScore}/10`;
+          if (pct >= 0.9) scoreLabel.textContent = "Excellent — you've mastered Chapter 1!";
+          else if (pct >= 0.7) scoreLabel.textContent = 'Good work — review the questions you missed.';
+          else scoreLabel.textContent = 'Keep studying — re-read the sections you missed.';
+          scoreEl.classList.add('show');
+          document.getElementById('recapSubmit').disabled = true;
+        }
+
+        updateProgressBar();
+        showToast("Progress loaded ✓");
+      } catch (e) {
+        console.error("Load progress error:", e);
+      }
+    }
+
+    // ── UI helpers ───────────────────────────────────────────
+    function renderSignInNav() {
+      const wrap = document.getElementById('navAuthWrap');
+      wrap.innerHTML = `
+        <button class="auth-btn" onclick="openAuthModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Sign In
+        </button>`;
+    }
+
+    function renderUserNav(user) {
+      const wrap = document.getElementById('navAuthWrap');
+      const initial = (user.displayName || user.email || '?')[0].toUpperCase();
+      const avatarHtml = user.photoURL
+        ? `<img src="${user.photoURL}" class="user-avatar" referrerpolicy="no-referrer" alt=""/>`
+        : `<div class="user-avatar-placeholder">${initial}</div>`;
+      const name = (user.displayName || user.email || '').split(' ')[0];
+      wrap.innerHTML = `
+        <div class="nav-auth-wrap">
+          <button class="user-btn" onclick="toggleProfileDropdown()">
+            ${avatarHtml}
+            <span>${name}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-header">
+              <div class="profile-name">${user.displayName || 'Student'}</div>
+              <div class="profile-email">${user.email}</div>
+            </div>
+            <div class="profile-progress">
+              <div class="profile-progress-label">Chapter 1 Progress</div>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div></div>
+              <div class="progress-pct" id="progressPct">0%</div>
+            </div>
+            <button class="dropdown-item" onclick="saveAllProgress(); closeProfileDropdown();">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save Progress
+            </button>
+            <button class="dropdown-item danger" onclick="signOutUser()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>`;
+      updateProgressBar();
+    }
+
+    window.updateProgressBar = function() {
+      const fill = document.getElementById('progressBarFill');
+      const pctEl = document.getElementById('progressPct');
+      if (!fill) return;
+      const checkboxes = document.querySelectorAll('#checklist input[type=checkbox]');
+      const checked = [...checkboxes].filter(c => c.checked).length;
+      const total = checkboxes.length || 1;
+      const pct = Math.round((checked / total) * 100);
+      fill.style.width = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+    };
+
+    // ── Save all current progress ────────────────────────────
+    window.saveAllProgress = async function() {
+      const checkboxes = document.querySelectorAll('#checklist input[type=checkbox]');
+      const checklistState = [...checkboxes].map(c => c.checked);
+      const scoreEl = document.getElementById('recapScoreNum');
+      let recapScore = undefined;
+      if (scoreEl && scoreEl.textContent && scoreEl.textContent !== '—') {
+        recapScore = parseInt(scoreEl.textContent);
+      }
+      const data = { checklist: checklistState };
+      if (recapScore !== undefined) data.recapScore = recapScore;
+      await saveProgress(data);
+      updateProgressBar();
+      showToast("Progress saved ✓");
+    };
+
+    if (!isConfigured) {
+      // Show sign-in UI anyway so it's clear what to set up
+      window.addEventListener('DOMContentLoaded', () => {
+        const wrap = document.getElementById('navAuthWrap');
+        if (wrap) wrap.innerHTML = `<button class="auth-btn" onclick="openAuthModal()" style="opacity:.6" title="Firebase not configured yet">Sign In</button>`;
+      });
+    }
+  </script>
 
   <!-- NAV -->
   <nav>
@@ -1128,13 +1993,54 @@
       </select>
     </div>
     <button class="nav-btn" onclick="toggleStudyMode()">Study Mode</button>
-    <button class="nav-btn green" onclick="scrollTo('obj7')">Mastery Check</button>
+    <button class="nav-btn green" onclick="jumpTo('obj7')">Mastery Check</button>
+    <div id="navAuthWrap">
+      <button class="auth-btn" onclick="openAuthModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Sign In
+      </button>
+    </div>
   </nav>
+
+  <!-- Firebase config notice -->
+  <div class="firebase-notice" id="firebaseNotice">
+    <b>Firebase not configured yet.</b> Sign-in will work once you add your config.
+    Open this file, find the <code>firebaseConfig</code> block near the top, and replace the placeholder values with your project credentials.
+    See <b>SETUP.md</b> for the full walkthrough.
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+    <div class="auth-modal">
+      <div class="auth-logo-ring">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2dba7e" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h3>Welcome back</h3>
+      <p>Sign in with Google to save your quiz scores, checklist progress, and pick up right where you left off — on any device.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.66l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">or</div>
+      <button class="auth-skip" onclick="closeAuthModal()">Continue without signing in</button>
+    </div>
+  </div>
 
   <div id="toast">Copied</div>
 
   <!-- Cursor trail canvas (full page) -->
   <canvas id="cursorCanvas"></canvas>
+
+  <!-- CHAPTER SELECT MODAL -->
+  <div class="modal-overlay" id="chapterModal" onclick="if(event.target===this) closeChapterModal()">
+    <div class="modal">
+      <div class="modal-eyebrow">Accounting By Noah</div>
+      <h3>Jump to a Chapter</h3>
+      <p class="modal-sub">Chapter 1 is fully built. Chapters 2–14 are scaffolded and ready for content.</p>
+      <div class="modal-chapters" id="modalChapterList"></div>
+      <button class="modal-close" onclick="closeChapterModal()">Close</button>
+    </div>
+  </div>
 
   <!-- WRAP -->
   <div class="wrap">
@@ -1162,8 +2068,6 @@
           <p id="heroDesc">19 sections covering everything from business fundamentals and ethics, through GAAP, the accounting equation, transaction analysis, and all four financial statements — plus a full glossary and study checklist.</p>
           <div class="ch-hero-actions">
             <a href="#obj1" class="jump-btn primary">Start Lesson →</a>
-            <a href="#eqPractice" class="jump-btn">Equation Simulator</a>
-            <a href="#jePractice" class="jump-btn">Transaction Tool</a>
             <a href="#obj8" class="jump-btn">Glossary & Checklist</a>
           </div>
         </div>
@@ -1175,16 +2079,16 @@
           <span class="obj-badge">Overview</span>
           <h2>What's in this chapter</h2>
         </div>
-        <p class="section-intro">This chapter builds your accounting foundation from the ground up — starting with what a business is and why accounting exists, moving through ethics and GAAP, through the accounting equation and transactions, all the way to the four financial statements and how they connect. Each section below is a self-contained topic with examples and quick checks.</p>
+        <p class="section-intro">This chapter builds your accounting foundation from the ground up — starting with what a business is and why accounting exists, moving through ethics and GAAP, through the accounting equation and transactions, all the way to the four financial statements and how they connect. Click any row to jump straight to that section.</p>
         <div class="terms">
-          <div class="term"><span class="term-tag">01–02</span><div class="term-body"><b>Business & Users</b> — What a business is, what profit means, and who uses accounting information.</div></div>
-          <div class="term"><span class="term-tag">03–04</span><div class="term-body"><b>Ethics</b> — Why trust is foundational to accounting, and a framework for making ethical decisions.</div></div>
-          <div class="term"><span class="term-tag">05–06</span><div class="term-body"><b>GAAP & Standards</b> — The rule structure (FASB, SEC, IASB/IFRS) and the two key qualities of useful information.</div></div>
-          <div class="term"><span class="term-tag">07–08</span><div class="term-body"><b>Assumptions & Principles</b> — The four assumptions and three principles that shape every accounting decision.</div></div>
-          <div class="term"><span class="term-tag">09–10</span><div class="term-body"><b>Accounting Equation</b> — Assets = Liabilities + Stockholders' Equity, and why it always balances.</div></div>
-          <div class="term"><span class="term-tag">11–12</span><div class="term-body"><b>Transactions & Equity</b> — How to analyze transaction effects, plus Common Stock, Retained Earnings, and Dividends.</div></div>
-          <div class="term"><span class="term-tag">13–17</span><div class="term-body"><b>Financial Statements</b> — All four statements in depth: purpose, structure, and how they connect.</div></div>
-          <div class="term"><span class="term-tag">18–19</span><div class="term-body"><b>Review & Interrelationships</b> — How statements link together as a final accuracy check, plus glossary and study checklist.</div></div>
+          <div class="term toc-link" onclick="jumpTo('obj1')"><span class="term-tag">01–02</span><div class="term-body"><b>Business & Users</b> — What a business is, what profit means, and who uses accounting information.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj2')"><span class="term-tag">03–04</span><div class="term-body"><b>Ethics</b> — Why trust is foundational to accounting, and a framework for making ethical decisions.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj3')"><span class="term-tag">05–06</span><div class="term-body"><b>GAAP & Standards</b> — The rule structure (FASB, SEC, IASB/IFRS) and the two key qualities of useful information.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj4')"><span class="term-tag">07–08</span><div class="term-body"><b>Assumptions & Principles</b> — The four assumptions and three principles that shape every accounting decision.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj5')"><span class="term-tag">09–10</span><div class="term-body"><b>Accounting Equation</b> — Assets = Liabilities + Stockholders' Equity, and why it always balances.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj6')"><span class="term-tag">11–12</span><div class="term-body"><b>Transactions & Equity</b> — How to analyze transaction effects, plus Common Stock, Retained Earnings, and Dividends.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj7')"><span class="term-tag">13–17</span><div class="term-body"><b>Financial Statements</b> — All four statements in depth: purpose, structure, and how they connect.</div><span class="toc-arrow">↓</span></div>
+          <div class="term toc-link" onclick="jumpTo('obj8')"><span class="term-tag">18–19</span><div class="term-body"><b>Review & Interrelationships</b> — How statements link together as a final accuracy check, plus glossary and study checklist.</div><span class="toc-arrow">↓</span></div>
         </div>
       </section>
 
@@ -1367,8 +2271,7 @@
       <!-- ===== EQUATION SIMULATOR ===== -->
       <section class="section" id="eqPractice">
         <div class="sim-header">
-          <h3>Balance the Equationr</h3>
-             <h4>Start with assets, then move liabilities and equity</h4>
+          <h3>Equation Visualizer</h3>
           <div class="sim-controls">
             <button class="sim-btn" id="abBtn" onclick="toggleAutoBalance()">Auto-Balance: <span id="abStatus">ON</span></button>
             <button class="sim-btn" onclick="resetSliders()">Reset</button>
@@ -1404,45 +2307,93 @@
           <span class="obj-badge">Sections 11 – 12</span>
           <h2>Transaction Analysis & Stockholders' Equity</h2>
         </div>
-        <p class="section-intro">A business transaction is any event that changes the financial condition of the business. Every transaction has at least two effects — and the accounting equation must still balance after every single one. Stockholders' equity has two components that move in predictable ways.</p>
+        <p class="section-intro">A business transaction is any event that changes the financial condition of the business. Every transaction has at least two effects — and the accounting equation must still balance after every single one. Stockholders' equity has components that increase it and components that pull it down.</p>
 
         <div class="gaap-grid">
           <div class="gaap-card">
             <div class="gaap-card-label">Transaction Analysis Rules</div>
             <p>
-              Every transaction affects at least two accounts. Some shift amounts within the same side (e.g., buying land for cash keeps total assets the same — Land up, Cash down). Others change both sides.<br><br>
+              Every transaction affects at least two accounts. Some shift amounts within the same side — buying land for cash keeps total assets the same, Land up, Cash down. Others change both sides of the equation.<br><br>
               <b>Always identify the exact accounts affected</b> — not just "assets went up." Ask: which specific asset? Which specific liability or equity account?
             </p>
           </div>
           <div class="gaap-card">
-            <div class="gaap-card-label">Stockholders' Equity Components</div>
+            <div class="gaap-card-label">Stockholders' Equity — What Increases It</div>
             <p>
-              <b>Common Stock</b> — Increases when owners invest cash or other assets in the corporation.<br><br>
-              <b>Retained Earnings</b> — Cumulative earnings kept in the business. Increases with net income; decreases with net loss and dividends.<br><br>
-              <b>Dividends</b> — Distributions to stockholders. They reduce retained earnings but are <em>not</em> an expense. If a company earns $3,000 profit and pays $500 in dividends, Retained Earnings rises by a net $2,500.
+              <b>Common Stock</b> — increases when owners invest cash or other assets into the corporation.<br><br>
+              <b>Retained Earnings</b> — cumulative earnings kept in the business. Increases with net income, decreases with net loss and dividends.<br><br>
+              <b>Revenue</b> — when the business earns fees or makes sales, revenue increases, which flows into Retained Earnings and grows equity.
             </p>
           </div>
         </div>
 
-        <div class="gaap-card" style="margin-top:16px;">
+        <!-- Contra Equity — Expenses & Dividends -->
+        <div class="gaap-card" style="margin-top:28px; border-left-color: rgba(240,96,96,.5);">
+          <div class="gaap-card-label" style="color:var(--red);">Contra Equity — Expenses & Dividends</div>
+          <p>
+            Not everything in equity goes up. <b>Expenses and Dividends are contra equity accounts</b> — they work against stockholders' equity, pulling it down instead of building it up.<br><br>
+            <b>Expenses</b> carry a <b>debit balance</b> by nature. In accounting, assets and expenses both have normal debit balances — but where assets represent value the business owns, expenses represent value consumed to generate revenue. When you debit an expense account, you increase the expense, which reduces net income, which reduces Retained Earnings, which shrinks stockholders' equity. The chain is: <em>Expense up → Net Income down → Retained Earnings down → Equity down.</em><br><br>
+            <b>Dividends</b> also carry a debit balance and work the same way — debiting Dividends increases the account, which directly reduces Retained Earnings. But unlike expenses, dividends never appear on the income statement. They are a distribution of profit to owners, not a cost of doing business.<br><br>
+            This is why the income statement formula works the way it does. Revenues credit (increase) equity. Expenses debit (decrease) equity. Net income is what is left after the expenses have done their work against the revenues.
+          </p>
+        </div>
+
+        <div class="terms" style="margin-top:24px;">
+          <div class="term">
+            <span class="term-tag">Common Stock</span>
+            <div class="term-body"><b>Credit balance.</b> Increases when owners invest. Recorded on the right side of the equation — it is a permanent, stable part of equity.</div>
+          </div>
+          <div class="term">
+            <span class="term-tag">Retained Earnings</span>
+            <div class="term-body"><b>Credit balance (normally).</b> Cumulative net income kept in the business. Net income adds to it; net loss and dividends subtract from it. If losses exceed all prior earnings, the balance turns debit — called a deficit.</div>
+          </div>
+          <div class="term">
+            <span class="term-tag">Revenue</span>
+            <div class="term-body"><b>Credit balance.</b> Increases equity. When a service is performed or a sale is made, the revenue account is credited — it eventually flows into Retained Earnings through the closing process.</div>
+          </div>
+          <div class="term">
+            <span class="term-tag">Expenses</span>
+            <div class="term-body"><b>Debit balance — contra equity.</b> Expenses are costs incurred to generate revenue. Their normal balance is a debit, which is the opposite of equity. Every dollar of expense debited reduces net income and, through that, reduces Retained Earnings. Examples: rent expense, wages expense, utilities expense.</div>
+          </div>
+          <div class="term">
+            <span class="term-tag">Dividends</span>
+            <div class="term-body"><b>Debit balance — contra equity.</b> Distributions of earnings to stockholders. Like expenses, dividends carry a debit balance that reduces equity — but they are <em>not</em> an expense and never appear on the income statement. They reduce Retained Earnings directly. If a corporation earns $3,000 profit and pays $500 in dividends, Retained Earnings rises by a net $2,500.</div>
+          </div>
+        </div>
+
+        <div class="eq-box" style="margin-top:24px;">
+          <code>Equity = Common Stock + Retained Earnings + Revenue − Expenses − Dividends</code>
+          <button class="copy-btn" onclick="copyText('Equity = Common Stock + Retained Earnings + Revenue − Expenses − Dividends')">Copy</button>
+        </div>
+
+        <div class="gaap-card" style="margin-top:24px;">
           <div class="gaap-card-label">Common Transaction Effects — Reference Table</div>
           <div class="table-wrap" style="margin-top:10px;">
             <table>
               <thead>
-                <tr><th>Transaction</th><th>Effect</th></tr>
+                <tr><th>Transaction</th><th>Effect on Accounts</th><th>Equity Impact</th></tr>
               </thead>
               <tbody>
-                <tr><td>Owner invests cash</td><td>Cash ↑ &nbsp;|&nbsp; Common Stock ↑</td></tr>
-                <tr><td>Buy supplies for cash</td><td>Supplies ↑ &nbsp;|&nbsp; Cash ↓ (assets shift)</td></tr>
-                <tr><td>Buy equipment on account</td><td>Equipment ↑ &nbsp;|&nbsp; Accounts Payable ↑</td></tr>
-                <tr><td>Earn revenue for cash</td><td>Cash ↑ &nbsp;|&nbsp; Revenue ↑ (equity ↑)</td></tr>
-                <tr><td>Earn revenue on account</td><td>Accounts Receivable ↑ &nbsp;|&nbsp; Revenue ↑</td></tr>
-                <tr><td>Pay expense in cash</td><td>Cash ↓ &nbsp;|&nbsp; Expense ↑ (equity ↓)</td></tr>
-                <tr><td>Pay supplier on account</td><td>Cash ↓ &nbsp;|&nbsp; Accounts Payable ↓</td></tr>
-                <tr><td>Collect from customer on account</td><td>Cash ↑ &nbsp;|&nbsp; Accounts Receivable ↓</td></tr>
-                <tr><td>Pay dividends</td><td>Cash ↓ &nbsp;|&nbsp; Dividends ↑ (equity ↓)</td></tr>
+                <tr><td>Owner invests cash</td><td>Cash ↑ | Common Stock ↑</td><td style="color:var(--green);">↑ Increases</td></tr>
+                <tr><td>Buy supplies for cash</td><td>Supplies ↑ | Cash ↓</td><td style="color:var(--muted2);">No change</td></tr>
+                <tr><td>Buy equipment on account</td><td>Equipment ↑ | Accounts Payable ↑</td><td style="color:var(--muted2);">No change</td></tr>
+                <tr><td>Earn revenue for cash</td><td>Cash ↑ | Revenue ↑</td><td style="color:var(--green);">↑ Increases</td></tr>
+                <tr><td>Earn revenue on account</td><td>Accounts Receivable ↑ | Revenue ↑</td><td style="color:var(--green);">↑ Increases</td></tr>
+                <tr><td>Pay expense in cash</td><td>Cash ↓ | Expense ↑ (debit)</td><td style="color:var(--red);">↓ Decreases</td></tr>
+                <tr><td>Pay supplier on account</td><td>Cash ↓ | Accounts Payable ↓</td><td style="color:var(--muted2);">No change</td></tr>
+                <tr><td>Collect from customer</td><td>Cash ↑ | Accounts Receivable ↓</td><td style="color:var(--muted2);">No change</td></tr>
+                <tr><td>Pay dividends</td><td>Cash ↓ | Dividends ↑ (debit)</td><td style="color:var(--red);">↓ Decreases</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <div class="quiz-block" style="margin-top:28px;">
+          <div class="quiz-label">Quick Check — Why do expenses carry a debit balance if they are part of stockholders' equity?</div>
+          <input class="quiz-input" id="q_contra" placeholder="Type your answer…" />
+          <div class="quiz-row">
+            <button class="quiz-check-btn" onclick="checkContra()">Check Answer</button>
+            <span class="result-badge" id="r_contra"></span>
           </div>
         </div>
       </section>
@@ -1450,7 +2401,7 @@
       <!-- ===== JOURNAL ENTRY TOOL ===== -->
       <section class="section" id="jePractice">
         <div class="sim-header">
-          <h3>Transaction Simulator</h3>
+          <h3>Try a Journal Entry</h3>
         </div>
         <div class="je-grid">
           <select class="je-select" id="debitType">
@@ -1511,68 +2462,53 @@
         </div>
         <p class="section-intro">The four statements are prepared in a specific order because each one feeds into the next. Net income flows from the income statement to the retained earnings statement. Ending retained earnings flows to the balance sheet. Ending cash on the cash flow statement must match the cash on the balance sheet.</p>
 
-        <div class="statements-grid">
-          <div class="stmt-card">
+        <div class="statements-list">
+          <div class="stmt-row">
             <div class="stmt-num">1</div>
             <div class="stmt-text">
               <b>Income Statement</b>
-              <p>Covers a <em>period of time</em>. Reports revenues and expenses and produces net income or net loss. Answers: was the business profitable?</p>
+              <p>Covers a period of time. Reports revenues and expenses and produces net income or net loss. Answers: was the business profitable during this period?</p>
             </div>
           </div>
-          <div class="stmt-card">
+          <div class="stmt-row">
             <div class="stmt-num">2</div>
             <div class="stmt-text">
               <b>Retained Earnings Statement</b>
-              <p>Covers a <em>period of time</em>. Shows the change in retained earnings: Beginning RE + Net Income − Dividends = Ending RE.</p>
+              <p>Covers a period of time. Shows the change in retained earnings: Beginning RE + Net Income − Dividends = Ending RE. Bridges profitability to the balance sheet.</p>
             </div>
           </div>
-          <div class="stmt-card">
+          <div class="stmt-row">
             <div class="stmt-num">3</div>
             <div class="stmt-text">
               <b>Balance Sheet</b>
-              <p>Reports on a <em>specific date</em> (a snapshot). Shows assets, liabilities, and stockholders' equity. Built directly from the accounting equation — both sides must be equal.</p>
+              <p>Reports on a specific date — a snapshot. Shows assets, liabilities, and stockholders' equity. Built from the accounting equation, so both sides must be equal.</p>
             </div>
           </div>
-          <div class="stmt-card">
+          <div class="stmt-row">
             <div class="stmt-num">4</div>
             <div class="stmt-text">
               <b>Statement of Cash Flows</b>
-              <p>Covers a <em>period of time</em>. Summarizes cash receipts and payments in three categories: operating, investing, and financing activities.</p>
+              <p>Covers a period of time. Summarizes cash receipts and payments in three buckets: operating (day-to-day), investing (long-term assets), and financing (owners and lenders).</p>
             </div>
           </div>
         </div>
 
-        <div class="gaap-grid" style="margin-top:20px;">
+        <div class="gaap-grid" style="margin-top:32px;">
           <div class="gaap-card">
-            <div class="gaap-card-label">Income Statement — Detail</div>
-            <p>
-              Net Income = Revenues − Expenses.<br>
-              If expenses exceed revenues, it's a net loss.<br><br>
-              <b>Example:</b> Fees Earned $28,000 minus total expenses $19,500 = net income <b>$8,500</b>.
-            </p>
+            <div class="gaap-card-label">Income Statement in practice</div>
+            <p>Net Income = Revenues − Expenses. If expenses exceed revenues it's a net loss.<br><br><b>Example:</b> Fees Earned $28,000 minus total expenses $19,500 = net income <b>$8,500</b>.</p>
           </div>
           <div class="gaap-card">
-            <div class="gaap-card-label">Retained Earnings Statement — Detail</div>
-            <p>
-              Beginning RE + Net Income − Dividends = Ending RE.<br><br>
-              <b>Example:</b> Beginning RE $5,000 + Net Income $9,200 − Dividends $1,000 = Ending RE <b>$13,200</b>.
-            </p>
+            <div class="gaap-card-label">Retained Earnings Statement in practice</div>
+            <p>Beginning RE + Net Income − Dividends = Ending RE.<br><br><b>Example:</b> $5,000 + $9,200 − $1,000 = Ending RE <b>$13,200</b>.</p>
           </div>
           <div class="gaap-card">
-            <div class="gaap-card-label">Balance Sheet — Detail</div>
-            <p>
-              Reports on a single date (not a period). Assets are often listed in order of liquidity. Liabilities + Equity must equal total Assets.<br><br>
-              <b>Example:</b> Total Assets $40,000, Liabilities $14,000 → Stockholders' Equity must be <b>$26,000</b>.
-            </p>
+            <div class="gaap-card-label">Balance Sheet in practice</div>
+            <p>Reported on one date, not a period. Assets listed in order of liquidity.<br><br><b>Example:</b> Total Assets $40,000, Liabilities $14,000 → Stockholders' Equity must be <b>$26,000</b>.</p>
           </div>
           <div class="gaap-card">
-            <div class="gaap-card-label">Statement of Cash Flows — Detail</div>
-            <p>
-              <b>Operating:</b> Cash from day-to-day operations (e.g., cash from customers).<br>
-              <b>Investing:</b> Cash for long-term assets (e.g., buying equipment).<br>
-              <b>Financing:</b> Cash from owners and lenders (e.g., issuing stock).<br><br>
-              A company can report net income but still have a cash decrease.
-            </p>
+            <div class="gaap-card-label">Cash Flows in practice</div>
+            <p>Operating: cash from customers. Investing: buying equipment. Financing: issuing stock or borrowing.<br><br>A company can report net income and still have a <b>decrease in cash</b>.</p>
           </div>
         </div>
 
@@ -1592,32 +2528,32 @@
           <span class="obj-badge">Sections 18 – 19</span>
           <h2>Interrelationships, Review & Glossary</h2>
         </div>
-        <p class="section-intro">One of the most important Unit 1 ideas is how the four statements connect — and how those links let you catch errors. If your numbers don't flow correctly from one statement to the next, something is wrong.</p>
+        <p class="section-intro" style="margin-bottom:24px;">One of the most important Unit 1 ideas: the four statements connect in a chain, and those links let you catch errors. If your numbers don't flow correctly from one statement to the next, something is wrong.</p>
 
-        <div class="gaap-card" style="margin-bottom:16px;">
-          <div class="gaap-card-label">Statement Flow — How They Connect</div>
-          <p style="line-height:2;">
-            <b>Income Statement</b> → Net income flows to ↓<br>
-            <b>Retained Earnings Statement</b> → Ending RE flows to ↓<br>
-            <b>Balance Sheet</b> ← Ending cash on SCF must match cash reported here<br>
-            <b>Statement of Cash Flows</b> → Ending cash checks against Balance Sheet cash
+        <div class="gaap-card" style="margin-bottom:32px;">
+          <div class="gaap-card-label">How the statements flow</div>
+          <p style="line-height:2.1;">
+            <b>Income Statement</b> → net income flows down to<br>
+            <b>Retained Earnings Statement</b> → ending RE flows down to<br>
+            <b>Balance Sheet</b> → ending cash here must match<br>
+            <b>Statement of Cash Flows</b> ending cash
           </p>
-          <p style="margin-top:12px; font-size:13px; color:var(--muted);">
-            <b>Example error check:</b> If statement of cash flows shows ending cash of $7,850 but the balance sheet shows cash of $8,050, there is a $200 discrepancy to find and fix.
-          </p>
+          <p style="margin-top:14px;"><b>Error check example:</b> If the cash flow statement shows ending cash of $7,850 but the balance sheet shows $8,050, there's a $200 discrepancy to find and fix.</p>
         </div>
 
-        <!-- Study Checklist -->
-        <div class="gaap-card" style="margin-bottom:16px;">
-          <div class="gaap-card-label">Study Checklist</div>
-          <div id="checklist" style="display:grid;gap:8px;margin-top:4px;"></div>
+        <!-- Study Checklist — open, no box -->
+        <div class="section-title-row" style="margin-bottom:16px;">
+          <span class="obj-badge">Checklist</span>
+          <h2 style="font-size:20px;">Before you move on</h2>
         </div>
+        <div id="checklist" style="display:grid;gap:10px;margin-bottom:40px;"></div>
 
-        <!-- Glossary -->
-        <div class="section-title-row" style="margin-top:28px;margin-bottom:12px;">
+        <!-- Glossary — open prose rows -->
+        <div class="section-title-row" style="margin-top:8px;margin-bottom:4px;">
           <span class="obj-badge">Glossary</span>
           <h2 style="font-size:20px;">Key Terms</h2>
         </div>
+        <p style="font-size:14px;color:var(--muted2);margin-bottom:16px;">All 28 terms from this chapter. Click any term to highlight it.</p>
         <div class="terms" id="glossaryTerms"></div>
       </section>
 
@@ -1628,25 +2564,158 @@
           <h2>Chapter Summary</h2>
         </div>
         <p class="section-intro">Accounting is a system for explaining what a business owns, owes, earns, and spends. The equation is the structural core. The financial statements are the final output — and they connect in a chain that must be consistent.</p>
-        <div class="summary-grid">
+        <div class="summary-list">
           <div class="summary-item"><span class="summary-num">01</span><div class="summary-text">Businesses use resources to provide goods or services and earn a profit. <b>Profit = Revenues − Expenses.</b> Accounting tracks and communicates this activity to both internal and external users.</div></div>
-          <div class="summary-item"><span class="summary-num">02</span><div class="summary-text"><b>Ethics matters</b> because accounting only works if users trust the information. Poor ethics causes real financial and legal harm to many stakeholders, not just owners.</div></div>
-          <div class="summary-item"><span class="summary-num">03</span><div class="summary-text"><b>GAAP</b> (set mainly by FASB, overseen by SEC) gives financial reporting its consistency. Reports must be relevant and faithfully represent what actually happened.</div></div>
+          <div class="summary-item"><span class="summary-num">02</span><div class="summary-text"><b>Ethics matters</b> because accounting only works when users trust the information. Poor ethics causes real harm to lenders, employees, investors — not just owners.</div></div>
+          <div class="summary-item"><span class="summary-num">03</span><div class="summary-text"><b>GAAP</b> (written mainly by FASB, overseen by SEC) gives financial reporting its consistency. Reports must be relevant and faithfully represent what actually happened.</div></div>
           <div class="summary-item"><span class="summary-num">04</span><div class="summary-text">Four <b>assumptions</b> (monetary unit, time period, business entity, going concern) and three <b>principles</b> (historical cost, revenue recognition, expense recognition) define how and when things get recorded.</div></div>
-          <div class="summary-item"><span class="summary-num">05</span><div class="summary-text">The accounting equation — <b>Assets = Liabilities + Stockholders' Equity</b> — must balance after every single transaction. Assets are resources; liabilities and equity are the two types of claims against them.</div></div>
-          <div class="summary-item"><span class="summary-num">06</span><div class="summary-text">Every transaction has at least two effects. <b>Common Stock</b> reflects owner investment; <b>Retained Earnings</b> reflects cumulative profit kept in the business; <b>Dividends</b> reduce equity but are not expenses.</div></div>
-          <div class="summary-item"><span class="summary-num">07</span><div class="summary-text">The four financial statements are prepared in order: Income Statement → Retained Earnings Statement → Balance Sheet → Statement of Cash Flows. <b>Each feeds into the next</b> — and those links let you catch errors.</div></div>
+          <div class="summary-item"><span class="summary-num">05</span><div class="summary-text">The accounting equation — <b>Assets = Liabilities + Stockholders' Equity</b> — must balance after every single transaction. Assets are resources owned; liabilities and equity are the two types of claims against them.</div></div>
+          <div class="summary-item"><span class="summary-num">06</span><div class="summary-text">Every transaction has at least two effects. <b>Common Stock</b> reflects owner investment; <b>Retained Earnings</b> reflects cumulative profit kept; <b>Dividends</b> reduce equity but are not expenses.</div></div>
+          <div class="summary-item"><span class="summary-num">07</span><div class="summary-text">The four statements flow in order: Income Statement → Retained Earnings Statement → Balance Sheet → Statement of Cash Flows. <b>Each feeds into the next</b>, and those connections let you catch errors.</div></div>
         </div>
       </section>
 
-      <!-- COMING SOON -->
-      <div class="coming-section" id="comingSoon">
-        <h2 id="comingTitle">Chapters 2–14</h2>
-        <p id="comingText">This portal is structured for 14 chapters. When you add Chapter 2+, paste each chapter's content into the data structure and the UI will populate automatically.</p>
+      <!-- ===== CHAPTER RECAP QUIZ ===== -->
+      <div class="recap-quiz" id="recapQuiz">
+        <div class="recap-header">
+          <span class="obj-badge">Recap Quiz</span>
+          <h2>Test yourself on Chapter 1</h2>
+        </div>
+        <p class="recap-intro">10 questions covering the whole chapter. Select an answer for each, then hit Submit to see your score and explanations.</p>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">01</span>What is the correct formula for profit?</div>
+          <div class="rq-options" data-correct="b">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> Revenues + Expenses</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> Revenues − Expenses</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> Assets − Liabilities</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Expenses − Revenues</div>
+          </div>
+          <div class="rq-feedback">Profit = Revenues − Expenses. If expenses exceed revenues, it's a net loss, not a profit.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">02</span>Which organization writes most U.S. accounting standards?</div>
+          <div class="rq-options" data-correct="c">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> SEC</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> IASB</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> FASB</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> IRS</div>
+          </div>
+          <div class="rq-feedback">FASB (Financial Accounting Standards Board) is the private-sector body that develops GAAP in the U.S. The SEC enforces reporting rules but doesn't write the standards.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">03</span>The business entity assumption means:</div>
+          <div class="rq-options" data-correct="b">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> The business is assumed to continue operating indefinitely</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> The business's financial records are kept separate from the owner's personal records</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> All transactions must be measured in dollars</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Results are reported for a specific period</div>
+          </div>
+          <div class="rq-feedback">Business entity: keep business and personal transactions completely separate. If the owner pays personal grocery bills, that never touches the business books.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">04</span>Assets = Liabilities + Stockholders' Equity. If assets increase by $8,000 and liabilities do not change, what happens to equity?</div>
+          <div class="rq-options" data-correct="a">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> Equity increases by $8,000</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> Equity decreases by $8,000</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> Equity stays the same</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Cannot be determined</div>
+          </div>
+          <div class="rq-feedback">The equation must balance: A = L + E. If assets go up $8,000 and liabilities don't move, equity must go up $8,000 to keep both sides equal.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">05</span>An owner invests $15,000 cash into the corporation. Which accounts are affected?</div>
+          <div class="rq-options" data-correct="b">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> Cash increases; Retained Earnings increases</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> Cash increases; Common Stock increases</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> Cash increases; Revenue increases</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Accounts Receivable increases; Common Stock increases</div>
+          </div>
+          <div class="rq-feedback">Owner investment in a corporation = Cash (asset) up + Common Stock (equity) up. Retained Earnings only increases with net income.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">06</span>Which financial statement is prepared first?</div>
+          <div class="rq-options" data-correct="b">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> Balance Sheet</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> Income Statement</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> Statement of Cash Flows</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Retained Earnings Statement</div>
+          </div>
+          <div class="rq-feedback">Order: Income Statement → Retained Earnings Statement → Balance Sheet → Statement of Cash Flows. Net income from the income statement is needed before you can complete the retained earnings statement.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">07</span>Dividends are best described as:</div>
+          <div class="rq-options" data-correct="c">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> An expense on the income statement</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> An increase to retained earnings</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> A distribution of earnings that reduces retained earnings</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> A liability owed to creditors</div>
+          </div>
+          <div class="rq-feedback">Dividends reduce Retained Earnings (equity) but are NOT an expense — they never appear on the income statement.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">08</span>The balance sheet reports on:</div>
+          <div class="rq-options" data-correct="a">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> A specific date</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> A period of time</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> The current fiscal year only</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> An estimated future date</div>
+          </div>
+          <div class="rq-feedback">The balance sheet is a snapshot — it shows financial position on one specific date (e.g., December 31, 2024). The other three statements cover a period of time.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">09</span>Which accounting principle says assets should be recorded at their original transaction cost?</div>
+          <div class="rq-options" data-correct="c">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> Revenue recognition principle</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> Going concern assumption</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> Historical cost principle</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> Business entity assumption</div>
+          </div>
+          <div class="rq-feedback">Historical cost: record assets at what you paid for them. A van bought for $18,000 stays on the books at $18,000 even if its resale value changes later.</div>
+        </div>
+
+        <div class="rq-item">
+          <div class="rq-q"><span class="rq-num">10</span>A company earns net income of $12,000 and pays $2,000 in dividends. Beginning retained earnings were $5,000. What is ending retained earnings?</div>
+          <div class="rq-options" data-correct="c">
+            <div class="rq-option" data-val="a"><span class="rq-letter">A</span> $10,000</div>
+            <div class="rq-option" data-val="b"><span class="rq-letter">B</span> $19,000</div>
+            <div class="rq-option" data-val="c"><span class="rq-letter">C</span> $15,000</div>
+            <div class="rq-option" data-val="d"><span class="rq-letter">D</span> $17,000</div>
+          </div>
+          <div class="rq-feedback">$5,000 + $12,000 − $2,000 = $15,000. Beginning RE + Net Income − Dividends = Ending RE.</div>
+        </div>
+
+        <button class="recap-submit" id="recapSubmit" onclick="submitRecap()">Submit Answers</button>
+
+        <div class="recap-score" id="recapScore">
+          <div class="recap-score-num" id="recapScoreNum">—</div>
+          <div class="recap-score-label" id="recapScoreLabel">out of 10</div>
+        </div>
+      </div>
+
+      <!-- ===== NEXT CHAPTER BUTTON ===== -->
+      <div class="next-chapter-bar">
+        <div class="next-chapter-info">
+          <strong>Up next</strong>
+          Chapter 2 — coming soon
+        </div>
+        <a href="#" class="btn-next-chapter" onclick="openChapterModal(); return false;">
+          Next Chapter
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
 
       <div class="ch-footer">
         Accounting By Noah &nbsp;·&nbsp; Chapter 01 of 14 &nbsp;·&nbsp; Equation tools included
+      </div>
       </div>
 
     </main>
@@ -1685,16 +2754,12 @@
       chapterSelect.value = String(n);
       if (n === 1) {
         document.getElementById("heroTitle").textContent = "Introduction to Accounting & Business";
-        document.getElementById("heroDesc").textContent = "This chapter teaches, not just dumps definitions. Read a topic in plain English, understand why it matters, then apply it immediately with an interactive tool.";
-        document.getElementById("comingTitle").textContent = "Chapters 2–14";
-        document.getElementById("comingText").textContent = "This portal is structured for 14 chapters. Add Chapter 2+ by pasting content into the data structure.";
+        document.getElementById("heroDesc").textContent = "19 sections covering everything from business fundamentals and ethics, through GAAP, the accounting equation, transaction analysis, and all four financial statements — plus a full glossary and study checklist.";
       } else {
         document.getElementById("heroTitle").textContent = `Chapter ${n} — Coming Soon`;
         document.getElementById("heroDesc").textContent = "This chapter slot is scaffolded and ready. Add lesson content and it will render here automatically.";
-        document.getElementById("comingTitle").textContent = `Chapter ${n}`;
-        document.getElementById("comingText").textContent = "Add objectives, key terms, practice problems, quizzes, and simulators here. The navigation and layout are complete.";
       }
-      scrollTo("hero");
+      jumpTo("hero");
     }
 
     function selectChapterFromDropdown() {
@@ -1702,7 +2767,7 @@
     }
 
     // ===== Utilities =====
-    function scrollTo(id) {
+    function jumpTo(id) {
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -1739,8 +2804,14 @@
       if (ok) spawnConfetti(document.querySelector('#obj2 .quiz-check-btn'));
     }
 
+    function checkContra() {
+      const v = (document.getElementById("q_contra").value || "").toLowerCase();
+      const ok = v.includes("contra") || v.includes("decrease") || v.includes("reduce") || v.includes("opposite") || (v.includes("debit") && (v.includes("equity") || v.includes("net income") || v.includes("retained")));
+      setResult("r_contra", ok ? "Correct ✓" : "Expenses are contra equity — their debit balance is the opposite of equity's normal credit balance. Debiting an expense reduces net income, which reduces Retained Earnings, which shrinks equity.", ok ? "good" : "bad");
+      if (ok) spawnConfetti(document.querySelector('#obj6 .quiz-check-btn'));
+    }
+
     function checkAssumption() {
-      const v = (document.getElementById("q_assumption").value || "").toLowerCase();
       const ok = v.includes("time period") || v.includes("time-period") || (v.includes("time") && v.includes("period"));
       setResult("r_assumption", ok ? "Correct ✓" : "Answer: Time Period Assumption", ok ? "good" : "bad");
       if (ok) spawnConfetti(document.querySelector('#obj4 .quiz-check-btn'));
@@ -2348,6 +3419,34 @@
       });
     }
 
+    // ===== Auth Modal =====
+    function openAuthModal() {
+      document.getElementById('authModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ===== Profile Dropdown =====
+    function toggleProfileDropdown() {
+      const dd = document.getElementById('profileDropdown');
+      if (!dd) return;
+      dd.classList.toggle('open');
+    }
+    function closeProfileDropdown() {
+      const dd = document.getElementById('profileDropdown');
+      if (dd) dd.classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      const wrap = document.querySelector('.nav-auth-wrap');
+      if (wrap && !wrap.contains(e.target)) closeProfileDropdown();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeAuthModal(); closeProfileDropdown(); }
+    });
+
     // ===== Glossary =====
     const glossary = [
       ["Accounting", "An information system that provides reports to users about a business's economic activities and condition."],
@@ -2412,6 +3511,8 @@
         label.querySelector("input").addEventListener("change", function() {
           label.style.color = this.checked ? "var(--green)" : "var(--muted)";
           label.style.textDecoration = this.checked ? "line-through" : "none";
+          if (typeof saveAllProgress === 'function') saveAllProgress();
+          if (typeof updateProgressBar === 'function') updateProgressBar();
         });
         checklistEl.appendChild(label);
       });
@@ -2431,6 +3532,105 @@
     initGradientShift();
     initFallingMoney();
     initCursorTrail();
+    // ===== Chapter Select Modal =====
+    function openChapterModal() {
+      const list = document.getElementById("modalChapterList");
+      list.innerHTML = "";
+      chapters.forEach(ch => {
+        const div = document.createElement("div");
+        div.className = "modal-ch" + (ch.active ? " current" : "");
+        div.innerHTML = `
+          <span class="modal-ch-num">${String(ch.num).padStart(2,'0')}</span>
+          <span class="modal-ch-title">${ch.num === 1 ? "Intro to Accounting & Business" : "Chapter " + ch.num}</span>
+          <span class="modal-ch-badge ${ch.num === 1 ? 'live' : 'soon'}">${ch.num === 1 ? "Live" : "Soon"}</span>
+        `;
+        if (!ch.active) {
+          div.onclick = () => {
+            closeChapterModal();
+            goChapter(ch.num);
+          };
+        }
+        list.appendChild(div);
+      });
+      document.getElementById("chapterModal").classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeChapterModal() {
+      document.getElementById("chapterModal").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeChapterModal();
+    });
+
+    // ===== Chapter Recap Quiz =====
+    // Wire up option clicks
+    document.querySelectorAll('.rq-options').forEach(group => {
+      group.querySelectorAll('.rq-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          if (group.dataset.answered) return;
+          group.querySelectorAll('.rq-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          group.dataset.selected = opt.dataset.val;
+        });
+      });
+    });
+
+    function submitRecap() {
+      const items = document.querySelectorAll('.rq-item');
+      let score = 0;
+      let answered = 0;
+
+      items.forEach(item => {
+        const group = item.querySelector('.rq-options');
+        const feedback = item.querySelector('.rq-feedback');
+        const selected = group.dataset.selected;
+        const correct = group.dataset.correct;
+
+        if (!selected) return;
+        answered++;
+        group.dataset.answered = '1';
+
+        group.querySelectorAll('.rq-option').forEach(opt => {
+          if (opt.dataset.val === correct) opt.classList.add('correct');
+          else if (opt.dataset.val === selected && selected !== correct) opt.classList.add('wrong');
+          opt.style.pointerEvents = 'none';
+        });
+
+        feedback.classList.add('show');
+        if (selected === correct) {
+          score++;
+          feedback.classList.add('good');
+        } else {
+          feedback.classList.add('bad');
+        }
+      });
+
+      if (answered < items.length) {
+        const unanswered = items.length - answered;
+        showToast(`Answer all ${unanswered} remaining question${unanswered > 1 ? 's' : ''} first.`);
+        return;
+      }
+
+      const scoreEl = document.getElementById('recapScore');
+      const scoreNum = document.getElementById('recapScoreNum');
+      const scoreLabel = document.getElementById('recapScoreLabel');
+      scoreNum.textContent = `${score}/10`;
+      const pct = score / 10;
+      if (pct >= 0.9) scoreLabel.textContent = "Excellent — you've mastered Chapter 1!";
+      else if (pct >= 0.7) scoreLabel.textContent = 'Good work — review the questions you missed.';
+      else scoreLabel.textContent = 'Keep studying — re-read the sections you missed.';
+      scoreEl.classList.add('show');
+      scoreEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      if (score >= 8) spawnConfetti(document.getElementById('recapSubmit'));
+
+      document.getElementById('recapSubmit').disabled = true;
+      if (typeof saveAllProgress === 'function') saveAllProgress();
+    }
+
   </script>
 </body>
 </html>
