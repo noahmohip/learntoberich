@@ -584,7 +584,7 @@
     </a>
     <div class="nav-links">
       <a href="#chapters" class="nav-link">Chapters</a>
-      <a href="learning.html" class="nav-cta">Start Learning →</a>
+      <a href="chapter1.html" class="nav-cta">Start Learning →</a>
     </div>
   </nav>
 
@@ -599,7 +599,7 @@
         No memorization dumping — just clear ideas, applied immediately.
       </p>
       <div class="hero-actions">
-        <a href="learning.html" class="btn-primary">
+        <a href="chapter1.html" class="btn-primary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Start Chapter 1
         </a>
@@ -669,7 +669,7 @@
     <h2>Ready to start?</h2>
     <p>Chapter 1 covers the nature of business, GAAP, the accounting equation, transactions, and the financial statements.</p>
     <div class="hero-actions">
-      <a href="learning.html" class="btn-primary">Open Chapter 1 →</a>
+      <a href="chapter1.html" class="btn-primary">Open Chapter 1 →</a>
     </div>
   </div>
 
@@ -688,7 +688,7 @@
       const isActive = i === 1;
       const title = chapterTitles[i] || "Coming Soon";
       const card = document.createElement('a');
-      card.href = isActive ? 'learning.html' : '#chapters';
+      card.href = isActive ? 'chapter1.html' : '#chapters';
       card.className = 'chapter-card' + (isActive ? ' active' : '');
       card.innerHTML = `
         <div class="card-num">Chapter ${String(i).padStart(2,'0')}</div>
